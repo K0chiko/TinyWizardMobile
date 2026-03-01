@@ -34,6 +34,7 @@ namespace FMODUnity
 
         private const int StudioScriptPort = 3663;
         private static NetworkStream networkStream = null;
+        private static StreamReader streamReader = null;
         private static Socket socket = null;
         private static IAsyncResult socketConnection = null;
 
@@ -534,6 +535,16 @@ namespace FMODUnity
                 RuntimeUtils.DebugLogWarning("FMOD Studio: Cannot open fmod_editor.log. Logging will be disabled for importing and previewing");
             }
 
+            result = AttemptInitialize(out system);
+            if (result != FMOD.RESULT.OK)
+            {
+                RuntimeUtils.DebugLogErrorFormat("[FMOD] Studio::System::initialize returned {0}, defaulting to no-sound mode.", result.ToString());
+                CheckResult(AttemptInitialize(out system, FMOD.OUTPUTTYPE.NOSOUND));
+            }
+        }
+
+        private static FMOD.RESULT AttemptInitialize(out FMOD.Studio.System system, FMOD.OUTPUTTYPE outputType = FMOD.OUTPUTTYPE.AUTODETECT)
+        {
             CheckResult(FMOD.Studio.System.create(out system));
 
             FMOD.System lowlevel;
@@ -543,6 +554,8 @@ namespace FMODUnity
             speakerMode = Settings.Instance.PlayInEditorPlatform.SpeakerMode;
             CheckResult(lowlevel.setSoftwareFormat(0, speakerMode, 0));
 
+            CheckResult(lowlevel.setOutput(outputType));
+
             encryptionKey = Settings.Instance.EncryptionKey;
             if (!string.IsNullOrEmpty(encryptionKey))
             {
@@ -550,13 +563,20 @@ namespace FMODUnity
                 CheckResult(system.setAdvancedSettings(studioAdvancedSettings, encryptionKey));
             }
 
-            CheckResult(system.initialize(256, FMOD.Studio.INITFLAGS.ALLOW_MISSING_PLUGINS | FMOD.Studio.INITFLAGS.SYNCHRONOUS_UPDATE, FMOD.INITFLAGS.NORMAL, IntPtr.Zero));
-
-            FMOD.ChannelGroup master;
-            CheckResult(lowlevel.getMasterChannelGroup(out master));
-            FMOD.DSP masterHead;
-            CheckResult(master.getDSP(FMOD.CHANNELCONTROL_DSP_INDEX.HEAD, out masterHead));
-            CheckResult(masterHead.setMeteringEnabled(false, true));
+            FMOD.RESULT result =  system.initialize(256, FMOD.Studio.INITFLAGS.ALLOW_MISSING_PLUGINS | FMOD.Studio.INITFLAGS.SYNCHRONOUS_UPDATE, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
+            if (result == FMOD.RESULT.OK)
+            {
+                FMOD.ChannelGroup master;
+                CheckResult(lowlevel.getMasterChannelGroup(out master));
+                FMOD.DSP masterHead;
+                CheckResult(master.getDSP(FMOD.CHANNELCONTROL_DSP_INDEX.HEAD, out masterHead));
+                CheckResult(masterHead.setMeteringEnabled(false, true));
+                return FMOD.RESULT.OK;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         public static void UpdateParamsOnEmitter(SerializedObject serializedObject, string path)
@@ -684,7 +704,7 @@ namespace FMODUnity
             CheckResult(lowlevel.getVersion(out version));
 
             string text = string.Format(
-                "Version: {0}\n\nCopyright \u00A9 Firelight Technologies Pty, Ltd. 2014-2024 \n\n" +
+                "Version: {0}\n\nCopyright \u00A9 Firelight Technologies Pty, Ltd. 2014-2026 \n\n" +
                 "See LICENSE.TXT for additional license information.",
                 VersionString(version));
 
@@ -866,11 +886,23 @@ namespace FMODUnity
                         socketConnection = null;
                         socket = null;
                         networkStream = null;
-
+                        streamReader = null;
                         throw e;
                     }
                 }
                 return networkStream;
+            }
+        }
+
+        private static StreamReader ScriptStreamReader
+        {
+            get
+            {
+                if (streamReader == null)
+                {
+                    streamReader = new StreamReader(ScriptStream);
+                }
+                return streamReader;
             }
         }
 
@@ -934,11 +966,11 @@ namespace FMODUnity
                 {
                     networkStream.Close();
                     networkStream = null;
+                    streamReader = null;
                 }
                 return false;
             }
         }
-
 
         public static string GetScriptOutput(string command)
         {
@@ -946,19 +978,44 @@ namespace FMODUnity
             try
             {
                 ScriptStream.Write(commandBytes, 0, commandBytes.Length);
-                byte[] commandReturnBytes = new byte[2048];
-                int read = ScriptStream.Read(commandReturnBytes, 0, commandReturnBytes.Length);
-                string result = Encoding.UTF8.GetString(commandReturnBytes, 0, read - 1);
+                char[] myReadBuffer = new char[2048];
+                StringBuilder myCompleteMessage = new StringBuilder();
+                int numberOfCharactersRead = ScriptStreamReader.Read(myReadBuffer, 0, myReadBuffer.Length);
+
+                while (numberOfCharactersRead > 0)
+                {
+                    int nullIndex = Array.IndexOf(myReadBuffer, '\0', 0, numberOfCharactersRead);
+
+                    if (nullIndex > 0)
+                    {
+                        myCompleteMessage.Append(myReadBuffer, 0, nullIndex - 1);
+                    }
+                    else if (nullIndex < 0)
+                    {
+                        myCompleteMessage.Append(myReadBuffer, 0, numberOfCharactersRead);
+                    }
+
+                    if (nullIndex >= 0)
+                    {
+                        break;
+                    }
+
+                    numberOfCharactersRead = ScriptStreamReader.Read(myReadBuffer, 0, myReadBuffer.Length);
+                }
+
+                string result = myCompleteMessage.ToString();
                 if (result.StartsWith("out():"))
                 {
                     return result.Substring(6).Trim();
                 }
+
                 return null;
             }
             catch (Exception)
             {
                 networkStream.Close();
                 networkStream = null;
+                streamReader = null;
                 return null;
             }
         }
@@ -1276,10 +1333,13 @@ namespace FMODUnity
         private const string AnyCPU = "AnyCPU";
 
         private static readonly LibInfo[] LibrariesToUpdate = {
-            new LibInfo() {cpu = "x86", os = "Windows",  lib = "fmodstudioL.dll", platform = "win", buildTarget = BuildTarget.StandaloneWindows},
-            new LibInfo() {cpu = "x86_64", os = "Windows", lib = "fmodstudioL.dll", platform = "win", buildTarget = BuildTarget.StandaloneWindows64},
-            new LibInfo() {cpu = "x86_64", os = "Linux", lib = "libfmodstudioL.so", platform = "linux", buildTarget = BuildTarget.StandaloneLinux64},
-            new LibInfo() {cpu = AnyCPU, os = "OSX", lib = "fmodstudioL.bundle", platform = "mac", buildTarget = BuildTarget.StandaloneOSX},
+            new LibInfo() {cpu = "x86", os = "Windows",  lib = "fmodstudioL.dll", platform = "win", setPlatformCPU = false, buildTarget = BuildTarget.StandaloneWindows},
+            new LibInfo() {cpu = "x86_64", os = "Windows", lib = "fmodstudioL.dll", platform = "win", setPlatformCPU = false, buildTarget = BuildTarget.StandaloneWindows64},
+            new LibInfo() {cpu = "x86_64", os = "Linux", lib = "libfmodstudioL.so", platform = "linux", setPlatformCPU = false, buildTarget = BuildTarget.StandaloneLinux64},
+            new LibInfo() {cpu = AnyCPU, os = "OSX", lib = "fmodstudioL.bundle", platform = "mac", setPlatformCPU = true, buildTarget = BuildTarget.StandaloneOSX},
+#if UNITY_2023_1_OR_NEWER
+            new LibInfo() {cpu = "ARM64", os = "Windows", lib = "fmodstudioL.dll", platform = "win", setPlatformCPU = true, buildTarget = BuildTarget.StandaloneWindows64},
+#endif
         };
 
         public static bool SourceLibsExist
@@ -1308,6 +1368,7 @@ namespace FMODUnity
             public string os;
             public string lib;
             public string platform;
+            public bool setPlatformCPU;
             public BuildTarget buildTarget;
         };
 
@@ -1507,6 +1568,10 @@ namespace FMODUnity
                             pluginImporter.SetCompatibleWithPlatform(libInfo.buildTarget, true);
                             pluginImporter.SetEditorData("CPU", libInfo.cpu);
                             pluginImporter.SetEditorData("OS", libInfo.os);
+                            if (libInfo.setPlatformCPU)
+                            {
+                                pluginImporter.SetPlatformData(libInfo.buildTarget, "CPU", libInfo.cpu);
+                            }
                             EditorUtility.SetDirty(pluginImporter);
                             pluginImporter.SaveAndReimport();
                         }

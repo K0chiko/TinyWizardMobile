@@ -13,7 +13,7 @@ MonoImporter:
 AssetOrigin:
   serializedVersion: 1
   productId: 161631
-  packageName: FMOD for Unity
-  packageVersion: 2.02.24
+  packageName: FMOD for Unity (2.02)
+  packageVersion: 2.02.32
   assetPath: Assets/Plugins/FMOD/src/StudioEventEmitter.cs
-  uploadId: 707645
+  uploadId: 847630

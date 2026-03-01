@@ -11,11 +11,15 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
+    Android:
+      enabled: 0
+      settings:
+        Is16KbAligned: false
     Any:
       enabled: 0
       settings: {}
     Editor:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: x86_64
         DefaultValueInitialized: true
