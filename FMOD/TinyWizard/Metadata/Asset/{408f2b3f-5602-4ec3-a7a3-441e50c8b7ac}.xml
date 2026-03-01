@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="EncodableAsset" id="{408f2b3f-5602-4ec3-a7a3-441e50c8b7ac}">
+		<property name="assetPath">
+			<value>Fallback Staff/</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4c6dd2eb-a907-4b52-b355-dd6b32fd133a}</destination>
+		</relationship>
+	</object>
+</objects>

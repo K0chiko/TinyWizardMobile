@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{7bdcbee4-0f70-46e5-9efa-eed5f4cf303f}">
+		<property name="assetPath">
+			<value>_Music/the_palace_ambience.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>60.06335416666667</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4c6dd2eb-a907-4b52-b355-dd6b32fd133a}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{c28abd3f-afe4-4560-98af-6406002e4b16}">
+		<property name="assetPath">
+			<value>Enemy Hurt/enemy_hurt_04.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.62</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4c6dd2eb-a907-4b52-b355-dd6b32fd133a}</destination>
+		</relationship>
+	</object>
+</objects>

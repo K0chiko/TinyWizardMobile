@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{5c4b128f-3a38-4988-9fdc-7fc5d8a915a0}">
+		<property name="assetPath">
+			<value>Enter Floor Sequence/zapsplat_cartoon_slime_gloop_drip_fall_hit_surface_14616.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>96</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.29531249999999998</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4c6dd2eb-a907-4b52-b355-dd6b32fd133a}</destination>
+		</relationship>
+	</object>
+</objects>

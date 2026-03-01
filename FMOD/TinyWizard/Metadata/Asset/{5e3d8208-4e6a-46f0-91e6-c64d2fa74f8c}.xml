@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="EncodableAsset" id="{5e3d8208-4e6a-46f0-91e6-c64d2fa74f8c}">
+		<property name="assetPath">
+			<value>Enter Floor Sequence/</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4c6dd2eb-a907-4b52-b355-dd6b32fd133a}</destination>
+		</relationship>
+	</object>
+</objects>

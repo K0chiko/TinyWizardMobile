@@ -97,3 +97,14 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# FMOD cache and build artifacts
+.cache/
+fmod_editor.log
+FMOD/TinyWizard/.cache/
+FMOD/TinyWizard/fsbcache/
+FMOD/TinyWizard/buildrecords/
+
+FMOD/TinyWizard/Build/
+
+.idea/

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d5373bb3c8e3f48b8c0c2a2f29af7d, type: 3}
+  m_Name: LootStaffs
+  m_EditorClassIdentifier: 
+  Staffs:
+  - {fileID: -2936809453692542970, guid: debf9f51430d0014f9d99a71ea0951a5, type: 3}
+  - {fileID: 5412239994484745951, guid: 3a7f5f5d31023f94c8b869fd48a5580f, type: 3}
+  - {fileID: 2408369836229230331, guid: 9702eba9ef004fb4087a36c4a2f246b9, type: 3}
+  - {fileID: -8904760914528843461, guid: 419afccb83fd0c546aa29984b36cbb3a, type: 3}
+  - {fileID: 8548548433006890308, guid: acb56ad43aae56c46b49e8193a987a17, type: 3}

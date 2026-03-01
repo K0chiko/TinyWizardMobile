@@ -1,0 +1,240 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6935882687447518153
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Size.x
+      value: 0.1875
+      objectReference: {fileID: 0}
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Size.y
+      value: 0.1875
+      objectReference: {fileID: 0}
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1032785576417351657, guid: 4c2ce2a01900d8845944c27209e66879, type: 3}
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+    - target: {fileID: 2432762686052508438, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.423
+      objectReference: {fileID: 0}
+    - target: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Name
+      value: FallbackStaff
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737774933434080592, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Size.x
+      value: 0.0625
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737774933434080592, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Size.y
+      value: 0.6875
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737774933434080592, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1413241714379977738, guid: 4c2ce2a01900d8845944c27209e66879, type: 3}
+    - target: {fileID: 6437334692687873005, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6437334692687873005, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 0.0625
+      objectReference: {fileID: 0}
+    - target: {fileID: 6437334692687873005, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 0.6875
+      objectReference: {fileID: 0}
+    - target: {fileID: 6437334692687873005, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.0625
+      objectReference: {fileID: 0}
+    - target: {fileID: 6437334692687873005, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.6875
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7779102970821912003}
+  m_SourcePrefab: {fileID: 100100000, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+--- !u!4 &4720859037852985567 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2432762686052508438, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+  m_PrefabInstance: {fileID: 6935882687447518153}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5596323217144407395 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+  m_PrefabInstance: {fileID: 6935882687447518153}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7779102970821912003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5596323217144407395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec295a3f07223d74ea6cb6e9344802b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <GUID>k__BackingField: 33a6fce0-a37e-4969-9fb4-5a407aefcb22
+  <Name>k__BackingField: Fallback Staff
+  <Head>k__BackingField: {fileID: 4720859037852985567}
+  <SparkGradient>k__BackingField:
+    serializedVersion: 2
+    key0: {r: 0.47843137, g: 0.06133736, b: 0, a: 1}
+    key1: {r: 0.20000002, g: 0.10980393, b: 0.14901961, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 56360
+    atime2: 65535
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 2
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 3
+  <MaxEnergy>k__BackingField: 1000
+  BasicCastSound:
+    Guid:
+      Data1: -1154755531
+      Data2: 1287632135
+      Data3: 1152847780
+      Data4: -556784426
+    Path: event:/FallbackStaffBasic
+  BasicFinisherCastSound:
+    Guid:
+      Data1: 1674508338
+      Data2: 1320373504
+      Data3: 4637863
+      Data4: -1814820690
+    Path: event:/FallbackStaffBasicFinisher
+  SpecialCastLittleSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SpecialCastBigSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  FullChargeSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BasicMissile: {fileID: 8124721946908383700, guid: d08d72d1562c0d34e9a3eb98f5dec6ca, type: 3}
+  BasicCooldown: 0.15
+  BasicKnockbackSpeed: 2
+  BasicBehavior: 2
+  BasicSpread: 30
+  BasicCount: 2
+  BasicInterval: 0
+  ChainWindowDuration: 0.2
+  BasicEnergyUse: 0
+  BasicManaConsume: 5
+  HasBasicFinisher: 1
+  BasicFinisherCooldown: 0.6
+  BasicFinisherCount: 5
+  BasicFinisherChain: 20
+  BasicFinisherBehavior: 2
+  BasicFinisherSpread: 30
+  BasicFinisherKnockbackSpeed: 8
+  BasicFinisherMissileOverride: {fileID: 8124721946908383700, guid: d08d72d1562c0d34e9a3eb98f5dec6ca, type: 3}
+  BasicFinisherEnergyUse: 0
+  BasicFinisherManaConsume: 6
+  HasSpecial: 0
+  SpecialMissile: {fileID: 0}
+  RequireFullChargeForSpecial: 0
+  ChargingSparkInterval: 0.45
+  SpecialCooldown: 1
+  SpecialChargeTime: 1
+  SpecialKnockbackSpeed: 10
+  ChargingMoveSpeedFactor: 0.5
+  SpecialCount: 1
+  SpecialInterval: 0
+  SpecialBehavior: 0
+  SpecialSpread: 0
+  SpecialEnergyUse: 8
+  SpecialManaConsume: 34

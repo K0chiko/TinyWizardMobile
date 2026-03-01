@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ac8ec4a8f3cc0943ac6beaf82a04bef, type: 3}
+  m_Name: FrigidForest
+  m_EditorClassIdentifier: 
+  Ambience:
+    Guid:
+      Data1: 376252476
+      Data2: 1167917582
+      Data3: 2027826308
+      Data4: 2069817310
+    Path: event:/Music/FrigidWastes_Ambience
+  Music:
+    Guid:
+      Data1: -257461447
+      Data2: 1332719627
+      Data3: 1306850191
+      Data4: 1379167
+    Path: event:/Music/Frigid Wastes/FrigidWastes
+  AmbientVFX: {fileID: 8926484042661614526, guid: 2329a4942494ecb49b60cabc86fba6b5, type: 3}
+  Title: 'Frigid
+
+    Forest'
+  SkipDropSequence: 0
+  SkipEnterCue: 1
+  StartingRoom: {fileID: 0}
+  Generatable: []
+  Reverb: 0.2
+  OverrideVariant: {fileID: 0}
+  Variants:
+  - {fileID: 5504978293237570638, guid: d1e1d4af3f3ba77458997f32c81e2009, type: 3}

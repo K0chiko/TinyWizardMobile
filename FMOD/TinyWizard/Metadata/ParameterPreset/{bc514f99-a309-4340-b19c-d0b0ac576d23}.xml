@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{bc514f99-a309-4340-b19c-d0b0ac576d23}">
+		<property name="name">
+			<value>sound-mat</value>
+		</property>
+		<relationship name="folder">
+			<destination>{e3a8b0bc-490d-49d1-9302-97c3f861b580}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{bdf22d2a-c427-4b4c-9777-1163955509b3}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{bdf22d2a-c427-4b4c-9777-1163955509b3}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>5</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>None</value>
+			<value>Stone</value>
+			<value>Carpet</value>
+			<value>HealingPuddle</value>
+			<value>Snow</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

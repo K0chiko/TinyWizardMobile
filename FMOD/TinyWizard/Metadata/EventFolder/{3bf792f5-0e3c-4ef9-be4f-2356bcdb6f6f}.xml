@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="EventFolder" id="{3bf792f5-0e3c-4ef9-be4f-2356bcdb6f6f}">
+		<property name="name">
+			<value>CandlestickBoss</value>
+		</property>
+		<relationship name="folder">
+			<destination>{b79ba1c2-1e8e-457c-8f9f-468280306593}</destination>
+		</relationship>
+	</object>
+</objects>

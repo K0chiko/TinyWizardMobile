@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ac8ec4a8f3cc0943ac6beaf82a04bef, type: 3}
+  m_Name: TheOvergrowth
+  m_EditorClassIdentifier: 
+  Ambience:
+    Guid:
+      Data1: -239895624
+      Data2: 1265082880
+      Data3: -557461825
+      Data4: -1100324599
+    Path: event:/Music/ThePalace_Ambience
+  Music:
+    Guid:
+      Data1: 800017633
+      Data2: 1313913921
+      Data3: -1174605652
+      Data4: -574884441
+    Path: event:/Music/TheOvergrowth
+  AmbientVFX: {fileID: 8926484042661614526, guid: 02a5c43d95cc08e448fa12e2e6715fcc, type: 3}
+  Title: 'The
+
+    Overgrowth'
+  SkipDropSequence: 0
+  StartingRoom: {fileID: 9089302129140360783, guid: 63c6e7b1fc0fad64d9c19998eec74600, type: 3}
+  Generatable:
+  - Prefab: {fileID: 9089302129140360783, guid: 4b7f45f094a8a4e49addc24173851e31, type: 3}
+    Weight: 100
+    SumWeight: 100
+  Reverb: 0.5
+  OverrideVariant: {fileID: 0}
+  Variants:
+  - {fileID: 4007627806934550419, guid: 4004d39fe575a5644a7adfc435d6f62f, type: 3}

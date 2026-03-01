@@ -1,0 +1,246 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6770740498192487742
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -8649032211030877378, guid: b308063147cf66147ad2644bf2f1b982, type: 3}
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: afcac1021aecf664991316718a99aa0f, type: 2}
+    - target: {fileID: 2432762686052508438, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.398
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Name
+      value: CombustionStaff
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737774933434080592, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -8005257840118349340, guid: b308063147cf66147ad2644bf2f1b982, type: 3}
+    - target: {fileID: 6437334692687873005, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.0625
+      objectReference: {fileID: 0}
+    - target: {fileID: 6437334692687873005, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5412239994484745951}
+  m_SourcePrefab: {fileID: 100100000, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+--- !u!1 &8078778520645663636 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+  m_PrefabInstance: {fileID: 6770740498192487742}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5412239994484745951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8078778520645663636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87e8a3c8a16b6b54ea7aaf4abca8a1f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <GUID>k__BackingField: 6ae7b44e-f09e-409c-902f-d2422b4223a3
+  <Name>k__BackingField: Combustion Staff
+  <Head>k__BackingField: {fileID: 8949893096219440680}
+  <SparkGradient>k__BackingField:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.39956322, b: 0, a: 1}
+    key1: {r: 0.7490196, g: 0, b: 0, a: 1}
+    key2: {r: 0.6156863, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 15343
+    ctime2: 42636
+    ctime3: 61911
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 59753
+    atime2: 65535
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 2
+    m_ColorSpace: 0
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 3
+  <MaxEnergy>k__BackingField: 225
+  CastCooldown: 0.1
+  ChargeRate: 5
+  MaxCharge: 8
+  MinChargeThreshold: 1
+  MaxDamage: 125
+  DamageChargeFactor:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1.7893629
+      outSlope: 1.7893629
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.046889085
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DamageRadius: 2.2
+  MaxEnergyUse: 15
+  EnergyUseChargeFactor:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 0.22629587
+      outSlope: 0.22629587
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0
+      outWeight: 0.589359
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.011436961
+      outSlope: 0.011436961
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.061465383
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  FriendlyKnockbackSpeed: 18
+  MaxManaConsume: 40
+  BaseSparkCooldown: 0.6
+  CombustionVFX: {fileID: 3046125498168810899, guid: 385d91660187d9e4287a7e5326c4627e, type: 3}
+  VFXLifespan: 3
+  MinFireVFXCount: 16
+  MaxFireVFXCount: 128
+  MinSmokeVFXCount: 16
+  MaxSmokeVFXCount: 256
+  SmallExplosionSound:
+    Guid:
+      Data1: -1749370342
+      Data2: 1198380268
+      Data3: -453512056
+      Data4: 424446055
+    Path: event:/CombustionStaffExplode_Small
+  MediumExplosionSound:
+    Guid:
+      Data1: -1358915115
+      Data2: 1265151071
+      Data3: 58498965
+      Data4: -1020683540
+    Path: event:/CombustionStaffExplode_Med
+  LargeExplosionSound:
+    Guid:
+      Data1: -295128833
+      Data2: 1228554532
+      Data3: -1343269714
+      Data4: 514079750
+    Path: event:/CombustionStaffExplode_Big
+  FullChargeSound:
+    Guid:
+      Data1: -765277332
+      Data2: 1122015374
+      Data3: 1694897027
+      Data4: -383171959
+    Path: event:/FullCharge
+--- !u!4 &8949893096219440680 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2432762686052508438, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+  m_PrefabInstance: {fileID: 6770740498192487742}
+  m_PrefabAsset: {fileID: 0}

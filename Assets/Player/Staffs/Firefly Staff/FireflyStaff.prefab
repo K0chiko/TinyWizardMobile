@@ -1,0 +1,231 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &9216225021725047583
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 2525837525703914672, guid: 99204f620dc3d2d40bc9e8a6d4d14059, type: 3}
+    - target: {fileID: 1422395812468096970, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 703b07469a2090b4d8609d59cebec94a, type: 2}
+    - target: {fileID: 2432762686052508438, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.419
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Color.g
+      value: 0.70595765
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Intensity
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LightVolumeEnabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LightVolumeIntensity
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_PointLightOuterRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Name
+      value: FireflyStaff
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737774933434080592, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 5476313846832563719, guid: 99204f620dc3d2d40bc9e8a6d4d14059, type: 3}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993139550144138633, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8548548433006890308}
+  m_SourcePrefab: {fileID: 100100000, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+--- !u!1 &5912536973029037493 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+  m_PrefabInstance: {fileID: 9216225021725047583}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8548548433006890308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5912536973029037493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec295a3f07223d74ea6cb6e9344802b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <GUID>k__BackingField: db52415b-88aa-4d88-8685-6aacfad95211
+  <Name>k__BackingField: Firefly Staff
+  <Head>k__BackingField: {fileID: 6783673476264810505}
+  <SparkGradient>k__BackingField:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.767836, b: 0, a: 1}
+    key1: {r: 1, g: 0.4397906, b: 0, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 62837
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 59753
+    atime2: 65535
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 2
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 3
+  <MaxEnergy>k__BackingField: 250
+  BasicCastSound:
+    Guid:
+      Data1: 632417083
+      Data2: 1199254510
+      Data3: 432943516
+      Data4: -1690374687
+    Path: event:/FireflyShoot
+  BasicFinisherCastSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SpecialCastLittleSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SpecialCastBigSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  FullChargeSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BasicMissile: {fileID: 8392550596553358742, guid: 1063e14e10034d74196f398242cfe4f8, type: 3}
+  BasicCooldown: 0.1
+  BasicKnockbackSpeed: 5
+  BasicBehavior: 0
+  BasicSpread: 0
+  BasicCount: 1
+  BasicInterval: 0.1
+  ChainWindowDuration: 0.2
+  BasicEnergyUse: 2
+  BasicManaConsume: 2
+  HasBasicFinisher: 0
+  BasicFinisherCooldown: 0.6
+  BasicFinisherCount: 3
+  BasicFinisherChain: 3
+  BasicFinisherBehavior: 2
+  BasicFinisherSpread: 45
+  BasicFinisherKnockbackSpeed: 14
+  BasicFinisherMissileOverride: {fileID: 0}
+  BasicFinisherEnergyUse: 4
+  BasicFinisherManaConsume: 12
+  HasSpecial: 0
+  SpecialMissile: {fileID: 0}
+  RequireFullChargeForSpecial: 0
+  ChargingSparkInterval: 0.45
+  SpecialCooldown: 1
+  SpecialChargeTime: 1
+  SpecialKnockbackSpeed: 10
+  ChargingMoveSpeedFactor: 0.5
+  SpecialCount: 1
+  SpecialInterval: 0
+  SpecialBehavior: 0
+  SpecialSpread: 0
+  SpecialEnergyUse: 8
+  SpecialManaConsume: 34
+--- !u!4 &6783673476264810505 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2432762686052508438, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
+  m_PrefabInstance: {fileID: 9216225021725047583}
+  m_PrefabAsset: {fileID: 0}

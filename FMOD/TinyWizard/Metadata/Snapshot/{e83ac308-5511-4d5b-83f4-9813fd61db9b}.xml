@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="Snapshot" id="{e83ac308-5511-4d5b-83f4-9813fd61db9b}">
+		<property name="name">
+			<value>HurtSnapshot</value>
+		</property>
+		<relationship name="mixer">
+			<destination>{c1e4efcd-8803-4cf8-8425-dacd8d5af240}</destination>
+		</relationship>
+		<relationship name="automatableProperties">
+			<destination>{4774153f-c86a-45b0-a745-e36551a78e01}</destination>
+		</relationship>
+		<relationship name="markerTracks">
+			<destination>{09ce408e-5418-4853-a86b-58d337b93b1d}</destination>
+		</relationship>
+		<relationship name="timeline">
+			<destination>{51527011-1899-4e69-98fd-fef4c4a52be6}</destination>
+		</relationship>
+		<relationship name="snapshotMasterTrack">
+			<destination>{6ba35b6b-c741-48cf-a90e-27af1bbeab35}</destination>
+		</relationship>
+		<relationship name="snapshotProperties">
+			<destination>{7e27be9f-615b-409b-b671-b96632cd2f2e}</destination>
+			<destination>{67c6f03e-df9d-4b11-b835-b141505217bc}</destination>
+			<destination>{17b5adeb-7aac-4c6d-85db-e90f9ffcf333}</destination>
+			<destination>{2404179c-48cd-4ec2-8e87-9e7e49b5367b}</destination>
+			<destination>{5c0eb46c-3d4f-4646-878a-31210e305937}</destination>
+		</relationship>
+		<relationship name="snapshotTracks">
+			<destination>{117046fb-fa88-4885-bf74-d298f4fa488e}</destination>
+		</relationship>
+	</object>
+	<object class="EventAutomatableProperties" id="{4774153f-c86a-45b0-a745-e36551a78e01}">
+		<relationship name="modulators">
+			<destination>{f7349149-bcb5-46be-94d8-eecd3ec31ba5}</destination>
+		</relationship>
+	</object>
+	<object class="MarkerTrack" id="{09ce408e-5418-4853-a86b-58d337b93b1d}" />
+	<object class="Timeline" id="{51527011-1899-4e69-98fd-fef4c4a52be6}" />
+	<object class="SnapshotMasterTrack" id="{6ba35b6b-c741-48cf-a90e-27af1bbeab35}" />
+	<object class="SnapshotProperty" id="{7e27be9f-615b-409b-b671-b96632cd2f2e}">
+		<property name="propertyName">
+			<value>frequencyA</value>
+		</property>
+		<property name="value">
+			<value>411.877075</value>
+		</property>
+		<relationship name="automatableObject">
+			<destination>{3e6f8561-94e3-4f03-b928-245f1dea20b8}</destination>
+		</relationship>
+	</object>
+	<object class="SnapshotProperty" id="{67c6f03e-df9d-4b11-b835-b141505217bc}">
+		<property name="propertyName">
+			<value>qualityA</value>
+		</property>
+		<property name="value">
+			<value>0.929931104</value>
+		</property>
+		<relationship name="automatableObject">
+			<destination>{3e6f8561-94e3-4f03-b928-245f1dea20b8}</destination>
+		</relationship>
+	</object>
+	<object class="SnapshotProperty" id="{17b5adeb-7aac-4c6d-85db-e90f9ffcf333}">
+		<property name="propertyName">
+			<value>gainA</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+		<relationship name="automatableObject">
+			<destination>{3e6f8561-94e3-4f03-b928-245f1dea20b8}</destination>
+		</relationship>
+	</object>
+	<object class="SnapshotProperty" id="{2404179c-48cd-4ec2-8e87-9e7e49b5367b}">
+		<property name="propertyName">
+			<value>decayTime</value>
+		</property>
+		<property name="value">
+			<value>6500</value>
+		</property>
+		<relationship name="automatableObject">
+			<destination>{b4eb62f8-6009-44c1-b64f-3275e8d22014}</destination>
+		</relationship>
+	</object>
+	<object class="SnapshotProperty" id="{5c0eb46c-3d4f-4646-878a-31210e305937}">
+		<property name="propertyName">
+			<value>pitch</value>
+		</property>
+		<property name="value">
+			<value>-2</value>
+		</property>
+		<relationship name="automatableObject">
+			<destination>{30e5dc8e-acac-4a26-a351-0ba234c388f8}</destination>
+		</relationship>
+	</object>
+	<object class="SnapshotTrack" id="{117046fb-fa88-4885-bf74-d298f4fa488e}">
+		<relationship name="mixerStrip">
+			<destination>{30e5dc8e-acac-4a26-a351-0ba234c388f8}</destination>
+		</relationship>
+	</object>
+	<object class="ADSRModulator" id="{f7349149-bcb5-46be-94d8-eecd3ec31ba5}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>snapshotIntensity</value>
+		</property>
+		<property name="attackTime">
+			<value>40</value>
+		</property>
+		<property name="peakValue">
+			<value>100</value>
+		</property>
+		<property name="sustainValue">
+			<value>100</value>
+		</property>
+		<property name="releaseTime">
+			<value>900</value>
+		</property>
+	</object>
+</objects>

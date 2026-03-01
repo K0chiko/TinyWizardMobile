@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="MixerMaster" id="{30e5dc8e-acac-4a26-a351-0ba234c388f8}">
+		<property name="volume">
+			<value>-5</value>
+		</property>
+		<property name="name">
+			<value>Master Bus</value>
+		</property>
+		<relationship name="effectChain">
+			<destination>{326ef0ea-c432-4652-b580-6ed43c00c271}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{dab3a33d-229b-424d-80d4-305a679b952f}</destination>
+		</relationship>
+		<relationship name="mixer">
+			<destination>{c1e4efcd-8803-4cf8-8425-dacd8d5af240}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{326ef0ea-c432-4652-b580-6ed43c00c271}">
+		<relationship name="effects">
+			<destination>{c3c0f1d8-dcc7-4c56-9760-ed2e4b998e95}</destination>
+			<destination>{3e6f8561-94e3-4f03-b928-245f1dea20b8}</destination>
+			<destination>{b4eb62f8-6009-44c1-b64f-3275e8d22014}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{dab3a33d-229b-424d-80d4-305a679b952f}">
+		<property name="overridingOutputFormat">
+			<value>2</value>
+		</property>
+	</object>
+	<object class="MixerBusFader" id="{c3c0f1d8-dcc7-4c56-9760-ed2e4b998e95}" />
+	<object class="MultibandEqEffect" id="{3e6f8561-94e3-4f03-b928-245f1dea20b8}">
+		<property name="frequencyA">
+			<value>21999.9902</value>
+		</property>
+		<property name="qualityA">
+			<value>1.01910341</value>
+		</property>
+	</object>
+	<object class="SFXReverbEffect" id="{b4eb62f8-6009-44c1-b64f-3275e8d22014}">
+		<property name="decayTime">
+			<value>100</value>
+		</property>
+		<relationship name="automators">
+			<destination>{b8ae75b8-8703-4a23-9ed4-6542545eeb01}</destination>
+			<destination>{21299a28-fa8b-4028-a7d7-432975018716}</destination>
+		</relationship>
+	</object>
+	<object class="Automator" id="{b8ae75b8-8703-4a23-9ed4-6542545eeb01}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>decayTime</value>
+		</property>
+		<relationship name="automationCurves">
+			<destination>{33b15d6b-f550-4aaf-ab32-be2cefbbf682}</destination>
+		</relationship>
+	</object>
+	<object class="Automator" id="{21299a28-fa8b-4028-a7d7-432975018716}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>wetLevel</value>
+		</property>
+		<relationship name="automationCurves">
+			<destination>{a3310e54-63ab-4c6c-bdda-17215c73dc28}</destination>
+		</relationship>
+	</object>
+	<object class="AutomationCurve" id="{33b15d6b-f550-4aaf-ab32-be2cefbbf682}">
+		<relationship name="parameter">
+			<destination>{14dc00a3-b3b7-44d5-b660-778a2ef478c9}</destination>
+		</relationship>
+		<relationship name="automationPoints">
+			<destination>{3f8f9433-c2f2-42a2-b4aa-864d21221a8c}</destination>
+			<destination>{bb21ae11-1f9e-4b14-bf86-bafd180cd8ea}</destination>
+		</relationship>
+	</object>
+	<object class="AutomationCurve" id="{a3310e54-63ab-4c6c-bdda-17215c73dc28}">
+		<relationship name="parameter">
+			<destination>{14dc00a3-b3b7-44d5-b660-778a2ef478c9}</destination>
+		</relationship>
+		<relationship name="automationPoints">
+			<destination>{276c97ab-c7e7-4003-ad14-2eef45d2901c}</destination>
+			<destination>{8608ed4c-6bee-4fc8-881a-62dbd39d8d44}</destination>
+		</relationship>
+	</object>
+	<object class="AutomationPoint" id="{3f8f9433-c2f2-42a2-b4aa-864d21221a8c}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>100</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{bb21ae11-1f9e-4b14-bf86-bafd180cd8ea}">
+		<property name="position">
+			<value>1</value>
+		</property>
+		<property name="value">
+			<value>5000</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{276c97ab-c7e7-4003-ad14-2eef45d2901c}">
+		<property name="position">
+			<value>0.0070621468926553672</value>
+		</property>
+		<property name="value">
+			<value>-6.00000381</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{8608ed4c-6bee-4fc8-881a-62dbd39d8d44}">
+		<property name="position">
+			<value>1</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+	</object>
+</objects>
