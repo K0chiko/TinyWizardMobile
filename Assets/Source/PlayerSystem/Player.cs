@@ -3,7 +3,6 @@ using FMOD.Studio;
 using FMODUnity;
 using Quinn.DungeonGeneration;
 using Quinn.UI;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -23,9 +22,9 @@ namespace Quinn.PlayerSystem
 		private EventReference FootstepSound;
 		[SerializeField]
 		private float StartFootstepCooldown = 0.2f;
-		[SerializeField, Required]
+		[SerializeField]
 		private VisualEffect FootstepVFX;
-		[SerializeField, FoldoutGroup("Footstep Colors")]
+		[SerializeField]
 		private Color StoneColor, CarpetColor, HealingPuddleColor, SnowColor;
 
 		[SerializeField, Space]
@@ -35,21 +34,21 @@ namespace Quinn.PlayerSystem
 		private EventReference HurtSnapshot;
 		[SerializeField]
 		private float HurtDuration = 2f;
-		[SerializeField, Required]
+		[SerializeField]
 		private Light2D PlayerLight;
 
-		[Space, SerializeField, Required]
+		[Space, SerializeField]
 		private SpriteMask PuddleMask;
-		[SerializeField, Required]
+		[SerializeField]
 		private VisualEffect PuddleVFX, PuddleHealingVFX;
 
-		[Space, SerializeField, Required]
+		[Space, SerializeField]
 		private CanvasGroup FloorTitleGroup;
-		[SerializeField, Required]
+		[SerializeField]
 		private TextMeshProUGUI FloorTitleText;
 		[SerializeField]
 		private EventReference FloorEnterCue, FloorExitWooshSound;
-		[SerializeField, Required]
+		[SerializeField]
 		private VisualEffect AmbientVFX;
 
 		private Animator _animator;

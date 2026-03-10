@@ -1,6 +1,5 @@
 ﻿using FMODUnity;
 using Quinn.PlayerSystem.SpellSystem;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,21 +14,21 @@ namespace Quinn.PlayerSystem
 		[SerializeField]
 		private float MoveSpeed = 6f;
 
-		[SerializeField, BoxGroup("Vortex")]
+		[SerializeField]
 		private float VortexMaxSpeed = 6f;
-		[SerializeField, BoxGroup("Vortex")]
+		[SerializeField]
 		private float VortexMaxRadius = 24f;
 
-		[SerializeField, BoxGroup("Dash")]
+		[SerializeField]
 		private float DashSpeed = 12f;
-		[SerializeField, BoxGroup("Dash")]
+		[SerializeField]
 		private float DashDistance = 4f;
-		[SerializeField, BoxGroup("Dash")]
+		[SerializeField]
 		private float DashCooldown = 0.2f;
-		[SerializeField, BoxGroup("Dash")]
+		[SerializeField]
 		private EventReference DashSound;
 
-		[Space, SerializeField, Required]
+		[Space, SerializeField]
 		private VisualEffect DashTrail;
 
 		public bool IsDashing { get; private set; }

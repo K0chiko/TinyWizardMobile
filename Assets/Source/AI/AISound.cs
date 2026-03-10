@@ -1,6 +1,5 @@
 using FMOD.Studio;
 using FMODUnity;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Quinn.AI
@@ -12,11 +11,11 @@ namespace Quinn.AI
 
 		[Space, SerializeField]
 		private bool HealthControlsParameter;
-		[SerializeField, ShowIf(nameof(HealthControlsParameter)), Required]
+		[SerializeField]
 		private Health Health;
-		[SerializeField, ShowIf(nameof(HealthControlsParameter))]
+		[SerializeField]
 		private string HealthParameterKey;
-		[SerializeField, ShowIf(nameof(HealthControlsParameter))]
+		[SerializeField]
 		private float HealthParamMin = 0f, HealthParamMax = 1f;
 
 		private EventInstance _sound;

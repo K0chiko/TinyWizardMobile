@@ -1,5 +1,4 @@
 ﻿using FMODUnity;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Quinn.PlayerSystem
@@ -8,7 +7,7 @@ namespace Quinn.PlayerSystem
 	{
 		public static CrosshairManager Instance { get; private set; }
 
-		[SerializeField, Required]
+		[SerializeField]
 		private GameObject CrosshairPrefab;
 
 		private CrosshairHandle _crosshair;

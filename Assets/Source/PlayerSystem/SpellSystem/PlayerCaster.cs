@@ -2,7 +2,6 @@ using DG.Tweening;
 using FMODUnity;
 using Quinn.UI;
 using Quinn.UnityServices;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,20 +15,20 @@ namespace Quinn.PlayerSystem.SpellSystem
 	[RequireComponent(typeof(PlayerMovement))]
 	public class PlayerCaster : MonoBehaviour
 	{
-		[SerializeField, Required]
+		[SerializeField]
 		private Transform StaffPivot;
 		[SerializeField]
 		private float StaffOffset = 0.5f;
 		[SerializeField]
 		private float InputBufferTimeout = 0.2f;
-		[SerializeField, Required]
+		[SerializeField]
 		private VisualEffect CastingSpark;
 		[SerializeField]
 		private float EnergyTransferRate = 0.5f;
 
-		[SerializeField, Required, Space]
+		[SerializeField, Space]
 		private Transform StoredStaffsParent;
-		[SerializeField, Unit(Units.Degree)]
+		[SerializeField]
 		private float StaffMaxAngle = 30f;
 
 		[Space, SerializeField]
@@ -41,13 +40,13 @@ namespace Quinn.PlayerSystem.SpellSystem
 		public float MaxMana { get; private set; } = 100f;
 		[SerializeField]
 		private float ManaRegenDelay = 1f;
-		[SerializeField, InfoBox("@(MaxMana / ManaRegenRate).ToString() + 's'")]
+		[SerializeField]
 		private float ManaRegenRate = 50f;
 
-		[Space, SerializeField, Required]
+		[Space, SerializeField]
 		[Tooltip("Spotlight shown during an equipping sequence.")]
 		private Light2D EquipLight;
-		[SerializeField, Required]
+		[SerializeField]
 		private VisualEffect EquipVFX, EquipEnergyVFX;
 		[SerializeField]
 		private EventReference EquipSound;

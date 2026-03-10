@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,20 +12,20 @@ namespace Quinn
 		[SerializeField]
 		private List<StatusEffect> Immune;
 
-		[SerializeField, FoldoutGroup("Burning"), Required]
+		[SerializeField]
 		private VisualEffect BurningVFX;
-		[SerializeField, FoldoutGroup("Burning"), Required]
+		[SerializeField]
 		private float BurnInterval = 1f;
-		[SerializeField, FoldoutGroup("Burning")]
+		[SerializeField]
 		private float BurnDamage = 5f;
 
-		[SerializeField, Required, FoldoutGroup("Wet")]
+		[SerializeField]
 		private VisualEffect WetVFX;
-		[SerializeField, FoldoutGroup("Wet")]
+		[SerializeField]
 		private float WetSpeedFactor = 0.5f;
-		[SerializeField, FoldoutGroup("Wet")]
+		[SerializeField]
 		private float WetDamageInterval = 1f;
-		[SerializeField, FoldoutGroup("Wet")]
+		[SerializeField]
 		private float WetDamage = 0f;
 
 		private Locomotion _movement;

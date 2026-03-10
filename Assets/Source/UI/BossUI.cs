@@ -1,5 +1,4 @@
 using Quinn.AI.BehaviorTree;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,11 +9,11 @@ namespace Quinn.UI
 	{
 		public static BossUI Instance { get; private set; }
 
-		[SerializeField, Required]
+		[SerializeField]
 		private GameObject ElementsParent;
-		[SerializeField, Required]
+		[SerializeField]
 		private TextMeshProUGUI Title;
-		[SerializeField, Required]
+		[SerializeField]
 		private Slider HPBar;
 
 		private BTAgent _boss;

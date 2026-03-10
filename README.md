@@ -1,2 +1,12 @@
-# Game Jam Project
-Made in 1 month for the [Game Off 2024](https://itch.io/jam/game-off-2024) game jam.
+# TinyWizard Mobile
+
+A mobile port of the original [TinyWizard by QuinnCG](https://github.com/QuinnCG/TinyWizard).
+
+## Changes in this version
+* Optimized controls for touch screens.
+* Fixed .
+* Minor performance enhancements.
+
+## Credits
+* **Original Game:** [QuinnCG](https://github.com/QuinnCG) 
+* **Ported by:** [Aleksandr Panichevskii](https://github.com/k0chiko)

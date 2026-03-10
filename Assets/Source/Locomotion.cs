@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,13 +6,11 @@ namespace Quinn
 	[RequireComponent(typeof(Rigidbody2D))]
 	public abstract class Locomotion : MonoBehaviour
 	{
-		[FoldoutGroup("Knockback")]
 		[SerializeField, Tooltip("Knockback can still be triggered manually even if this is false.")]
 		private bool DoesKnockbackOnDamage = true;
-		[InfoBox("@\"Knockback duration: \" + (KnockbackSpeed / KnockbackDecayRate).ToString() + 's'")]
-		[SerializeField, FoldoutGroup("Knockback")]
+		[SerializeField]
 		private float KnockbackSpeed = 12f;
-		[SerializeField, FoldoutGroup("Knockback")]
+		[SerializeField]
 		private float KnockbackDecayRate = 32f;
 
 		protected Rigidbody2D Rigidbody { get; private set; }

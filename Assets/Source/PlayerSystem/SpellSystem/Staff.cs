@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,16 +8,16 @@ namespace Quinn.PlayerSystem.SpellSystem
 	[RequireComponent(typeof(Collider2D))]
 	public abstract class Staff : MonoBehaviour, IInteractable
 	{
-		[field: SerializeField, BoxGroup("ID", showLabel: false)]
+		[field: SerializeField]
 		public string GUID { get; private set; }
 
-		[field: SerializeField, Required, BoxGroup("Base", showLabel: false)]
+		[field: SerializeField]
 		public string Name { get; private set; } = "No Name";
-		[field: SerializeField, Required, BoxGroup("Base", showLabel: false)]
+		[field: SerializeField]
 		public Transform Head { get; private set; }
-		[field: SerializeField, BoxGroup("Base", showLabel: false)]
+		[field: SerializeField]
 		public Gradient SparkGradient { get; private set; }
-		[field: SerializeField, BoxGroup("Base", showLabel: false)]
+		[field: SerializeField]
 		public float MaxEnergy { get; private set; } = 500f;
 
 		public float Energy { get; private set; }
@@ -80,7 +79,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			};
 		}
 
-		[Button(SdfIconType.ArrowRepeat, "Generate"), BoxGroup("ID")]
 		public void GenerateGUID()
 		{
 			GUID = System.Guid.NewGuid().ToString();

@@ -1,6 +1,5 @@
 using FMODUnity;
 using Quinn.AI;
-using Sirenix.OdinInspector;
 using Unity.AppUI.Core;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -10,82 +9,82 @@ namespace Quinn.MissileSystem
 	[RequireComponent(typeof(Rigidbody2D))]
 	public class Missile : MonoBehaviour
 	{
-		[SerializeField, FoldoutGroup("SFX")]
+		[SerializeField]
 		private EventReference SpawnSound, HitSound, FizzleOutSound;
 
-		[SerializeField, BoxGroup("Core")]
+		[SerializeField]
 		private float DirectSpeed = 8f;
-		[SerializeField, BoxGroup("Core")]
+		[SerializeField]
 		private float DirectDamage = 1f;
-		[SerializeField, BoxGroup("Core")]
+		[SerializeField]
 		private StatusEffect DirectStatusEffect = StatusEffect.None;
-		[SerializeField, BoxGroup("Core")]
+		[SerializeField]
 		private float DirectStatusEffectDuration = 2f;
-		[SerializeField, BoxGroup("Core")]
+		[SerializeField]
 		private Team Team = Team.Monster;
-		[SerializeField, BoxGroup("Core"), Unit(Units.Second)]
+		[SerializeField]
 		private float Lifespan = 10f;
 		[SerializeField]
 		private bool UsesCustomKnockbackSpeed;
-		[SerializeField, ShowIf(nameof(UsesCustomKnockbackSpeed))]
+		[SerializeField]
 		private float CustomKnockbackSpeed;
 
-		[SerializeField, BoxGroup("Core"), Space]
+		[SerializeField, Space]
 		private GameObject SpawnOnDeath;
-		[SerializeField, BoxGroup("Core"), ShowIf(nameof(SpawnOnDeath))]
+		[SerializeField]
 		private float DestroySpawnedDelay = 3f;
 
-		[SerializeField, BoxGroup("Core"), Space]
+		[SerializeField, Space]
 		private VisualEffect[] DelayDestructionOnDeath;
-		[Space, SerializeField, BoxGroup("Core"), ShowIf("@DelayDestructionOnDeath.Length > 0"), Unit(Units.Second)]
+		[Space, SerializeField]
 		private float DestructionDelay = 3f;
 
-		[SerializeField, BoxGroup("Core"), Space]
+		[SerializeField, Space]
 		private bool IgnoreObstacles;
 
-		[Space, SerializeField, FoldoutGroup("Flicker")]
+		[Space, SerializeField]
 		private bool SwapVisuals;
-		[SerializeField, ShowIf(nameof(SwapInterval)), FoldoutGroup("Flicker")]
+		[SerializeField]
 		private GameObject ChildA, ChildB;
-		[SerializeField, ShowIf(nameof(SwapInterval)), FoldoutGroup("Flicker")]
+		[SerializeField]
 		private float SwapInterval = 0.5f;
 
-		[SerializeField, FoldoutGroup("Splash Damage")]
+		[SerializeField]
 		private bool HasSplashDamage;
-		[SerializeField, FoldoutGroup("Splash Damage"), ShowIf(nameof(HasSplashDamage))]
+		[SerializeField]
 		private float BaseSplashDamage = 1f;
-		[SerializeField, FoldoutGroup("Splash Damage"), ShowIf(nameof(HasSplashDamage))]
+		[SerializeField]
 		private float SplashRadius = 1f;
-		[SerializeField, FoldoutGroup("Splash Damage"), ShowIf(nameof(HasSplashDamage))]
+		[SerializeField]
 		private AnimationCurve SplashDamageFalloff;
-		[SerializeField, FoldoutGroup("Splash Damage"), ShowIf(nameof(HasSplashDamage))]
+		[SerializeField]
 		private StatusEffect SplashStatusEffect = StatusEffect.None;
-		[SerializeField, FoldoutGroup("Splash Damage"), ShowIf(nameof(HasSplashDamage))]
+		[SerializeField]
 		private float SplashStatusEffectDuration = 2f;
 
-		[SerializeField, FoldoutGroup("Oscillate")]
+		[SerializeField]
 		private bool DoesOscillate;
-		[SerializeField, FoldoutGroup("Oscillate"), ShowIf(nameof(DoesOscillate))]
+		[SerializeField]
 		private float OscillateAmplitude = 0.5f;
-		[SerializeField, FoldoutGroup("Oscillate"), ShowIf(nameof(DoesOscillate))]
+		[SerializeField]
 		private float OscillateFrequency = 0.5f;
-		[SerializeField, FoldoutGroup("Oscillate"), ShowIf(nameof(DoesOscillate))]
+		[SerializeField]
 		private bool RandomizeOscillation;
 
-		[SerializeField, FoldoutGroup("Explosion")]
+		[SerializeField]
 		private bool SpawnMissilesOnDeath;
-		[SerializeField, FoldoutGroup("Explosion"), ShowIf(nameof(SpawnMissilesOnDeath)), Required]
+		[SerializeField]
 		private Missile DeathMissilePrefab;
-		[SerializeField, FoldoutGroup("Explosion"), ShowIf(nameof(SpawnMissilesOnDeath))]
+		[SerializeField]
 		private int DeathMissileCount = 8;
-		[SerializeField, FoldoutGroup("Explosion"), ShowIf(nameof(SpawnMissilesOnDeath))]
+		[SerializeField]
 		private MissileSpawnBehavior DeathMissileSpawnBehavior = MissileSpawnBehavior.SpreadRandom;
-		[SerializeField, FoldoutGroup("Explosion"), ShowIf(nameof(SpawnMissilesOnDeath))]
+		[SerializeField]
 		private float DeathMissileSpread = 360f;
-		[SerializeField, FoldoutGroup("Explosion")]
+		[SerializeField]
 		private GameObject ExplosionVFX;
 
-		[Space, SerializeField, FoldoutGroup("Misc")]
+		[Space, SerializeField]
 		private bool CreateSteam;
 
 		private Rigidbody2D _rb;

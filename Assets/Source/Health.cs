@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using FMODUnity;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,26 +21,25 @@ namespace Quinn
 		[SerializeField]
 		private VisualEffect HitVFX;
 
-		[SerializeField, FoldoutGroup("Hurt Flash")]
+		[SerializeField]
 		private float FlashInDuration = 0.1f, FlashHoldDuration = 0.05f, FlashOutDuration = 0.1f;
-		[SerializeField, FoldoutGroup("Hurt Flash")]
+		[SerializeField]
 		private Ease FlashInEase = Ease.Linear, FlashOutEase = Ease.Linear;
 
 		[SerializeField, Space]
 		private bool IsImmuneOnHurt;
-		[SerializeField, FoldoutGroup("Hurt Immunity"), ShowIf(nameof(IsImmuneOnHurt))]
+		[SerializeField]
 		private float HurtImmunityDuration = 2f;
-		[SerializeField, FoldoutGroup("Hurt Immunity"), ShowIf(nameof(IsImmuneOnHurt))]
-		[InfoBox("@\"Total blink animation time: \" + (BlinkCount * BlinkInterval * 2f).ToString() + 's'")]
+		[SerializeField]
 		private int BlinkCount = 3;
-		[SerializeField, FoldoutGroup("Hurt Immunity"), ShowIf(nameof(IsImmuneOnHurt))]
+		[SerializeField]
 		private float BlinkInterval = 0.1f;
 
 		[Space, SerializeField]
 		private bool HasHBBar = true;
-		[SerializeField, ShowIf(nameof(HasHBBar))]
+		[SerializeField]
 		private Slider HPBar;
-		[SerializeField, ShowIf("@HPBar && HasHBBar")]
+		[SerializeField]
 		private Image HPArrow;
 
 		public float Current { get; private set; }

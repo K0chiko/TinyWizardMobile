@@ -1,6 +1,5 @@
 ﻿using FMODUnity;
 using Quinn.MissileSystem;
-using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,91 +7,91 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 {
 	public class BasicStaff : Staff
 	{
-		[SerializeField, FoldoutGroup("SFX")]
+		[SerializeField]
 		private EventReference BasicCastSound;
-		[SerializeField, ShowIf(nameof(HasBasicFinisher)), FoldoutGroup("SFX")]
+		[SerializeField]
 		private EventReference BasicFinisherCastSound;
-		[SerializeField, ShowIf(nameof(HasSpecial)), FoldoutGroup("SFX")]
+		[SerializeField]
 		private EventReference SpecialCastLittleSound, SpecialCastBigSound, FullChargeSound;
 
-		[SerializeField, Required, FoldoutGroup("Basic")]
+		[SerializeField]
 		private Missile BasicMissile;
-		[SerializeField, FoldoutGroup("Basic"), Unit(Units.Second)]
+		[SerializeField]
 		private float BasicCooldown = 0.3f;
-		[SerializeField, FoldoutGroup("Basic"), Unit(Units.MetersPerSecond)]
+		[SerializeField]
 		private float BasicKnockbackSpeed = 10f;
 
-		[SerializeField, FoldoutGroup("Basic"), Space]
+		[SerializeField, Space]
 		private MissileSpawnBehavior BasicBehavior = MissileSpawnBehavior.Direct;
-		[SerializeField, HideIf("@BasicBehavior == MissileSpawnBehavior.Direct"), FoldoutGroup("Basic"), Unit(Units.Degree)]
+		[SerializeField]
 		private float BasicSpread = 0f;
-		[SerializeField, FoldoutGroup("Basic")]
+		[SerializeField]
 		private int BasicCount = 1;
-		[SerializeField, ShowIf("@BasicCount > 1"), FoldoutGroup("Basic"), Unit(Units.Second)]
+		[SerializeField]
 		private float BasicInterval = 0f;
-		[SerializeField, ShowIf(nameof(HasBasicFinisher)), FoldoutGroup("Basic"), Unit(Units.Second)]
+		[SerializeField]
 		private float ChainWindowDuration = 0.4f;
 
-		[SerializeField, FoldoutGroup("Basic"), Space]
+		[SerializeField, Space]
 		private float BasicEnergyUse = 2f;
-		[SerializeField, FoldoutGroup("Basic")]
+		[SerializeField]
 		private float BasicManaConsume = 4f;
 
-		[Space, SerializeField, FoldoutGroup("Basic Finisher")]
+		[Space, SerializeField]
 		private bool HasBasicFinisher = true;
-		[SerializeField, FoldoutGroup("Basic Finisher"), Unit(Units.Second), ShowIf(nameof(HasBasicFinisher))]
+		[SerializeField]
 		private float BasicFinisherCooldown = 0.6f;
 
-		[SerializeField, ShowIf(nameof(HasBasicFinisher)), FoldoutGroup("Basic Finisher"), Space]
+		[SerializeField, Space]
 		private int BasicFinisherCount = 3;
-		[SerializeField, ShowIf(nameof(HasBasicFinisher)), FoldoutGroup("Basic Finisher")]
+		[SerializeField]
 		private int BasicFinisherChain = 3;
-		[SerializeField, ShowIf(nameof(HasBasicFinisher)), FoldoutGroup("Basic Finisher")]
+		[SerializeField]
 		private MissileSpawnBehavior BasicFinisherBehavior = MissileSpawnBehavior.SpreadRandom;
-		[SerializeField, HideIf("@BasicFinisherBehavior == MissileSpawnBehavior.Direct || !HasBasicFinisher"), FoldoutGroup("Basic Finisher"), Unit(Units.Degree)]
+		[SerializeField]
 		private float BasicFinisherSpread = 45f;
-		[SerializeField, ShowIf(nameof(HasBasicFinisher)), FoldoutGroup("Basic Finisher"), Unit(Units.MetersPerSecond)]
+		[SerializeField]
 		private float BasicFinisherKnockbackSpeed = 14f;
 
-		[SerializeField, ShowIf(nameof(HasBasicFinisher)), FoldoutGroup("Basic Finisher"), Space]
+		[SerializeField, Space]
 		[Tooltip("This can be null to use the basic normal missile.")]
 		private Missile BasicFinisherMissileOverride;
 
-		[SerializeField, FoldoutGroup("Basic Finisher"), ShowIf(nameof(HasBasicFinisher)), Space]
+		[SerializeField, Space]
 		private float BasicFinisherEnergyUse = 4f;
-		[SerializeField, FoldoutGroup("Basic Finisher"), ShowIf(nameof(HasBasicFinisher)), Space]
+		[SerializeField, Space]
 		private float BasicFinisherManaConsume = 12f;
 
-		[Space, SerializeField, FoldoutGroup("Special")]
+		[Space, SerializeField]
 		private bool HasSpecial = true;
-		[SerializeField, Required, FoldoutGroup("Special"), ShowIf(nameof(HasSpecial))]
+		[SerializeField]
 		private Missile SpecialMissile;
-		[SerializeField, Required, FoldoutGroup("Special"), ShowIf(nameof(HasSpecial))]
+		[SerializeField]
 		private bool RequireFullChargeForSpecial;
 
-		[SerializeField, FoldoutGroup("Special"), ShowIf(nameof(HasSpecial)), Unit(Units.Second), Space]
+		[SerializeField, Space]
 		private float ChargingSparkInterval = 0.45f;
-		[SerializeField, ShowIf(nameof(HasSpecial)), FoldoutGroup("Special"), Unit(Units.Second)]
+		[SerializeField]
 		private float SpecialCooldown = 1f;
-		[SerializeField, ShowIf(nameof(HasSpecial)), FoldoutGroup("Special"), Unit(Units.Second)]
+		[SerializeField]
 		private float SpecialChargeTime = 1f;
-		[SerializeField, ShowIf(nameof(HasSpecial)), FoldoutGroup("Special"), Unit(Units.MetersPerSecond)]
+		[SerializeField]
 		private float SpecialKnockbackSpeed = 10f;
-		[SerializeField, ShowIf(nameof(HasSpecial)), FoldoutGroup("Special")]
+		[SerializeField]
 		private float ChargingMoveSpeedFactor = 0.5f;
 
-		[SerializeField, ShowIf(nameof(HasSpecial)), FoldoutGroup("Special"), Space]
+		[SerializeField, Space]
 		private int SpecialCount = 1;
-		[SerializeField, ShowIf("@SpecialCount > 1 && HasSpecial"), FoldoutGroup("Special"), Unit(Units.Second)]
+		[SerializeField]
 		private float SpecialInterval = 0f;
-		[SerializeField, ShowIf(nameof(HasSpecial)), FoldoutGroup("Special")]
+		[SerializeField]
 		private MissileSpawnBehavior SpecialBehavior = MissileSpawnBehavior.Direct;
-		[SerializeField, HideIf("@SpecialBehavior == MissileSpawnBehavior.Direct || !HasSpecial"), FoldoutGroup("Special"), Unit(Units.Degree)]
+		[SerializeField]
 		private float SpecialSpread = 0f;
 
-		[SerializeField, FoldoutGroup("Special"), ShowIf(nameof(HasSpecial)), Space]
+		[SerializeField, Space]
 		private float SpecialEnergyUse = 8f;
-		[SerializeField, FoldoutGroup("Special"), ShowIf(nameof(HasSpecial))]
+		[SerializeField]
 		private float SpecialManaConsume = 34f;
 
 		private float _largeMissileTime;

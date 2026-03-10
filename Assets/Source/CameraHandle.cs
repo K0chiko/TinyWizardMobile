@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using Unity.Cinemachine;
+﻿using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,13 +6,13 @@ namespace Quinn
 {
 	public class CameraHandle : MonoBehaviour
 	{
-		[field: SerializeField, Required]
+		[field: SerializeField]
 		public Transform CameraTarget { get; private set; }
-		[field: SerializeField, Required]
+		[field: SerializeField]
 		public Camera View { get; private set; }
-		[field: SerializeField, Required]
+		[field: SerializeField]
 		public CinemachineCamera VirtualCamera { get; private set; }
-		[field: SerializeField, Required]
+		[field: SerializeField]
 		public Image Blackout { get; private set; }
 
 		public void Awake()
