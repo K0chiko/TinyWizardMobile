@@ -24,8 +24,6 @@ namespace Quinn
 
 			var agent = instance.GetComponent<BTAgent>();
 			agent.StartRoom(Room);
-
-			Room.RegisterAgent(agent);
 		}
 	}
 }

@@ -86,11 +86,6 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 				Caster.SetCharge(0f);
 		}
 
-		public override string ToString()
-		{
-			return Name;
-		}
-
 		public override void OnBasicDown()
 		{
 			if (CanCastExcludingCost)
@@ -98,7 +93,7 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 				_isCharging = true;
 
 				Caster.Movement.CanDash = false;
-				Caster.Movement.ApplySpeedModifier(this, 0.85f);
+				Caster.Movement.ApplySpeedModifier(this, 0.5f);
 			}
 		}
 

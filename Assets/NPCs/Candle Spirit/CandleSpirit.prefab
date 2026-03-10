@@ -583,10 +583,6 @@ PrefabInstance:
       propertyPath: 'Renderers.Array.data[3]'
       value: 
       objectReference: {fileID: 452395886828571216}
-    - target: {fileID: 4686400505576603632, guid: 95f4e05ce39780d42ae1d3868b2ccc69, type: 3}
-      propertyPath: <MoveSpeed>k__BackingField
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 4891083787612474357, guid: 95f4e05ce39780d42ae1d3868b2ccc69, type: 3}
       propertyPath: WetDamage
       value: 5
@@ -813,26 +809,8 @@ MonoBehaviour:
     Path: event:/CandleSpirit/CandleSpiritFootstep
   DeathTrigger: Die
   DeathVFX: {fileID: 0}
-  DeathSFX:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  StopDeathSFXAfter: -1
-  SpawnOnDeath: []
   <IsBoss>k__BackingField: 0
   <BossTitle>k__BackingField: Boss Title
-  ActivateOnSecondPhase: []
-  OnSecondPhaseStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeathEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  PlayableVFX: []
-  PrintAnimationTriggers: 0
 --- !u!114 &1066577674417364010
 MonoBehaviour:
   m_ObjectHideFlags: 0

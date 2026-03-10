@@ -21,8 +21,6 @@ namespace Quinn
 		private SpriteRenderer[] Renderers;
 		[SerializeField]
 		private VisualEffect HitVFX;
-		[SerializeField]
-		private bool SurviveOnHalfHeart;
 
 		[SerializeField, FoldoutGroup("Hurt Flash")]
 		private float FlashInDuration = 0.1f, FlashHoldDuration = 0.05f, FlashOutDuration = 0.1f;
@@ -54,7 +52,6 @@ namespace Quinn
 		public bool IsImmune => _isHurtImmune || _damageBlockers.Count > 0;
 
 		public bool IsGodModeEnabled { get; set; }
-		public bool IsHalfHeart { get; private set; }
 
 		public event Action<float> OnHealed;
 		public event Action<float, Vector2, GameObject> OnDamaged;
@@ -105,10 +102,8 @@ namespace Quinn
 
 		public void Heal(float health)
 		{
-			if (IsDead || health <= 0f)
+			if (IsDead)
 				return;
-
-			IsHalfHeart = false;
 
 			Current += health;
 			Current = Mathf.Min(Current, Max);
@@ -171,15 +166,8 @@ namespace Quinn
 				HitVFX.Play();
 			}
 
-			if (SurviveOnHalfHeart && Current < 1.5f && !IsHalfHeart)
-			{
-				IsHalfHeart = true;
-			}
-			else
-			{
-				Current -= info.Damage;
-				Current = Mathf.Max(0, Current);
-			}
+			Current -= info.Damage;
+			Current = Mathf.Max(0, Current);
 
 			if (Current == 0)
 			{

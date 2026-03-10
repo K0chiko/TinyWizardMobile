@@ -66,11 +66,10 @@ namespace Quinn.PlayerSystem.SpellSystem
 		protected virtual void Awake()
 		{
 			Debug.Assert(!string.IsNullOrWhiteSpace(GUID), $"Staff '{gameObject.name}' is missing a GUID!");
+			Energy = MaxEnergy;
 
 			_group = GetComponentInChildren<SortingGroup>();
 			_group.enabled = false;
-
-			Energy = MaxEnergy;
 
 			OnEnergyDepleted += _ =>
 			{

@@ -1828,10 +1828,6 @@ MonoBehaviour:
     Path: 
   MissileBlocker: {fileID: 8474881457399993969}
   StartsEnabled: 1
-  OnlyUnlock: []
-  IsLootRoom: 0
-  IsBossRoom: 0
-  IsHealingRoom: 0
 --- !u!61 &3615176081221869408
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -23761,13 +23757,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f27572c7b4d8bb24890217c47af63523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FilterForPlayer: 0
-  OnEnter:
-    m_PersistentCalls:
-      m_Calls: []
-  OnExit:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &2374828350709211786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25394,7 +25383,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Material>k__BackingField: 1
   <Priority>k__BackingField: 0
-  PlayVFX: 1
 --- !u!1 &6881635079269979266
 GameObject:
   m_ObjectHideFlags: 0
@@ -25774,7 +25762,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Material>k__BackingField: 2
   <Priority>k__BackingField: 100
-  PlayVFX: 1
 --- !u!1 &9010737106578655724
 GameObject:
   m_ObjectHideFlags: 0

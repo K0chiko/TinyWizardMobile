@@ -15,8 +15,6 @@ namespace Quinn.UI
 		private Canvas Canvas;
 		[SerializeField, Required]
 		private CanvasGroup CanvasGroup;
-		[SerializeField, Required]
-		private GameObject EventSystem;
 
 		[SerializeField, Required]
 		private Slider SFXSlider, MusicSlider;
@@ -36,33 +34,21 @@ namespace Quinn.UI
 
 			_sfx.setVolume(SFXSlider.value);
 			_music.setVolume(MusicSlider.value);
-
-			EventSystem.SetActive(false);
-			Canvas.enabled = false;
 		}
 
 		public void Update()
 		{
-			if (IsPaused && PlayerManager.Instance.IsDead)
-			{
-				Unpause();
-				return;
-			}
-
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
-				if (PlayerManager.Instance.IsAlive)
-				{
-					IsPaused = !IsPaused;
+				IsPaused = !IsPaused;
 
-					if (IsPaused)
-					{
-						Pause();
-					}
-					else
-					{
-						Unpause();
-					}
+				if (IsPaused)
+				{
+					Pause();
+				}
+				else
+				{
+					Unpause();
 				}
 			}
 
@@ -84,22 +70,19 @@ namespace Quinn.UI
 			if (!IsPaused)
 				return;
 
-			Canvas.GetComponentsInChildren<Button>().ForEach(x => x.interactable = false);
-			await Wait.Seconds(0.1f);
+			await Wait.Seconds(0.2f);
 
 #if UNITY_EDITOR
 			UnityEditor.EditorApplication.isPlaying = false;
-#else
-			Application.Quit();
 #endif
+
+			Application.Quit();
 		}
 
 		private void Pause()
 		{
 			IsPaused = true;
 			Time.timeScale = 0f;
-
-			EventSystem.SetActive(true);
 
 			Canvas.enabled = true;
 			CanvasGroup.DOFade(1f, 0.1f).SetUpdate(true);
@@ -116,8 +99,6 @@ namespace Quinn.UI
 		private void Unpause()
 		{
 			IsPaused = false;
-
-			EventSystem.SetActive(false);
 
 			Time.timeScale = 1f;
 			CanvasGroup.DOFade(0f, 0.1f)

@@ -1254,7 +1254,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3626763007255177289, guid: 95f4e05ce39780d42ae1d3868b2ccc69, type: 3}
       propertyPath: <Max>k__BackingField
-      value: 800
+      value: 900
       objectReference: {fileID: 0}
     - target: {fileID: 3626763007255177289, guid: 95f4e05ce39780d42ae1d3868b2ccc69, type: 3}
       propertyPath: HealSound.Guid.Data1
@@ -1489,14 +1489,6 @@ MonoBehaviour:
     Path: 
   DeathTrigger: Die
   DeathVFX: {fileID: 0}
-  DeathSFX:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  StopDeathSFXAfter: -1
   SpawnOnDeath: []
   <IsBoss>k__BackingField: 1
   <BossTitle>k__BackingField: Candlestick, Lord of Fire
@@ -1507,7 +1499,6 @@ MonoBehaviour:
   OnDeathEvent:
     m_PersistentCalls:
       m_Calls: []
-  PlayableVFX: []
   PrintAnimationTriggers: 0
 --- !u!114 &2193098795683250030
 MonoBehaviour:

@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec295a3f07223d74ea6cb6e9344802b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GUID>k__BackingField: 44a778cd-6343-49b7-902a-53e81686ec8a
+  <GUID>k__BackingField: 0147c265-f56b-4bbc-aa61-349d88ace13e
   <Name>k__BackingField: Fire Staff
   <Head>k__BackingField: {fileID: 2432762686052508438}
   <SparkGradient>k__BackingField:

@@ -32,10 +32,6 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2604928241439567913, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
-      propertyPath: m_Intensity
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 3308763497516412586, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}
       propertyPath: m_Name
       value: BubbleStaff
@@ -122,7 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec295a3f07223d74ea6cb6e9344802b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GUID>k__BackingField: 81e9d9bf-81fc-4be2-b75f-12f8ece0b427
+  <GUID>k__BackingField: 184db62f-93e8-40dc-b735-6462060c3ee4
   <Name>k__BackingField: Bubble Staff
   <Head>k__BackingField: {fileID: 4697962658493810353}
   <SparkGradient>k__BackingField:

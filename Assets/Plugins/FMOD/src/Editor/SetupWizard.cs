@@ -38,8 +38,8 @@ namespace FMODUnity
             UpdateTask.Create(
                 type: UpdateTaskType.UpdateEventReferences,
                 name: "Update Event References",
-                description: "Find event references that use the obsolete [FMODUnity.EventRef] attribute " +
-                    "and update them to use the FMODUnity.EventReference type.",
+                description: "Find event references that use the obsolete [EventRef] attribute " +
+                    "and update them to use the EventReference type.",
                 execute: EventReferenceUpdater.ShowWindow,
                 checkComplete: EventReferenceUpdater.IsUpToDate
             ),
@@ -51,7 +51,7 @@ namespace FMODUnity
 
         private AudioListener[] unityListeners;
         private StudioListener[] fmodListeners;
-        private Vector2 scroll1, scroll2, pageScrollPos;
+        private Vector2 scroll1, scroll2;
         private Vector2 stagingDetailsScroll;
         private bool bFoundUnityListener;
         private bool bFoundFmodListener;
@@ -89,8 +89,6 @@ namespace FMODUnity
 
         private static bool IsStagingUpdateInProgress => nextStagingStep != null;
 
-        private Vector2 ignoreFileScrollPosition = Vector2.zero;
-
         private const string IgnoreFileText =
 @"# Never ignore DLLs in the FMOD subfolder.
 !/[Aa]ssets/Plugins/FMOD/**/lib/*
@@ -109,10 +107,6 @@ namespace FMODUnity
 # If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
 # Log files can be ignored.
 fmod_editor.log";
-
-        private const string GitAttributesText =
-@"Assets/Plugins/FMOD/**/*.bundle text eol=lf
-Assets/Plugins/FMOD/**/Info.plist text eol=lf";
 
         private enum PAGES : int
         {
@@ -217,8 +211,9 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
         {
             instance = (SetupWizardWindow)GetWindow(typeof(SetupWizardWindow), true, "FMOD Setup Wizard");
             instance.ShowUtility();
-            instance.minSize = new Vector2(600, 400);
-            var position = new Rect(Vector2.zero, new Vector2(800, 600));
+            instance.minSize = new Vector2(750, 500);
+            instance.maxSize = instance.minSize;
+            var position = new Rect(Vector2.zero, instance.minSize);
             Vector2 screenCenter = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height) / 2;
             position.center = screenCenter / EditorGUIUtility.pixelsPerPoint;
             instance.position = position;
@@ -276,7 +271,6 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
                 titleLeftStyle = new GUIStyle(descriptionStyle);
                 titleLeftStyle.fontStyle = FontStyle.Bold;
 
-                descriptionStyle.fixedWidth = 350;
                 columnStyle = new GUIStyle();
                 columnStyle.margin.left = 50;
                 columnStyle.margin.right = 50;
@@ -298,27 +292,22 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
                 Breadcrumbs();
 
                 // Draw Body
-                using (new EditorGUILayout.VerticalScope("box", GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)))
+                using (new EditorGUILayout.VerticalScope("box", GUILayout.ExpandHeight(true)))
                 {
-                    using (var scrollView = new EditorGUILayout.ScrollViewScope(pageScrollPos))
+                    EditorGUILayout.Space();
+                    EditorGUILayout.Space();
+                    EditorGUILayout.Space();
+
+                    switch (currentPage)
                     {
-                        pageScrollPos = scrollView.scrollPosition;
-
-                        EditorGUILayout.Space();
-                        EditorGUILayout.Space();
-                        EditorGUILayout.Space();
-
-                        switch (currentPage)
-                        {
-                            case PAGES.Welcome: WelcomePage(); break;
-                            case PAGES.Updating: UpdatingPage(); break;
-                            case PAGES.Linking: LinkingPage(); break;
-                            case PAGES.Listener: ListenerPage(); break;
-                            case PAGES.UnityAudio: DisableUnityAudioPage(); break;
-                            case PAGES.UnitySources: UnitySources(); break;
-                            case PAGES.SourceControl: SourceControl(); break;
-                            case PAGES.End: EndPage(); break;
-                        }
+                        case PAGES.Welcome: WelcomePage(); break;
+                        case PAGES.Updating: UpdatingPage(); break;
+                        case PAGES.Linking: LinkingPage(); break;
+                        case PAGES.Listener: ListenerPage(); break;
+                        case PAGES.UnityAudio: DisableUnityAudioPage(); break;
+                        case PAGES.UnitySources: UnitySources(); break;
+                        case PAGES.SourceControl: SourceControl(); break;
+                        case PAGES.End: EndPage(); break;
                     }
 
                     Buttons();
@@ -473,7 +462,8 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
 
         private void UpdatingPage()
         {
-            EditorGUILayout.LabelField("If you are updating an existing FMOD installation, you may need to perform some update tasks.", titleLeftStyle);
+            EditorGUILayout.LabelField("If you are updating an existing FMOD installation, you may need to " +
+                "perform some update tasks.", titleLeftStyle);
 
             GUILayout.FlexibleSpace();
 
@@ -520,59 +510,56 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
         private void LinkingPage()
         {
             EditorGUILayout.LabelField("In order to access your FMOD Studio content you need to locate the FMOD Studio Project" +
-            " or the .bank files that FMOD Studio produces, and configure a few other settings.", titleLeftStyle);
+                " or the .bank files that FMOD Studio produces, and configure a few other settings.", titleLeftStyle);
             GUILayout.FlexibleSpace();
 
             EditorGUILayout.LabelField("Choose how to access your FMOD Studio content:", titleLeftStyle);
 
             EditorGUILayout.Space();
-            using (new GUILayout.VerticalScope("box"))
+            using (new GUILayout.HorizontalScope())
             {
-                float indent = 5;
-                var serializedObject = new SerializedObject(Settings.Instance);
-
-                var boxStyle = new GUIStyle();
-                boxStyle.fixedHeight = 10;
-                using (new GUILayout.HorizontalScope())
+                using (new GUILayout.VerticalScope("box"))
                 {
-                    GUILayout.Space(indent);
-                    if (GUILayout.Button("FMOD Studio Project", sourceButtonStyle))
-                    {
-                        SettingsEditor.BrowseForSourceProjectPath(serializedObject);
-                    }
-                    GUILayout.Label("If you have the complete FMOD Studio Project.",
-                        descriptionStyle, GUILayout.Height(sourceButtonStyle.fixedHeight));
+                    float indent = 5;
+                    var serializedObject = new SerializedObject(Settings.Instance);
 
-                    GUILayout.FlexibleSpace();
-                }
-                EditorGUILayout.Space();
-
-                using (new GUILayout.HorizontalScope())
-                {
-                    GUILayout.Space(indent);
-                    if (GUILayout.Button("Single Platform Build", sourceButtonStyle))
+                    var boxStyle = new GUIStyle();
+                    boxStyle.fixedHeight = 10;
+                    using (new GUILayout.HorizontalScope())
                     {
-                        SettingsEditor.BrowseForSourceBankPath(serializedObject);
+                        GUILayout.Space(indent);
+                        if (GUILayout.Button("FMOD Studio Project", sourceButtonStyle))
+                        {
+                            SettingsEditor.BrowseForSourceProjectPath(serializedObject);
+                        }
+                        GUILayout.Label("If you have the complete FMOD Studio Project.",
+                            descriptionStyle, GUILayout.Height(sourceButtonStyle.fixedHeight));
                     }
-                    EditorGUILayout.LabelField("If you have the contents of the Build folder for a single platform.",
-                        descriptionStyle, GUILayout.Height(sourceButtonStyle.fixedHeight));
-                    GUILayout.FlexibleSpace();
-                }
-                EditorGUILayout.Space();
-
-                using (new GUILayout.HorizontalScope())
-                {
-                    GUILayout.Space(indent);
-                    if (GUILayout.Button("Multiple Platform Build", sourceButtonStyle))
+                    EditorGUILayout.Space();
+                    using (new GUILayout.HorizontalScope())
                     {
-                        SettingsEditor.BrowseForSourceBankPath(serializedObject, true);
+                        GUILayout.Space(indent);
+                        if (GUILayout.Button("Single Platform Build", sourceButtonStyle))
+                        {
+                            SettingsEditor.BrowseForSourceBankPath(serializedObject);
+                        }
+                        EditorGUILayout.LabelField("If you have the contents of the Build folder for a single platform.",
+                            descriptionStyle, GUILayout.Height(sourceButtonStyle.fixedHeight));
+                        GUILayout.FlexibleSpace();
                     }
-                    EditorGUILayout.LabelField("If you have the contents of the Build folder for multiple platforms, " +
-                        "with each platform in its own subdirectory.",
-                        descriptionStyle, GUILayout.Height(sourceButtonStyle.fixedHeight));
-                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.Space();
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Space(indent);
+                        if (GUILayout.Button("Multiple Platform Build", sourceButtonStyle))
+                        {
+                            SettingsEditor.BrowseForSourceBankPath(serializedObject, true);
+                        }
+                        EditorGUILayout.LabelField("If you have the contents of the Build folder for multiple platforms, " +
+                            "with each platform in its own subdirectory.",
+                            descriptionStyle, GUILayout.Height(sourceButtonStyle.fixedHeight));
+                    }
                 }
-                EditorGUILayout.Space();
             }
 
             if (IsStudioLinked())
@@ -774,23 +761,13 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
 
         private void SourceControl()
         {
-            EditorGUILayout.LabelField("There are a number of files produced by FMOD for Unity that should be ignored by source control. Here is an example of what you should add to your source control ignore file:", titleLeftStyle);
+            EditorGUILayout.LabelField("There are a number of files produced by FMOD for Unity that should be ignored by source control. " +
+                "Here is an example of what you should add to your source control ignore file:", titleLeftStyle);
+            GUILayout.FlexibleSpace();
 
             using (new EditorGUILayout.VerticalScope("box"))
             {
-                ignoreFileScrollPosition = EditorGUILayout.BeginScrollView(ignoreFileScrollPosition, GUILayout.Height(200));
                 EditorGUILayout.TextArea(IgnoreFileText);
-                EditorGUILayout.EndScrollView();
-            }
-
-            EditorGUILayout.LabelField(
-                "Add line ending requirements to a .gitattributes file to avoid issues:",
-                titleLeftStyle
-            );
-
-            using (new EditorGUILayout.VerticalScope("box"))
-            {
-                EditorGUILayout.TextArea(GitAttributesText);
             }
 
             pageComplete[(int)PAGES.SourceControl] = true;
@@ -855,12 +832,18 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
                     EditorUtils.OnlineManual();
                 }
 
+                GUILayout.FlexibleSpace();
+            }
+
+            GUILayout.Space(20);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
 
                 if (GUILayout.Button(" FMOD Settings ", buttonStyle))
                 {
                     EditorSettings.EditSettings();
                 }
-                GUILayout.Space(18);
 
                 GUILayout.FlexibleSpace();
             }
@@ -897,6 +880,7 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
                 else if (currentPage == PAGES.End) button2Text = "Close";
                 else button2Text = "Next";
 
+                EditorGUILayout.Space();
                 if (GUILayout.Button(button2Text, navButtonStyle))
                 {
                     if (currentPage == PAGES.End)
@@ -971,9 +955,7 @@ Assets/Plugins/FMOD/**/Info.plist text eol=lf";
                 using (var scope = new EditorGUILayout.ScrollViewScope(stagingDetailsScroll))
                 {
                     stagingDetailsScroll = scope.scrollPosition;
-                    GUIStyle longDescStyle = descriptionStyle;
-                    longDescStyle.fixedWidth = 0;
-                    EditorGUILayout.LabelField(nextStagingStep.Details, longDescStyle);
+                    EditorGUILayout.LabelField(nextStagingStep.Details, descriptionStyle);
                 }
             }
         }

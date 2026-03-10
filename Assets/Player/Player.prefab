@@ -810,7 +810,6 @@ MonoBehaviour:
   - {fileID: 7490090320629991294}
   - {fileID: 2780119781483720601}
   HitVFX: {fileID: 3680973303531678031}
-  SurviveOnHalfHeart: 1
   FlashInDuration: 0.05
   FlashHoldDuration: 0.05
   FlashOutDuration: 0.05
@@ -839,7 +838,6 @@ MonoBehaviour:
   StaffOffset: 0.52
   InputBufferTimeout: 0.35
   CastingSpark: {fileID: 8386681424887333751}
-  EnergyTransferRate: 0.5
   StoredStaffsParent: {fileID: 2134589046034292582}
   StaffMaxAngle: 60
   FallbackStaff: {fileID: 6154076365990238944}

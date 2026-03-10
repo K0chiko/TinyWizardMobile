@@ -79,7 +79,7 @@ PluginImporter:
 AssetOrigin:
   serializedVersion: 1
   productId: 161631
-  packageName: FMOD for Unity (2.02)
-  packageVersion: 2.02.32
+  packageName: FMOD for Unity
+  packageVersion: 2.02.24
   assetPath: Assets/Plugins/FMOD/platforms/win/lib/x86/fmodstudio.dll
-  uploadId: 847630
+  uploadId: 707645

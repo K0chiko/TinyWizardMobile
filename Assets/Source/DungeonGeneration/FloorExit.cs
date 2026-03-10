@@ -26,7 +26,6 @@ namespace Quinn.DungeonGeneration
 				if (IsVictoryExit)
 				{
 					RuntimeManager.StudioSystem.setParameterByName("enable-music", 0f);
-					PlayerManager.Instance.MarkVictoryTime();
 
 					await PlayerManager.Instance.Player.ExitFloorAsync(this);
 					await SceneManager.LoadSceneAsync(2);

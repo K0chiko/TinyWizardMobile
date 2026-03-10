@@ -92,9 +92,6 @@ namespace FMODUnity
                     yield return new FileRecord("x86/fmodstudio" + dllSuffix);
                     break;
                 case BuildTarget.StandaloneWindows64:
-#if UNITY_2023_1_OR_NEWER
-                    yield return new FileRecord("arm64/fmodstudio" + dllSuffix);
-#endif
                     yield return new FileRecord("x86_64/fmodstudio" + dllSuffix);
                     break;
                 case BuildTarget.WSAPlayer:
@@ -137,7 +134,11 @@ namespace FMODUnity
         internal override string GetPluginPath(string pluginName)
         {
 #if UNITY_STANDALONE_WIN
-            return string.Format("{0}/{1}/{2}.dll", GetPluginBasePath(), RuntimeUtils.GetPluginArchitectureFolder(), pluginName);
+        #if UNITY_64
+            return string.Format("{0}/X86_64/{1}.dll", GetPluginBasePath(), pluginName);
+        #else
+            return string.Format("{0}/X86/{1}.dll", GetPluginBasePath(), pluginName);
+        #endif
 #else // UNITY_WSA
             return string.Format("{0}.dll", pluginName);
 #endif

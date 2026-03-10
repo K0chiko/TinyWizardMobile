@@ -43,14 +43,7 @@ namespace FMODUnity
             float result = float.MaxValue;
             for (int i = 0; i < listeners.Count; i++)
             {
-                if (listeners[i].attenuationObject == null)
-                {
-                    result = Mathf.Min(result, Vector3.Distance(position, listeners[i].transform.position));
-                }
-                else
-                {
-                    result = Mathf.Min(result, Vector3.Distance(position, listeners[i].attenuationObject.transform.position));
-                }
+                result = Mathf.Min(result, Vector3.Distance(position, listeners[i].transform.position));
             }
             return result;
         }
@@ -60,14 +53,7 @@ namespace FMODUnity
             float result = float.MaxValue;
             for (int i = 0; i < listeners.Count; i++)
             {
-                if (listeners[i].attenuationObject == null)
-                {
-                    result = Mathf.Min(result, (position - listeners[i].transform.position).sqrMagnitude);
-                }
-                else
-                {
-                    result = Mathf.Min(result, (position - listeners[i].attenuationObject.transform.position).sqrMagnitude);
-                }
+                result = Mathf.Min(result, (position - listeners[i].transform.position).sqrMagnitude);
             }
             return result;
         }

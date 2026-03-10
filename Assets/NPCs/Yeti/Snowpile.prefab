@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb9b76c2f63fe994ea98da7a70b0eaad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SnowmanPrefab: {fileID: 2551483373129437066, guid: 9b3ce5b1ab7d5fd4599e8ef06942e7d8, type: 3}
+  SnowmanPrefab: {fileID: 7581865535578015109, guid: 5cba237b5df87b84693cc262f02d7d99, type: 3}
   Room: {fileID: 0}
 --- !u!114 &4569096213617026141
 MonoBehaviour:

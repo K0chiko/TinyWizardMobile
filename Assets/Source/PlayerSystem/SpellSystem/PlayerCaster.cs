@@ -92,8 +92,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			if (!string.IsNullOrEmpty(equippedStaffGUID))
 			{
 				RecreateTransientStaffData(equippedStaffGUID);
-
-				// No need to update transient data as it is already up-to-date.
 			}
 			// There exists no transient staff data. Start with a new staff.
 			else
@@ -101,12 +99,16 @@ namespace Quinn.PlayerSystem.SpellSystem
 				Debug.Assert(StartingStaffs.Length > 0);
 				GameObject staff = StartingStaffs.GetRandom().gameObject.Clone();
 				EquipStaff(staff.GetComponent<Staff>(), true, true, supressAnalytics: true);
-
-				UpdateStaffTransientData();
-				PlayerManager.Instance.RecentlyLooted.Add(staff.GetComponent<Staff>().GUID);
 			}
 
 			Mana = MaxMana;
+
+			if (EquippedStaff != null)
+			{
+				var manager = PlayerManager.Instance;
+				manager.EquippedStaffGUID = EquippedStaff.GUID;
+				manager.EquippedStaffEnergy = EquippedStaff.Energy;
+			}
 		}
 
 		public void Update()
@@ -144,6 +146,8 @@ namespace Quinn.PlayerSystem.SpellSystem
 			{
 				Mana = Mathf.Min(Mana + (Time.deltaTime * ManaRegenRate), MaxMana);
 			}
+
+			//Debug.Log(EquippedStaff.Name);
 		}
 
 		public void LateUpdate()
@@ -196,15 +200,14 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 		public void OnDestroy()
 		{
+			UpdateStaffTransientData();
+
 			var input = InputManager.Instance;
 
 			if (input != null)
 			{
 				input.OnCastStart -= OnBasicStart;
 				input.OnSpecialStart -= OnSpecialStart;
-
-				// In here simply to know if the editor was just stopped or if this was actually destroyed during play.
-				UpdateStaffTransientData();
 			}
 		}
 
@@ -239,6 +242,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 					Audio.Play(EquipSound, transform.position);
 				}
 
+				// Dequip active staff but do not store it. It simply is deleted.
 				DequipActiveStaff();
 
 				// If the staff being equipped was on the player's back; e.g. the fallback staff.
@@ -246,6 +250,8 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 				EquippedStaff = staff;
 				UIStaff = staff;
+
+				UpdateStaffTransientData();
 
 				staff.transform.SetParent(transform, false);
 				staff.SetCaster(this);
@@ -258,7 +264,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 				CastingSpark.transform.localPosition = Vector3.zero;
 
 				OnStaffEquipped?.Invoke(staff);
-				UpdateScoreData();
 			}
 		}
 
@@ -430,21 +435,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 						.ToArray();
 				}
 			}
-
-			UpdateScoreData();
-		}
-
-		private void UpdateScoreData()
-		{
-			var discovered = _storedStaffs.ToList();
-			if (EquippedStaff != null)
-			{
-				discovered.Add(EquippedStaff);
-				PlayerManager.Instance.EquippedStaffGUID = EquippedStaff.GUID;
-			}
-
-			discovered.Remove(FallbackStaff);
-			PlayerManager.Instance.DiscoveredStaffCount = discovered.Count;
 		}
 
 		private Staff StaffGUIDToPrefab(string guid)

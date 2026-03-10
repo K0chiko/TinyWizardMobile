@@ -1,5 +1,4 @@
 using FMODUnity;
-using Quinn.PlayerSystem;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
@@ -48,8 +47,6 @@ namespace Quinn
 
 				OnBreak?.Invoke();
 				Destroy(gameObject);
-
-				PlayerManager.Instance.PathsFound++;
 			}
 
 			return true;

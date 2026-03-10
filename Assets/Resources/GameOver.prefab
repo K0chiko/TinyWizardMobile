@@ -924,17 +924,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3591728302427652077, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_text
-      value: 'Retry
-
-        Floor'
-      objectReference: {fileID: 0}
-    - target: {fileID: 3591728302427652077, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
-      propertyPath: m_fontSize
-      value: 34.94
-      objectReference: {fileID: 0}
-    - target: {fileID: 3591728302427652077, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 0
+      value: Retry
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_Pivot.x
@@ -966,7 +956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 136
+      value: 96.2
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1002,7 +992,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -60
+      value: -75.44999
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

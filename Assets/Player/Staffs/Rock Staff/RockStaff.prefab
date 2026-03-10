@@ -215,7 +215,7 @@ MonoBehaviour:
   SpecialBehavior: 2
   SpecialSpread: 40
   SpecialEnergyUse: 16
-  SpecialManaConsume: 22
+  SpecialManaConsume: 45
 --- !u!4 &8722686784616999405 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2432762686052508438, guid: 583a648d42ef5c34a9c90258cf6aa15b, type: 3}

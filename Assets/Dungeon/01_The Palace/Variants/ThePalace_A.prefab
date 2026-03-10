@@ -83467,14 +83467,6 @@ PrefabInstance:
       propertyPath: IsBossRoom
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1552218649523291989, guid: 7631b7dcac0928a43a3771c418abaf2a, type: 3}
-      propertyPath: OnlyUnlock.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1552218649523291989, guid: 7631b7dcac0928a43a3771c418abaf2a, type: 3}
-      propertyPath: 'OnlyUnlock.Array.data[0]'
-      value: 
-      objectReference: {fileID: 869298049513961}
     - target: {fileID: 1683815389408074766, guid: 7631b7dcac0928a43a3771c418abaf2a, type: 3}
       propertyPath: m_ApplyToSortingLayers.Array.size
       value: 4
@@ -99429,17 +99421,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7631b7dcac0928a43a3771c418abaf2a, type: 3}
---- !u!114 &869298049513961 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2304934784314492419, guid: 7631b7dcac0928a43a3771c418abaf2a, type: 3}
-  m_PrefabInstance: {fileID: 2305793970635030506}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3844e676495fd1f41957733b9bdb071c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &8615440999506978226 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7525482640896629336, guid: 7631b7dcac0928a43a3771c418abaf2a, type: 3}

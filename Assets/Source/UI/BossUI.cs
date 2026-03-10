@@ -3,7 +3,6 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.VFX;
 
 namespace Quinn.UI
 {
@@ -17,8 +16,6 @@ namespace Quinn.UI
 		private TextMeshProUGUI Title;
 		[SerializeField, Required]
 		private Slider HPBar;
-		[SerializeField, Required]
-		private VisualEffect HPVFX;
 
 		private BTAgent _boss;
 
@@ -35,7 +32,6 @@ namespace Quinn.UI
 			if (_boss != null)
 			{
 				HPBar.value = _boss.Health.Percent;
-				HPVFX.enabled = _boss.Health.Percent < 0.5f;
 			}
 		}
 

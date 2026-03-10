@@ -90,18 +90,12 @@ namespace Quinn.PlayerSystem
 
 		public void Show()
 		{
-			if (_crosshair != null)
-			{
-				_crosshair.gameObject.SetActive(true);
-			}
+			_crosshair.gameObject.SetActive(true);
 		}
 
 		public void Hide()
 		{
-			if (_crosshair.gameObject != null)
-			{
-				_crosshair.gameObject.SetActive(false);
-			}
+			_crosshair.gameObject.SetActive(false);
 		}
 	}
 }

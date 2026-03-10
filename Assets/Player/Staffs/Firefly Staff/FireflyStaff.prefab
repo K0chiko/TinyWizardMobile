@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec295a3f07223d74ea6cb6e9344802b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GUID>k__BackingField: db52415b-88aa-4d88-8685-6aacfad95211
+  <GUID>k__BackingField: fa70c166-9622-4a1e-9147-96a400443916
   <Name>k__BackingField: Firefly Staff
   <Head>k__BackingField: {fileID: 6783673476264810505}
   <SparkGradient>k__BackingField:
@@ -154,7 +154,7 @@ MonoBehaviour:
     m_ColorSpace: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 3
-  <MaxEnergy>k__BackingField: 250
+  <MaxEnergy>k__BackingField: 400
   BasicCastSound:
     Guid:
       Data1: 632417083

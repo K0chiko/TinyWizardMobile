@@ -38,8 +38,6 @@ namespace Quinn.UI
 
 		public static HUD Instance { get; private set; }
 
-		public float Alpha => Group.alpha;
-
 		private CancellationTokenSource _cancelDialogue = new();
 
 		private float _alphaVel;

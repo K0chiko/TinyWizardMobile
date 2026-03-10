@@ -8,7 +8,7 @@ namespace Quinn
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		public static void Bootstrap()
 		{
-			if (SceneManager.GetActiveScene().buildIndex == 1)
+			if (SceneManager.GetActiveScene().buildIndex != 0)
 			{
 				var asset = Resources.Load<GameObject>("Globals");
 				var instance = Instantiate(asset);
