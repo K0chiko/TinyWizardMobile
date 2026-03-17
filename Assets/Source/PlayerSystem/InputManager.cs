@@ -25,7 +25,7 @@ namespace Quinn.PlayerSystem
 		[Header("Input System (assign InputActionReferences)")]
 		[SerializeField] private InputActionReference moveAction;
 		[FormerlySerializedAs("AimAction")] [SerializeField] private InputActionReference aimAction; // Vector2 aim stick (mobile)
-		[FormerlySerializedAs("PointerPositionAction")] [SerializeField] private InputActionReference pointerPositionAction; // Optional: screen position (touch/mouse)
+		//[FormerlySerializedAs("PointerPositionAction")] [SerializeField] private InputActionReference pointerPositionAction; // Optional: screen position (touch/mouse)
 		[FormerlySerializedAs("BasicAction")] [SerializeField] private InputActionReference basicAction; // Button
 		[FormerlySerializedAs("SpecialAction")] [SerializeField] private InputActionReference specialAction; // Button
 		[FormerlySerializedAs("DashAction")] [SerializeField] private InputActionReference dashAction; // Button
@@ -63,7 +63,7 @@ namespace Quinn.PlayerSystem
 			// Enable actions so they can read values
 			EnableAction(moveAction);
 			EnableAction(aimAction);
-			EnableAction(pointerPositionAction);
+			//EnableAction(pointerPositionAction);
 			EnableAction(basicAction);
 			EnableAction(specialAction);
 			EnableAction(dashAction);
@@ -74,7 +74,7 @@ namespace Quinn.PlayerSystem
 		{
 			DisableAction(moveAction);
 			DisableAction(aimAction);
-			DisableAction(pointerPositionAction);
+			//DisableAction(pointerPositionAction);
 			DisableAction(basicAction);
 			DisableAction(specialAction);
 			DisableAction(dashAction);
@@ -84,36 +84,48 @@ namespace Quinn.PlayerSystem
 		public void Update()
 		{
 			if (PauseMenuUI.Instance.IsPaused) return;
-
-			// 1. Движение
+			
 			MoveDirection = moveAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
 			MoveDirection = Vector2.ClampMagnitude(MoveDirection, 1f);
 
-			// 2. Логика прицеливания (Mobile First)
+			Aim();
+		}
+
+		private void Aim()
+		{
 			Vector2 playerPos = PlayerManager.Instance != null 
 				? (Vector2)PlayerManager.Instance.Player.transform.position 
 				: Vector2.zero;
 
 			Vector2 aimInput = aimAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
+			float threshold = 0.2f;
 
-			if (aimInput.sqrMagnitude > 0.01f)
+			if (aimInput.magnitude > threshold)
 			{
-				// Стик отклонен: выносим прицел на радиус вокруг игрока
 				CursorWorldPos = playerPos + aimInput.normalized * aimRadius;
+        
+				if (!IsCastHeld) 
+				{
+					IsCastHeld = true;
+					OnCastStart?.Invoke(); 
+				}
 			}
 			else
 			{
-				// Стик отпущен: прицел следует за игроком на фиксированном расстоянии 
-				// или по направлению последнего движения
+				// 2. Стик отпущен
+				if (IsCastHeld)
+				{
+					IsCastHeld = false;
+					OnCastStop?.Invoke(); 
+				}
+				
 				if (MoveDirection.sqrMagnitude > 0.01f)
 				{
 					CursorWorldPos = playerPos + MoveDirection.normalized * aimRadius;
 				}
 				else 
 				{
-					// Если совсем стоим, просто держим прицел чуть впереди/сверху
-					// (или можно оставить CursorWorldPos без изменений, чтобы он не прыгал)
-					CursorWorldPos = playerPos + Vector2.up * 0.1f; 
+
 				}
 			}
 		}

@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Quinn
 {
 	[RequireComponent(typeof(Rigidbody2D))]
 	public abstract class Locomotion : MonoBehaviour
 	{
-		[SerializeField, Tooltip("Knockback can still be triggered manually even if this is false.")]
-		private bool DoesKnockbackOnDamage = true;
-		[SerializeField]
-		private float KnockbackSpeed = 12f;
-		[SerializeField]
-		private float KnockbackDecayRate = 32f;
+		[FormerlySerializedAs("DoesKnockbackOnDamage")] [SerializeField, Tooltip("Knockback can still be triggered manually even if this is false.")]
+		private bool doesKnockbackOnDamage = true;
+		[FormerlySerializedAs("KnockbackSpeed")] [SerializeField]
+		private float knockbackSpeed = 12f;
+		[FormerlySerializedAs("KnockbackDecayRate")] [SerializeField]
+		private float knockbackDecayRate = 32f;
 
 		protected Rigidbody2D Rigidbody { get; private set; }
 
@@ -24,7 +25,7 @@ namespace Quinn
 		{
 			Rigidbody = GetComponent<Rigidbody2D>();
 
-			if (DoesKnockbackOnDamage)
+			if (doesKnockbackOnDamage)
 			{
 				GetComponent<Health>().OnDamagedExpanded += OnDamaged;
 			}
@@ -37,7 +38,7 @@ namespace Quinn
 			if (_knockbackVel > 0f)
 			{
 				vel += _knockbackDir * _knockbackVel;
-				_knockbackVel -= KnockbackDecayRate * Time.fixedDeltaTime;
+				_knockbackVel -= knockbackDecayRate * Time.fixedDeltaTime;
 			}
 
 			foreach (var factor in _speedFactors.Values)
@@ -52,7 +53,7 @@ namespace Quinn
 
 		public void Knockback(Vector2 dir)
 		{
-			_knockbackVel = KnockbackSpeed;
+			_knockbackVel = knockbackSpeed;
 			_knockbackDir = dir.normalized;
 		}
 		public void Knockback(Vector2 dir, float speed)
