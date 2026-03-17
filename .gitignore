@@ -93,3 +93,9 @@ fmod_editor.log
 
 
 .idea
+
+/[Aa]ssets/Resources/PerformanceTestRunInfo.json
+/[Aa]ssets/Resources/PerformanceTestRunInfo.json.meta
+
+/[Aa]ssets/Resources/PerformanceTestRunSettings.json
+/[Aa]ssets/Resources/PerformanceTestRunSettings.json.meta

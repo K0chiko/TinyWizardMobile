@@ -838,6 +838,7 @@ MonoBehaviour:
   StaffOffset: 0.52
   InputBufferTimeout: 0.35
   CastingSpark: {fileID: 8386681424887333751}
+  EnergyTransferRate: 0.5
   StoredStaffsParent: {fileID: 2134589046034292582}
   StaffMaxAngle: 60
   FallbackStaff: {fileID: 6154076365990238944}

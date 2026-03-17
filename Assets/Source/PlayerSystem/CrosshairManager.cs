@@ -16,9 +16,12 @@ namespace Quinn.PlayerSystem
 		{
 			get
 			{
-				if (Camera.main == null) 
-					return Vector2.zero;
+				if (InputManager.Instance != null)
+					return InputManager.Instance.CursorWorldPos;
 
+				if (Camera.main == null)
+					return Vector2.zero;
+				// Fallback to mouse when InputManager is not available
 				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			}
 		}
@@ -35,7 +38,7 @@ namespace Quinn.PlayerSystem
 			Instance = this;
 
 			_crosshair = CrosshairPrefab.Clone(transform).GetComponent<CrosshairHandle>();
-			GetComponent<InputManager>().HideCursor();
+			InputManager.Instance?.HideCursor();
 
 			_frameTransform = _crosshair.Frame.GetComponent<RectTransform>();
 			_chargeTransform = _crosshair.Charge.GetComponent<RectTransform>();

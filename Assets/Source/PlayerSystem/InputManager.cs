@@ -1,6 +1,7 @@
 ﻿using Quinn.UI;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Quinn.PlayerSystem
 {
@@ -19,10 +20,63 @@ namespace Quinn.PlayerSystem
 		public event Action OnCastStart, OnCastStop;
 		public event Action OnSpecialStart, OnSpecialStop;
 
+		[Header("Input System (assign InputActionReferences)")]
+		[SerializeField] private InputActionReference MoveAction;
+		[SerializeField] private InputActionReference AimAction; // Vector2 aim stick (mobile)
+		[SerializeField] private InputActionReference PointerPositionAction; // Optional: screen position (touch/mouse)
+		[SerializeField] private InputActionReference BasicAction; // Button
+		[SerializeField] private InputActionReference SpecialAction; // Button
+		[SerializeField] private InputActionReference DashAction; // Button
+		[SerializeField] private InputActionReference InteractAction; // Button
+		[SerializeField] private float AimRadius = 2.5f; // used to synthesize crosshair around player on mobile
+
 		public void Awake()
 		{
 			Debug.Assert(Instance == null, "There are more than one instances of InputManager!");
 			Instance = this;
+
+			// Subscribe to button events (performed/started/canceled)
+			if (BasicAction != null && BasicAction.action != null)
+			{
+				BasicAction.action.started += OnBasicStarted;
+				BasicAction.action.canceled += OnBasicCanceled;
+			}
+			if (SpecialAction != null && SpecialAction.action != null)
+			{
+				SpecialAction.action.started += OnSpecialStarted;
+				SpecialAction.action.canceled += OnSpecialCanceled;
+			}
+			if (DashAction != null && DashAction.action != null)
+			{
+				DashAction.action.performed += OnDashPerformed;
+			}
+			if (InteractAction != null && InteractAction.action != null)
+			{
+				InteractAction.action.performed += OnInteractPerformed;
+			}
+		}
+
+		public void OnEnable()
+		{
+			// Enable actions so they can read values
+			EnableAction(MoveAction);
+			EnableAction(AimAction);
+			EnableAction(PointerPositionAction);
+			EnableAction(BasicAction);
+			EnableAction(SpecialAction);
+			EnableAction(DashAction);
+			EnableAction(InteractAction);
+		}
+
+		public void OnDisable()
+		{
+			DisableAction(MoveAction);
+			DisableAction(AimAction);
+			DisableAction(PointerPositionAction);
+			DisableAction(BasicAction);
+			DisableAction(SpecialAction);
+			DisableAction(DashAction);
+			DisableAction(InteractAction);
 		}
 
 		public void Update()
@@ -30,43 +84,36 @@ namespace Quinn.PlayerSystem
 			if (PauseMenuUI.Instance.IsPaused)
 				return;
 
-			MoveDirection = new Vector2()
-			{
-				x = Input.GetAxisRaw("Horizontal"),
-				y = Input.GetAxisRaw("Vertical")
-			}.normalized;
+			// Move
+			if (MoveAction != null && MoveAction.action != null)
+				MoveDirection = MoveAction.action.ReadValue<Vector2>();
+			else
+				MoveDirection = Vector2.zero;
+			MoveDirection = Vector2.ClampMagnitude(MoveDirection, 1f);
 
-			CursorWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-			if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+			// Cursor / Aim world position
+			Vector2? screenPos = null;
+			if (PointerPositionAction != null && PointerPositionAction.action != null)
 			{
-				OnDash?.Invoke();
+				screenPos = PointerPositionAction.action.ReadValue<Vector2>();
+			}
+			else if (Mouse.current != null)
+			{
+				screenPos = Mouse.current.position.ReadValue();
 			}
 
-			IsCastHeld = Input.GetMouseButton(0);
-			IsSpecialHeld = Input.GetMouseButton(1);
-
-			if (Input.GetMouseButtonDown(0))
+			if (screenPos.HasValue)
 			{
-				OnCastStart?.Invoke();
+				CursorWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPos.Value.x, screenPos.Value.y, Mathf.Abs(Camera.main.transform.position.z)));
 			}
-			else if (Input.GetMouseButtonUp(0))
+			else if (AimAction != null && AimAction.action != null)
 			{
-				OnCastStop?.Invoke();
-			}
-
-			if (Input.GetMouseButtonDown(1))
-			{
-				OnSpecialStart?.Invoke();
-			}
-			else if (Input.GetMouseButtonUp(1))
-			{
-				OnSpecialStop?.Invoke();
-			}
-
-			if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F))
-			{
-				OnInteract?.Invoke();
+				var aim = AimAction.action.ReadValue<Vector2>();
+				if (aim.sqrMagnitude > 0.0001f && PlayerManager.Instance != null)
+				{
+					var from = (Vector2)PlayerManager.Instance.transform.position;
+					CursorWorldPos = from + aim.normalized * AimRadius;
+				}
 			}
 		}
 
@@ -74,6 +121,25 @@ namespace Quinn.PlayerSystem
 		{
 			if (Instance == this)
 				Instance = null;
+
+			if (BasicAction != null && BasicAction.action != null)
+			{
+				BasicAction.action.started -= OnBasicStarted;
+				BasicAction.action.canceled -= OnBasicCanceled;
+			}
+			if (SpecialAction != null && SpecialAction.action != null)
+			{
+				SpecialAction.action.started -= OnSpecialStarted;
+				SpecialAction.action.canceled -= OnSpecialCanceled;
+			}
+			if (DashAction != null && DashAction.action != null)
+			{
+				DashAction.action.performed -= OnDashPerformed;
+			}
+			if (InteractAction != null && InteractAction.action != null)
+			{
+				InteractAction.action.performed -= OnInteractPerformed;
+			}
 		}
 
 		public void EnableInput()
@@ -96,6 +162,46 @@ namespace Quinn.PlayerSystem
 		{
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Confined;
+		}
+
+		private void OnBasicStarted(InputAction.CallbackContext _)
+		{
+			IsCastHeld = true;
+			OnCastStart?.Invoke();
+		}
+		private void OnBasicCanceled(InputAction.CallbackContext _)
+		{
+			IsCastHeld = false;
+			OnCastStop?.Invoke();
+		}
+		private void OnSpecialStarted(InputAction.CallbackContext _)
+		{
+			IsSpecialHeld = true;
+			OnSpecialStart?.Invoke();
+		}
+		private void OnSpecialCanceled(InputAction.CallbackContext _)
+		{
+			IsSpecialHeld = false;
+			OnSpecialStop?.Invoke();
+		}
+		private void OnDashPerformed(InputAction.CallbackContext _)
+		{
+			OnDash?.Invoke();
+		}
+		private void OnInteractPerformed(InputAction.CallbackContext _)
+		{
+			OnInteract?.Invoke();
+		}
+
+		private static void EnableAction(InputActionReference actionRef)
+		{
+			if (actionRef != null && actionRef.action != null && !actionRef.action.enabled)
+				actionRef.action.Enable();
+		}
+		private static void DisableAction(InputActionReference actionRef)
+		{
+			if (actionRef != null && actionRef.action != null && actionRef.action.enabled)
+				actionRef.action.Disable();
 		}
 	}
 }
