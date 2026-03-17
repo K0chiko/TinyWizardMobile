@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Quinn.PlayerSystem
 {
@@ -20,15 +21,16 @@ namespace Quinn.PlayerSystem
 		public event Action OnCastStart, OnCastStop;
 		public event Action OnSpecialStart, OnSpecialStop;
 
+		[FormerlySerializedAs("MoveAction")]
 		[Header("Input System (assign InputActionReferences)")]
-		[SerializeField] private InputActionReference MoveAction;
-		[SerializeField] private InputActionReference AimAction; // Vector2 aim stick (mobile)
-		[SerializeField] private InputActionReference PointerPositionAction; // Optional: screen position (touch/mouse)
-		[SerializeField] private InputActionReference BasicAction; // Button
-		[SerializeField] private InputActionReference SpecialAction; // Button
-		[SerializeField] private InputActionReference DashAction; // Button
-		[SerializeField] private InputActionReference InteractAction; // Button
-		[SerializeField] private float AimRadius = 2.5f; // used to synthesize crosshair around player on mobile
+		[SerializeField] private InputActionReference moveAction;
+		[FormerlySerializedAs("AimAction")] [SerializeField] private InputActionReference aimAction; // Vector2 aim stick (mobile)
+		[FormerlySerializedAs("PointerPositionAction")] [SerializeField] private InputActionReference pointerPositionAction; // Optional: screen position (touch/mouse)
+		[FormerlySerializedAs("BasicAction")] [SerializeField] private InputActionReference basicAction; // Button
+		[FormerlySerializedAs("SpecialAction")] [SerializeField] private InputActionReference specialAction; // Button
+		[FormerlySerializedAs("DashAction")] [SerializeField] private InputActionReference dashAction; // Button
+		[FormerlySerializedAs("InteractAction")] [SerializeField] private InputActionReference interactAction; // Button
+		[FormerlySerializedAs("AimRadius")] [SerializeField] private float aimRadius = 2.5f; // used to synthesize crosshair around player on mobile
 
 		public void Awake()
 		{
@@ -36,83 +38,82 @@ namespace Quinn.PlayerSystem
 			Instance = this;
 
 			// Subscribe to button events (performed/started/canceled)
-			if (BasicAction != null && BasicAction.action != null)
+			if (basicAction != null && basicAction.action != null)
 			{
-				BasicAction.action.started += OnBasicStarted;
-				BasicAction.action.canceled += OnBasicCanceled;
+				basicAction.action.started += OnBasicStarted;
+				basicAction.action.canceled += OnBasicCanceled;
 			}
-			if (SpecialAction != null && SpecialAction.action != null)
+			if (specialAction != null && specialAction.action != null)
 			{
-				SpecialAction.action.started += OnSpecialStarted;
-				SpecialAction.action.canceled += OnSpecialCanceled;
+				specialAction.action.started += OnSpecialStarted;
+				specialAction.action.canceled += OnSpecialCanceled;
 			}
-			if (DashAction != null && DashAction.action != null)
+			if (dashAction != null && dashAction.action != null)
 			{
-				DashAction.action.performed += OnDashPerformed;
+				dashAction.action.performed += OnDashPerformed;
 			}
-			if (InteractAction != null && InteractAction.action != null)
+			if (interactAction != null && interactAction.action != null)
 			{
-				InteractAction.action.performed += OnInteractPerformed;
+				interactAction.action.performed += OnInteractPerformed;
 			}
 		}
 
 		public void OnEnable()
 		{
 			// Enable actions so they can read values
-			EnableAction(MoveAction);
-			EnableAction(AimAction);
-			EnableAction(PointerPositionAction);
-			EnableAction(BasicAction);
-			EnableAction(SpecialAction);
-			EnableAction(DashAction);
-			EnableAction(InteractAction);
+			EnableAction(moveAction);
+			EnableAction(aimAction);
+			EnableAction(pointerPositionAction);
+			EnableAction(basicAction);
+			EnableAction(specialAction);
+			EnableAction(dashAction);
+			EnableAction(interactAction);
 		}
 
 		public void OnDisable()
 		{
-			DisableAction(MoveAction);
-			DisableAction(AimAction);
-			DisableAction(PointerPositionAction);
-			DisableAction(BasicAction);
-			DisableAction(SpecialAction);
-			DisableAction(DashAction);
-			DisableAction(InteractAction);
+			DisableAction(moveAction);
+			DisableAction(aimAction);
+			DisableAction(pointerPositionAction);
+			DisableAction(basicAction);
+			DisableAction(specialAction);
+			DisableAction(dashAction);
+			DisableAction(interactAction);
 		}
 
 		public void Update()
 		{
-			if (PauseMenuUI.Instance.IsPaused)
-				return;
+			if (PauseMenuUI.Instance.IsPaused) return;
 
-			// Move
-			if (MoveAction != null && MoveAction.action != null)
-				MoveDirection = MoveAction.action.ReadValue<Vector2>();
-			else
-				MoveDirection = Vector2.zero;
+			// 1. Движение
+			MoveDirection = moveAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
 			MoveDirection = Vector2.ClampMagnitude(MoveDirection, 1f);
 
-			// Cursor / Aim world position
-			Vector2? screenPos = null;
-			if (PointerPositionAction != null && PointerPositionAction.action != null)
-			{
-				screenPos = PointerPositionAction.action.ReadValue<Vector2>();
-			}
-			else if (Mouse.current != null)
-			{
-				screenPos = Mouse.current.position.ReadValue();
-			}
+			// 2. Логика прицеливания (Mobile First)
+			Vector2 playerPos = PlayerManager.Instance != null 
+				? (Vector2)PlayerManager.Instance.Player.transform.position 
+				: Vector2.zero;
 
-			if (screenPos.HasValue)
+			Vector2 aimInput = aimAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
+
+			if (aimInput.sqrMagnitude > 0.01f)
 			{
-				CursorWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPos.Value.x, screenPos.Value.y, Mathf.Abs(Camera.main.transform.position.z)));
+				// Стик отклонен: выносим прицел на радиус вокруг игрока
+				CursorWorldPos = playerPos + aimInput.normalized * aimRadius;
 			}
-			else if (AimAction != null && AimAction.action != null)
+			else
 			{
-				var aim = AimAction.action.ReadValue<Vector2>();
-				if (aim.sqrMagnitude > 0.0001f && PlayerManager.Instance != null)
+				// Стик отпущен: прицел следует за игроком на фиксированном расстоянии 
+				// или по направлению последнего движения
+				if (MoveDirection.sqrMagnitude > 0.01f)
 				{
-					var from = (Vector2)PlayerManager.Instance.transform.position;
-					CursorWorldPos = from + aim.normalized * AimRadius;
+					CursorWorldPos = playerPos + MoveDirection.normalized * aimRadius;
+				}
+				else 
+				{
+					// Если совсем стоим, просто держим прицел чуть впереди/сверху
+					// (или можно оставить CursorWorldPos без изменений, чтобы он не прыгал)
+					CursorWorldPos = playerPos + Vector2.up * 0.1f; 
 				}
 			}
 		}
@@ -122,23 +123,23 @@ namespace Quinn.PlayerSystem
 			if (Instance == this)
 				Instance = null;
 
-			if (BasicAction != null && BasicAction.action != null)
+			if (basicAction != null && basicAction.action != null)
 			{
-				BasicAction.action.started -= OnBasicStarted;
-				BasicAction.action.canceled -= OnBasicCanceled;
+				basicAction.action.started -= OnBasicStarted;
+				basicAction.action.canceled -= OnBasicCanceled;
 			}
-			if (SpecialAction != null && SpecialAction.action != null)
+			if (specialAction != null && specialAction.action != null)
 			{
-				SpecialAction.action.started -= OnSpecialStarted;
-				SpecialAction.action.canceled -= OnSpecialCanceled;
+				specialAction.action.started -= OnSpecialStarted;
+				specialAction.action.canceled -= OnSpecialCanceled;
 			}
-			if (DashAction != null && DashAction.action != null)
+			if (dashAction != null && dashAction.action != null)
 			{
-				DashAction.action.performed -= OnDashPerformed;
+				dashAction.action.performed -= OnDashPerformed;
 			}
-			if (InteractAction != null && InteractAction.action != null)
+			if (interactAction != null && interactAction.action != null)
 			{
-				InteractAction.action.performed -= OnInteractPerformed;
+				interactAction.action.performed -= OnInteractPerformed;
 			}
 		}
 
