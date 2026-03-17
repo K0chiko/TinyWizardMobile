@@ -82,7 +82,9 @@ namespace Quinn.PlayerSystem.SpellSystem
 			var input = InputManager.Instance;
 
 			input.OnCastStart += OnBasicStart;
+			input.OnCastStop += OnBasicStop;
 			input.OnSpecialStart += OnSpecialStart;
+			input.OnSpecialStop += OnSpecialStop;
 
 			FallbackStaff.SetStoredState();
 			string equippedStaffGUID = PlayerManager.Instance.EquippedStaffGUID;
@@ -158,26 +160,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 				return;
 
 			_inputBuffer.Update();
-
-			if (Input.GetMouseButton(0) && !IsBasicHeld && CanCast)
-			{
-				OnBasicStart();
-			}
-
-			if (Input.GetMouseButton(1) && !IsSpecialHeld && CanCast)
-			{
-				OnSpecialStart();
-			}
-
-			if (!Input.GetMouseButton(0))
-			{
-				OnBasicStop();
-			}
-
-			if (!Input.GetMouseButton(1))
-			{
-				OnSpecialStop();
-			}
 
 			// Make player face crosshair.
 			Vector2 faceDir = transform.position.DirectionTo(CrosshairManager.Instance.Position);

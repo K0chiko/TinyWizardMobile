@@ -1,8 +1,8 @@
 ﻿using FMODUnity;
 using Quinn.PlayerSystem.SpellSystem;
-using System;
-using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace Quinn.PlayerSystem
@@ -11,25 +11,28 @@ namespace Quinn.PlayerSystem
 	[RequireComponent(typeof(Health))]
 	public class PlayerMovement : Locomotion
 	{
-		[SerializeField]
-		private float MoveSpeed = 6f;
+		private static readonly int SpeedScale = Animator.StringToHash("SpeedScale");
+		private static readonly int Dashing = Animator.StringToHash("IsDashing");
 
-		[SerializeField]
-		private float VortexMaxSpeed = 6f;
-		[SerializeField]
-		private float VortexMaxRadius = 24f;
+		[FormerlySerializedAs("MoveSpeed")] [SerializeField]
+		private float moveSpeed = 6f;
 
-		[SerializeField]
-		private float DashSpeed = 12f;
-		[SerializeField]
-		private float DashDistance = 4f;
-		[SerializeField]
-		private float DashCooldown = 0.2f;
-		[SerializeField]
-		private EventReference DashSound;
+		[FormerlySerializedAs("VortexMaxSpeed")] [SerializeField]
+		private float vortexMaxSpeed = 6f;
+		[FormerlySerializedAs("VortexMaxRadius")] [SerializeField]
+		private float vortexMaxRadius = 24f;
 
-		[Space, SerializeField]
-		private VisualEffect DashTrail;
+		[FormerlySerializedAs("DashSpeed")] [SerializeField]
+		private float dashSpeed = 12f;
+		[FormerlySerializedAs("DashDistance")] [SerializeField]
+		private float dashDistance = 4f;
+		[FormerlySerializedAs("DashCooldown")] [SerializeField]
+		private float dashCooldown = 0.2f;
+		[FormerlySerializedAs("DashSound")] [SerializeField]
+		private EventReference dashSound;
+
+		[FormerlySerializedAs("DashTrail")] [Space, SerializeField]
+		private VisualEffect dashTrail;
 
 		public bool IsDashing { get; private set; }
 		public bool CanDash { get; set; } = true;
@@ -58,12 +61,12 @@ namespace Quinn.PlayerSystem
 
 		public void Update()
 		{
-			float scale = Rigidbody.linearVelocity.magnitude / MoveSpeed;
+			float scale = Rigidbody.linearVelocity.magnitude / moveSpeed;
 			if (IsDashing) scale = 1f;
-			_animator.SetFloat("SpeedScale", scale);
+			_animator.SetFloat(SpeedScale, scale);
 
-			_animator.SetBool("IsDashing", IsDashing);
-			DashTrail.SetBool("Enabled", IsDashing);
+			_animator.SetBool(Dashing, IsDashing);
+			dashTrail.SetBool("Enabled", IsDashing);
 		}
 
 		public void OnDestroy()
@@ -79,7 +82,7 @@ namespace Quinn.PlayerSystem
 
 			if (IsDashing)
 			{
-				vel += DashDirection * DashSpeed;
+				vel += DashDirection * dashSpeed;
 
 				if (Time.time > _dashEndTime)
 				{
@@ -89,7 +92,7 @@ namespace Quinn.PlayerSystem
 			}
 			else
 			{
-				float moveSpeed = _speedOverride ?? MoveSpeed;
+				float moveSpeed = _speedOverride ?? this.moveSpeed;
 				vel += moveSpeed * moveDir;
 
 				if (_vortexOrigin != null)
@@ -97,8 +100,8 @@ namespace Quinn.PlayerSystem
 					float dstToVortex = transform.position.DistanceTo(_vortexOrigin.position);
 					Vector2 dirToVortex = transform.position.DirectionTo(_vortexOrigin.position);
 
-					float t = Mathf.Clamp01(dstToVortex / VortexMaxRadius);
-					float vortexSpeed = Mathf.Lerp(VortexMaxSpeed, 0f, t);
+					float t = Mathf.Clamp01(dstToVortex / vortexMaxRadius);
+					float vortexSpeed = Mathf.Lerp(vortexMaxSpeed, 0f, t);
 
 					vel += dirToVortex * vortexSpeed;
 				}
@@ -140,11 +143,11 @@ namespace Quinn.PlayerSystem
 				IsDashing = true;
 				_health.BlockDamage(this);
 
-				Audio.Play(DashSound, transform.position);
-				float dashDur = DashDistance / DashSpeed;
+				Audio.Play(dashSound, transform.position);
+				float dashDur = dashDistance / dashSpeed;
 
 				_dashEndTime = Time.time + dashDur;
-				_nextDashTime = Time.time + DashCooldown;
+				_nextDashTime = Time.time + dashCooldown;
 			}
 		}
 
@@ -155,7 +158,7 @@ namespace Quinn.PlayerSystem
 
 		private void OnStaffEquiped(Staff staff)
 		{
-			DashTrail.SetGradient("Color", staff.SparkGradient);
+			dashTrail.SetGradient("Color", staff.SparkGradient);
 		}
 	}
 }

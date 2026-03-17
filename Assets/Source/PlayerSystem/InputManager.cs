@@ -1,6 +1,8 @@
 ﻿using Quinn.UI;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Quinn.PlayerSystem
 {
@@ -19,54 +21,112 @@ namespace Quinn.PlayerSystem
 		public event Action OnCastStart, OnCastStop;
 		public event Action OnSpecialStart, OnSpecialStop;
 
+		[FormerlySerializedAs("MoveAction")]
+		[Header("Input System (assign InputActionReferences)")]
+		[SerializeField] private InputActionReference moveAction;
+		[FormerlySerializedAs("AimAction")] [SerializeField] private InputActionReference aimAction; // Vector2 aim stick (mobile)
+		//[FormerlySerializedAs("PointerPositionAction")] [SerializeField] private InputActionReference pointerPositionAction; // Optional: screen position (touch/mouse)
+		[FormerlySerializedAs("BasicAction")] [SerializeField] private InputActionReference basicAction; // Button
+		[FormerlySerializedAs("SpecialAction")] [SerializeField] private InputActionReference specialAction; // Button
+		[FormerlySerializedAs("DashAction")] [SerializeField] private InputActionReference dashAction; // Button
+		[FormerlySerializedAs("InteractAction")] [SerializeField] private InputActionReference interactAction; // Button
+		[FormerlySerializedAs("AimRadius")] [SerializeField] private float aimRadius = 2.5f; // used to synthesize crosshair around player on mobile
+
 		public void Awake()
 		{
 			Debug.Assert(Instance == null, "There are more than one instances of InputManager!");
 			Instance = this;
+
+			// Subscribe to button events (performed/started/canceled)
+			if (basicAction != null && basicAction.action != null)
+			{
+				basicAction.action.started += OnBasicStarted;
+				basicAction.action.canceled += OnBasicCanceled;
+			}
+			if (specialAction != null && specialAction.action != null)
+			{
+				specialAction.action.started += OnSpecialStarted;
+				specialAction.action.canceled += OnSpecialCanceled;
+			}
+			if (dashAction != null && dashAction.action != null)
+			{
+				dashAction.action.performed += OnDashPerformed;
+			}
+			if (interactAction != null && interactAction.action != null)
+			{
+				interactAction.action.performed += OnInteractPerformed;
+			}
+		}
+
+		public void OnEnable()
+		{
+			// Enable actions so they can read values
+			EnableAction(moveAction);
+			EnableAction(aimAction);
+			//EnableAction(pointerPositionAction);
+			EnableAction(basicAction);
+			EnableAction(specialAction);
+			EnableAction(dashAction);
+			EnableAction(interactAction);
+		}
+
+		public void OnDisable()
+		{
+			DisableAction(moveAction);
+			DisableAction(aimAction);
+			//DisableAction(pointerPositionAction);
+			DisableAction(basicAction);
+			DisableAction(specialAction);
+			DisableAction(dashAction);
+			DisableAction(interactAction);
 		}
 
 		public void Update()
 		{
-			if (PauseMenuUI.Instance.IsPaused)
-				return;
+			if (PauseMenuUI.Instance.IsPaused) return;
+			
+			MoveDirection = moveAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
+			MoveDirection = Vector2.ClampMagnitude(MoveDirection, 1f);
 
-			MoveDirection = new Vector2()
+			Aim();
+		}
+
+		private void Aim()
+		{
+			Vector2 playerPos = PlayerManager.Instance != null 
+				? (Vector2)PlayerManager.Instance.Player.transform.position 
+				: Vector2.zero;
+
+			Vector2 aimInput = aimAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
+			float threshold = 0.2f;
+
+			if (aimInput.magnitude > threshold)
 			{
-				x = Input.GetAxisRaw("Horizontal"),
-				y = Input.GetAxisRaw("Vertical")
-			}.normalized;
-
-			CursorWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-			if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
-			{
-				OnDash?.Invoke();
+				CursorWorldPos = playerPos + aimInput.normalized * aimRadius;
+        
+				if (!IsCastHeld) 
+				{
+					IsCastHeld = true;
+					OnCastStart?.Invoke(); 
+				}
 			}
+			else
+			{
+				// 2. Стик отпущен
+				if (IsCastHeld)
+				{
+					IsCastHeld = false;
+					OnCastStop?.Invoke(); 
+				}
+				
+				if (MoveDirection.sqrMagnitude > 0.01f)
+				{
+					CursorWorldPos = playerPos + MoveDirection.normalized * aimRadius;
+				}
+				else 
+				{
 
-			IsCastHeld = Input.GetMouseButton(0);
-			IsSpecialHeld = Input.GetMouseButton(1);
-
-			if (Input.GetMouseButtonDown(0))
-			{
-				OnCastStart?.Invoke();
-			}
-			else if (Input.GetMouseButtonUp(0))
-			{
-				OnCastStop?.Invoke();
-			}
-
-			if (Input.GetMouseButtonDown(1))
-			{
-				OnSpecialStart?.Invoke();
-			}
-			else if (Input.GetMouseButtonUp(1))
-			{
-				OnSpecialStop?.Invoke();
-			}
-
-			if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F))
-			{
-				OnInteract?.Invoke();
+				}
 			}
 		}
 
@@ -74,6 +134,25 @@ namespace Quinn.PlayerSystem
 		{
 			if (Instance == this)
 				Instance = null;
+
+			if (basicAction != null && basicAction.action != null)
+			{
+				basicAction.action.started -= OnBasicStarted;
+				basicAction.action.canceled -= OnBasicCanceled;
+			}
+			if (specialAction != null && specialAction.action != null)
+			{
+				specialAction.action.started -= OnSpecialStarted;
+				specialAction.action.canceled -= OnSpecialCanceled;
+			}
+			if (dashAction != null && dashAction.action != null)
+			{
+				dashAction.action.performed -= OnDashPerformed;
+			}
+			if (interactAction != null && interactAction.action != null)
+			{
+				interactAction.action.performed -= OnInteractPerformed;
+			}
 		}
 
 		public void EnableInput()
@@ -96,6 +175,46 @@ namespace Quinn.PlayerSystem
 		{
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Confined;
+		}
+
+		private void OnBasicStarted(InputAction.CallbackContext _)
+		{
+			IsCastHeld = true;
+			OnCastStart?.Invoke();
+		}
+		private void OnBasicCanceled(InputAction.CallbackContext _)
+		{
+			IsCastHeld = false;
+			OnCastStop?.Invoke();
+		}
+		private void OnSpecialStarted(InputAction.CallbackContext _)
+		{
+			IsSpecialHeld = true;
+			OnSpecialStart?.Invoke();
+		}
+		private void OnSpecialCanceled(InputAction.CallbackContext _)
+		{
+			IsSpecialHeld = false;
+			OnSpecialStop?.Invoke();
+		}
+		private void OnDashPerformed(InputAction.CallbackContext _)
+		{
+			OnDash?.Invoke();
+		}
+		private void OnInteractPerformed(InputAction.CallbackContext _)
+		{
+			OnInteract?.Invoke();
+		}
+
+		private static void EnableAction(InputActionReference actionRef)
+		{
+			if (actionRef != null && actionRef.action != null && !actionRef.action.enabled)
+				actionRef.action.Enable();
+		}
+		private static void DisableAction(InputActionReference actionRef)
+		{
+			if (actionRef != null && actionRef.action != null && actionRef.action.enabled)
+				actionRef.action.Disable();
 		}
 	}
 }
