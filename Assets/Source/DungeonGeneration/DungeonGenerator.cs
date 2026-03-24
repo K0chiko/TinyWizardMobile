@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Quinn.DungeonGeneration
 {
@@ -80,19 +81,20 @@ namespace Quinn.DungeonGeneration
 #if UNITY_EDITOR
 		public void Update()
 		{
-			if (Input.GetKeyDown(KeyCode.B))
+			if (Keyboard.current != null && Keyboard.current.bKey.wasPressedThisFrame)
 			{
 				var player = PlayerManager.Instance.Player;
-				Vector2 pos = player.transform.position;
+				if (player == null) return;
 
-				var room = GameObject.FindGameObjectsWithTag("Room").FirstOrDefault(x => x.GetComponent<Room>().IsBossRoom);
-				if (room != null)
+				var roomObject = GameObject.FindGameObjectsWithTag("Room")
+					.FirstOrDefault(x => x.GetComponent<Room>()?.IsBossRoom == true);
+
+				if (roomObject != null)
 				{
-					pos = room.transform.position;
-					pos += Vector2.down * 4f;
+					Vector3 pos = roomObject.transform.position;
+					pos += (Vector3)Vector2.down * 4f;
+					player.transform.position = pos;
 				}
-
-				player.transform.position = pos;
 			}
 		}
 #endif
@@ -176,10 +178,10 @@ namespace Quinn.DungeonGeneration
 
 		private async Awaitable StartFloorAsync(FloorSO floor)
 		{
-			UnityServices.Analytics.Instance.Push(new UnityServices.Events.DiscoveredFloorEvent()
+			/*UnityServices.Analytics.Instance.Push(new UnityServices.Events.DiscoveredFloorEvent()
 			{
 				Name = floor.name
-			});
+			});*/
 
 			CameraManager.Instance.Blackout();
 			RuntimeManager.StudioSystem.setParameterByName("reverb", floor.Reverb);

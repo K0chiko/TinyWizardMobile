@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Quinn
@@ -10,10 +11,20 @@ namespace Quinn
 			Play();
 		}
 
-		public async void Play()
+		public void Play()
 		{
-			await SceneManager.LoadSceneAsync(1);
-			Global.Bootstrap();
+			StartCoroutine(LoadLevelRoutine());
+		}
+		
+		
+		private IEnumerator LoadLevelRoutine()
+		{
+			yield return SceneManager.LoadSceneAsync(1);
+			Debug.Log("Готово!");
 		}
 	}
+	
+	
+
+
 }

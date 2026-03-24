@@ -1,9 +1,9 @@
-﻿using DG.Tweening;
+﻿using System.Threading.Tasks;
+using DG.Tweening;
 using FMOD.Studio;
 using FMODUnity;
 using Quinn.PlayerSystem;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +15,8 @@ namespace Quinn.UI
 		private Canvas Canvas;
 		[SerializeField, Required]
 		private CanvasGroup CanvasGroup;
+		[SerializeField, Required]
+		private Canvas uiMobile;
 
 		[SerializeField, Required]
 		private Slider SFXSlider, MusicSlider;
@@ -38,20 +40,6 @@ namespace Quinn.UI
 
 		public void Update()
 		{
-			if (Input.GetKeyDown(KeyCode.Escape))
-			{
-				IsPaused = !IsPaused;
-
-				if (IsPaused)
-				{
-					Pause();
-				}
-				else
-				{
-					Unpause();
-				}
-			}
-
 			if (IsPaused)
 			{
 				_sfx.setVolume(SFXSlider.value);
@@ -64,13 +52,21 @@ namespace Quinn.UI
 			if (IsPaused)
 				Unpause();
 		}
-
+		
+		
+		public void TogglePause()
+		{
+			IsPaused = !IsPaused;
+			if (IsPaused) Pause();
+			else Unpause();
+		}
+		
 		public async void Quit_Button()
 		{
 			if (!IsPaused)
 				return;
 
-			await Wait.Seconds(0.2f);
+			await Task.Delay(200);
 
 #if UNITY_EDITOR
 			UnityEditor.EditorApplication.isPlaying = false;
@@ -85,10 +81,11 @@ namespace Quinn.UI
 			Time.timeScale = 0f;
 
 			Canvas.enabled = true;
+			uiMobile.enabled = false;
 			CanvasGroup.DOFade(1f, 0.1f).SetUpdate(true);
 
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
+			//Cursor.visible = true;
+			//Cursor.lockState = CursorLockMode.None;
 
 			CrosshairManager.Instance.Hide();
 
@@ -105,6 +102,8 @@ namespace Quinn.UI
 				.SetUpdate(true)
 				.onComplete += () => Canvas.enabled = false;
 
+			uiMobile.enabled = true;
+			
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Confined;
 

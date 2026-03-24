@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace Quinn.PlayerSystem
@@ -69,18 +70,15 @@ namespace Quinn.PlayerSystem
 		public void Update()
 		{
 #if UNITY_EDITOR
-			if (Input.GetKeyDown(KeyCode.Alpha1))
-				GoToFloor(0);
-			else if (Input.GetKeyDown(KeyCode.Alpha2))
-				GoToFloor(1);
-			else if (Input.GetKeyDown(KeyCode.Alpha3))
-				GoToFloor(2);
-			else if (Input.GetKeyDown(KeyCode.Alpha4))
-				GoToFloor(3);
-			else if (Input.GetKeyDown(KeyCode.Alpha5))
-				GoToFloor(4);
-			else if (Input.GetKeyDown(KeyCode.Alpha6))
-				GoToFloor(5);
+			var kb = Keyboard.current;
+			if (kb == null) return;
+			
+			if (kb.digit1Key.wasPressedThisFrame) GoToFloor(0);
+			else if (kb.digit2Key.wasPressedThisFrame) GoToFloor(1);
+			else if (kb.digit3Key.wasPressedThisFrame) GoToFloor(2);
+			else if (kb.digit4Key.wasPressedThisFrame) GoToFloor(3);
+			else if (kb.digit5Key.wasPressedThisFrame) GoToFloor(4);
+			else if (kb.digit6Key.wasPressedThisFrame) GoToFloor(5);
 #endif
 		}
 

@@ -9,383 +9,385 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.VFX;
+using UnityEngine.InputSystem; // Добавлено для новой системы ввода
 
 namespace Quinn.PlayerSystem
 {
-	[RequireComponent(typeof(Animator))]
-	public class Player : MonoBehaviour
-	{
-		[SerializeField]
-		private float InteractionRadius = 1f;
+    [RequireComponent(typeof(Animator))]
+    public class Player : MonoBehaviour
+    {
+       // ... (все поля остаются без изменений до метода Update) ...
+       [SerializeField]
+       private float InteractionRadius = 1f;
 
-		[SerializeField, Space]
-		private EventReference FootstepSound;
-		[SerializeField]
-		private float StartFootstepCooldown = 0.2f;
-		[SerializeField]
-		private VisualEffect FootstepVFX;
-		[SerializeField]
-		private Color StoneColor, CarpetColor, HealingPuddleColor, SnowColor;
+       [SerializeField, Space]
+       private EventReference FootstepSound;
+       [SerializeField]
+       private float StartFootstepCooldown = 0.2f;
+       [SerializeField]
+       private VisualEffect FootstepVFX;
+       [SerializeField]
+       private Color StoneColor, CarpetColor, HealingPuddleColor, SnowColor;
 
-		[SerializeField, Space]
-		private VisualEffect LandVFX;
+       [SerializeField, Space]
+       private VisualEffect LandVFX;
 
-		[SerializeField, Space]
-		private EventReference HurtSnapshot;
-		[SerializeField]
-		private float HurtDuration = 2f;
-		[SerializeField]
-		private Light2D PlayerLight;
+       [SerializeField, Space]
+       private EventReference HurtSnapshot;
+       [SerializeField]
+       private float HurtDuration = 2f;
+       [SerializeField]
+       private Light2D PlayerLight;
 
-		[Space, SerializeField]
-		private SpriteMask PuddleMask;
-		[SerializeField]
-		private VisualEffect PuddleVFX, PuddleHealingVFX;
+       [Space, SerializeField]
+       private SpriteMask PuddleMask;
+       [SerializeField]
+       private VisualEffect PuddleVFX, PuddleHealingVFX;
 
-		[Space, SerializeField]
-		private CanvasGroup FloorTitleGroup;
-		[SerializeField]
-		private TextMeshProUGUI FloorTitleText;
-		[SerializeField]
-		private EventReference FloorEnterCue, FloorExitWooshSound;
-		[SerializeField]
-		private VisualEffect AmbientVFX;
+       [Space, SerializeField]
+       private CanvasGroup FloorTitleGroup;
+       [SerializeField]
+       private TextMeshProUGUI FloorTitleText;
+       [SerializeField]
+       private EventReference FloorEnterCue, FloorExitWooshSound;
+       [SerializeField]
+       private VisualEffect AmbientVFX;
 
-		private Animator _animator;
-		private bool _wasMoving;
-		private float _nextStartFootstepSoundAllowedTime;
+       private Animator _animator;
+       private bool _wasMoving;
+       private float _nextStartFootstepSoundAllowedTime;
 
-		private EventInstance _hurtSnapshot;
-		private float _playerLightIntensity;
+       private EventInstance _hurtSnapshot;
+       private float _playerLightIntensity;
 
-		private float _puddleHealingVFXSpawnRate;
+       private float _puddleHealingVFXSpawnRate;
 
-		private bool _noClip;
-		private int _preNoClipMask;
-		private bool _godMode;
+       private bool _noClip;
+       private int _preNoClipMask;
+       private bool _godMode;
 
-		public void Awake()
-		{
-			_animator = GetComponent<Animator>();
+       public void Awake()
+       {
+          _animator = GetComponent<Animator>();
 
-			PlayerManager.Instance.SetPlayer(this);
-			InputManager.Instance.OnInteract += OnInteract;
+          PlayerManager.Instance.SetPlayer(this);
+          InputManager.Instance.OnInteract += OnInteract;
 
-			_hurtSnapshot = RuntimeManager.CreateInstance(HurtSnapshot);
-			GetComponent<Health>().OnDamagedExpanded += OnHurt;
+          _hurtSnapshot = RuntimeManager.CreateInstance(HurtSnapshot);
+          GetComponent<Health>().OnDamagedExpanded += OnHurt;
 
-			_playerLightIntensity = PlayerLight.intensity;
+          _playerLightIntensity = PlayerLight.intensity;
 
-			_puddleHealingVFXSpawnRate = PuddleHealingVFX.GetFloat("SpawnRate");
-			PuddleHealingVFX.SetFloat("SpawnRate", 0f);
+          _puddleHealingVFXSpawnRate = PuddleHealingVFX.GetFloat("SpawnRate");
+          PuddleHealingVFX.SetFloat("SpawnRate", 0f);
 
-			FloorTitleGroup.alpha = 0f;
-		}
+          FloorTitleGroup.alpha = 0f;
+       }
 
-		public void Update()
-		{
-			bool isMoving = InputManager.Instance.MoveDirection.sqrMagnitude > 0f;
-			_animator.SetBool("IsMoving", isMoving);
+       public void Update()
+       {
+          bool isMoving = InputManager.Instance.MoveDirection.sqrMagnitude > 0f;
+          _animator.SetBool("IsMoving", isMoving);
 
-			if (isMoving && !_wasMoving && Time.time > _nextStartFootstepSoundAllowedTime)
-			{
-				_nextStartFootstepSoundAllowedTime = Time.time + StartFootstepCooldown;
-				PlayFootstepSound(GetSoundMaterialType(out _));
-			}
+          if (isMoving && !_wasMoving && Time.time > _nextStartFootstepSoundAllowedTime)
+          {
+             _nextStartFootstepSoundAllowedTime = Time.time + StartFootstepCooldown;
+             PlayFootstepSound(GetSoundMaterialType(out _));
+          }
 
-			_wasMoving = isMoving;
+          _wasMoving = isMoving;
 
 #if UNITY_EDITOR
-			if (Input.GetKeyDown(KeyCode.Alpha8))
-			{
-				GetComponent<Health>().TakeDamage(1f, Vector2.zero, Team.Environment, gameObject);
-			}
+          var keyboard = Keyboard.current;
+          if (keyboard != null)
+          {
+             // Чит на урон (Клавиша 8)
+             if (keyboard.digit8Key.wasPressedThisFrame)
+             {
+                GetComponent<Health>().TakeDamage(1f, Vector2.zero, Team.Environment, gameObject);
+             }
 
-			if (Input.GetKeyDown(KeyCode.V))
-			{
-				_noClip = !_noClip;
+             // Чит NoClip (Клавиша V)
+             if (keyboard.vKey.wasPressedThisFrame)
+             {
+                _noClip = !_noClip;
 
-				if (_noClip)
-				{
-					var collider = GetComponent<Collider2D>();
-					_preNoClipMask = collider.forceReceiveLayers;
-					collider.forceReceiveLayers = 0;
+                if (_noClip)
+                {
+                   var collider = GetComponent<Collider2D>();
+                   _preNoClipMask = collider.forceReceiveLayers;
+                   collider.forceReceiveLayers = 0;
 
-					GetComponent<PlayerMovement>().SetSpeedOverride(16f);
-				}
-				else
-				{
-					GetComponent<Collider2D>().forceReceiveLayers = _preNoClipMask;
-					GetComponent<PlayerMovement>().ClearSpeedOverride();
-				}
-			}
+                   GetComponent<PlayerMovement>().SetSpeedOverride(16f);
+                }
+                else
+                {
+                   GetComponent<Collider2D>().forceReceiveLayers = _preNoClipMask;
+                   GetComponent<PlayerMovement>().ClearSpeedOverride();
+                }
+             }
 
-			if (Input.GetKeyDown(KeyCode.G))
-			{
-				_godMode = !_godMode;
-
-				if (_godMode)
-				{
-					GetComponent<Health>().IsGodModeEnabled = true;
-				}
-				else
-				{
-					GetComponent<Health>().IsGodModeEnabled = false;
-				}
-			}
+             // Чит GodMode (Клавиша G)
+             if (keyboard.gKey.wasPressedThisFrame)
+             {
+                _godMode = !_godMode;
+                GetComponent<Health>().IsGodModeEnabled = _godMode;
+             }
+          }
 #endif
-		}
+       }
 
-		public void OnDestroy()
-		{
-			if (PlayerManager.Instance != null)
-			{
-				PlayerManager.Instance.SetPlayer(null);
-			}
+       // ... (остальные методы класса остаются без изменений) ...
+       public void OnDestroy()
+       {
+          if (PlayerManager.Instance != null)
+          {
+             PlayerManager.Instance.SetPlayer(null);
+          }
 
-			if (InputManager.Instance != null)
-			{
-				InputManager.Instance.OnInteract -= OnInteract;
-			}
+          if (InputManager.Instance != null)
+          {
+             InputManager.Instance.OnInteract -= OnInteract;
+          }
 
-			_hurtSnapshot.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-			_hurtSnapshot.release();
+          _hurtSnapshot.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+          _hurtSnapshot.release();
 
-			transform.DOKill();
-		}
+          transform.DOKill();
+       }
 
-		public void EnablePuddleMask()
-		{
-			PuddleMask.enabled = true;
-		}
+       public void EnablePuddleMask()
+       {
+          PuddleMask.enabled = true;
+       }
 
-		public void DisablePuddleMask()
-		{
-			PuddleMask.enabled = false;
-		}
+       public void DisablePuddleMask()
+       {
+          PuddleMask.enabled = false;
+       }
 
-		public void OnFootstep_Anim()
-		{
-			var mat = GetSoundMaterialType(out bool vfx);
-			PlayFootstepSound(mat);
+       public void OnFootstep_Anim()
+       {
+          var mat = GetSoundMaterialType(out bool vfx);
+          PlayFootstepSound(mat);
 
-			var floorColor = SoundMaterialToColor(mat);
+          var floorColor = SoundMaterialToColor(mat);
 
-			if (vfx)
-			{
-				if (mat is SoundMaterialType.HealingPuddle)
-				{
-					PuddleVFX.Play();
-				}
-				else
-				{
-					FootstepVFX.SetVector4("Color", floorColor);
-					FootstepVFX.Play();
-				}
-			}
-		}
+          if (vfx)
+          {
+             if (mat is SoundMaterialType.HealingPuddle)
+             {
+                PuddleVFX.Play();
+             }
+             else
+             {
+                FootstepVFX.SetVector4("Color", floorColor);
+                FootstepVFX.Play();
+             }
+          }
+       }
 
-		public void OnLand_Anim()
-		{
-			var mat = GetSoundMaterialType(out bool vfx);
-			var floorColor = SoundMaterialToColor(mat);
+       public void OnLand_Anim()
+       {
+          var mat = GetSoundMaterialType(out bool vfx);
+          var floorColor = SoundMaterialToColor(mat);
 
-			if (vfx)
-			{
-				LandVFX.SetGradient("Color", new Gradient() { colorKeys = new GradientColorKey[] { new(floorColor, 0f) }, alphaKeys = new GradientAlphaKey[] { new(1f, 0f) } });
-				LandVFX.Play();
-			}
-		}
+          if (vfx)
+          {
+             LandVFX.SetGradient("Color", new Gradient() { colorKeys = new GradientColorKey[] { new(floorColor, 0f) }, alphaKeys = new GradientAlphaKey[] { new(1f, 0f) } });
+             LandVFX.Play();
+          }
+       }
 
-		public void SetAmbientVFX(VisualEffectAsset asset)
-		{
-			AmbientVFX.visualEffectAsset = asset;
-			AmbientVFX.Play();
-		}
+       public void SetAmbientVFX(VisualEffectAsset asset)
+       {
+          AmbientVFX.visualEffectAsset = asset;
+          AmbientVFX.Play();
+       }
 
-		public void ClearAmbientVFX()
-		{
-			AmbientVFX.Stop();
-			AmbientVFX.visualEffectAsset = null;
-		}
+       public void ClearAmbientVFX()
+       {
+          AmbientVFX.Stop();
+          AmbientVFX.visualEffectAsset = null;
+       }
 
-		public async Awaitable EnterFloorAsync()
-		{
-			HUD.Instance.Hide();
-			FloorTitleText.text = DungeonGenerator.Instance.ActiveFloor.Title;
-			FloorTitleGroup.alpha = 1f;
+       public async Awaitable EnterFloorAsync()
+       {
+          HUD.Instance.Hide();
+          FloorTitleText.text = DungeonGenerator.Instance.ActiveFloor.Title;
+          FloorTitleGroup.alpha = 1f;
 
-			InputManager.Instance.DisableInput();
+          InputManager.Instance.DisableInput();
 
-			var collider = GetComponent<Collider2D>();
-			collider.enabled = false;
+          var collider = GetComponent<Collider2D>();
+          collider.enabled = false;
 
-			_animator.SetTrigger("EnterSequence");
-			await Wait.Seconds(1f, destroyCancellationToken);
+          _animator.SetTrigger("EnterSequence");
+          await Wait.Seconds(1f, destroyCancellationToken);
 
-			if (!DungeonGenerator.Instance.ActiveFloor.SkipEnterCue)
-			{
-				Audio.Play(FloorEnterCue);
-			}
+          if (!DungeonGenerator.Instance.ActiveFloor.SkipEnterCue)
+          {
+             Audio.Play(FloorEnterCue);
+          }
 
-			collider.enabled = true;
+          collider.enabled = true;
 
-			if (InputManager.Instance != null)
-				InputManager.Instance.EnableInput();
+          if (InputManager.Instance != null)
+             InputManager.Instance.EnableInput();
 
-			await Wait.Seconds(3f);
-			await FloorTitleGroup.DOFade(0f, 2f).SetEase(Ease.InCubic).AsyncWaitForCompletion();
-			HUD.Instance.FadeIn();
-		}
+          await Wait.Seconds(3f);
+          await FloorTitleGroup.DOFade(0f, 2f).SetEase(Ease.InCubic).AsyncWaitForCompletion();
+          HUD.Instance.FadeIn();
+       }
 
-		public async Awaitable ExitFloorAsync(FloorExit exit)
-		{
-			InputManager.Instance.DisableInput();
+       public async Awaitable ExitFloorAsync(FloorExit exit)
+       {
+          InputManager.Instance.DisableInput();
 
-			var collider = GetComponent<Collider2D>();
-			collider.enabled = false;
+          var collider = GetComponent<Collider2D>();
+          collider.enabled = false;
 
-			bool wooshPlayed = false;
+          bool wooshPlayed = false;
 
-			float dur = 0.5f;
-			float halfTime = Time.time + (dur / 2f);
+          float dur = 0.5f;
+          float halfTime = Time.time + (dur / 2f);
 
-			var tween = transform.DOJump(exit.transform.position, 2f, 1, dur)
-				.SetEase(Ease.Linear)
-				.OnUpdate(() =>
-				{
-					if (Time.time > halfTime)
-					{
-						exit.EnableMask();
+          var tween = transform.DOJump(exit.transform.position, 2f, 1, dur)
+             .SetEase(Ease.Linear)
+             .OnUpdate(() =>
+             {
+                if (Time.time > halfTime)
+                {
+                   exit.EnableMask();
 
-						if (!wooshPlayed)
-						{
-							wooshPlayed = true;
-							Audio.Play(FloorExitWooshSound, transform.position);
-						}
-					}
-				});
+                   if (!wooshPlayed)
+                   {
+                      wooshPlayed = true;
+                      Audio.Play(FloorExitWooshSound, transform.position);
+                   }
+                }
+             });
 
-			await tween.AsyncWaitForCompletion();
+          await tween.AsyncWaitForCompletion();
 
-			var fade = CameraManager.Instance.FadeOut();
-			transform.DOMoveY(transform.position.y - 2.2f, 20f)
-				.SetEase(Ease.Linear)
-				.SetSpeedBased();
+          var fade = CameraManager.Instance.FadeOut();
+          transform.DOMoveY(transform.position.y - 2.2f, 20f)
+             .SetEase(Ease.Linear)
+             .SetSpeedBased();
 
-			await fade;
-		}
+          await fade;
+       }
 
-		public void OnHealingPuddleHealStart()
-		{
-			PuddleHealingVFX.SetFloat("SpawnRate", _puddleHealingVFXSpawnRate);
-			PuddleHealingVFX.Play();
-		}
+       public void OnHealingPuddleHealStart()
+       {
+          PuddleHealingVFX.SetFloat("SpawnRate", _puddleHealingVFXSpawnRate);
+          PuddleHealingVFX.Play();
+       }
 
-		public void OnHealingPuddleHealEnd()
-		{
-			PuddleHealingVFX.SetFloat("SpawnRate", 0f);
-		}
+       public void OnHealingPuddleHealEnd()
+       {
+          PuddleHealingVFX.SetFloat("SpawnRate", 0f);
+       }
 
-		private Color SoundMaterialToColor(SoundMaterialType mat) => mat switch
-		{
-			SoundMaterialType.None => Color.black,
-			SoundMaterialType.Stone => StoneColor,
-			SoundMaterialType.Carpet => CarpetColor,
-			SoundMaterialType.HealingPuddle => HealingPuddleColor,
-			SoundMaterialType.Snow => SnowColor,
-			_ => throw new NotImplementedException(),
-		};
+       private Color SoundMaterialToColor(SoundMaterialType mat) => mat switch
+       {
+          SoundMaterialType.None => Color.black,
+          SoundMaterialType.Stone => StoneColor,
+          SoundMaterialType.Carpet => CarpetColor,
+          SoundMaterialType.HealingPuddle => HealingPuddleColor,
+          SoundMaterialType.Snow => SnowColor,
+          _ => throw new NotImplementedException(),
+       };
 
-		private SoundMaterialType GetSoundMaterialType(out bool playVFX)
-		{
-			SoundMaterialType mat = SoundMaterialType.None;
-			int highestPriority = -9999;
+       private SoundMaterialType GetSoundMaterialType(out bool playVFX)
+       {
+          SoundMaterialType mat = SoundMaterialType.None;
+          int highestPriority = -9999;
 
-			var colliders = Physics2D.OverlapPointAll(transform.position);
-			playVFX = false;
+          var colliders = Physics2D.OverlapPointAll(transform.position);
+          playVFX = false;
 
-			foreach (var collider in colliders)
-			{
-				if (collider.TryGetComponent(out SoundMaterial soundMat))
-				{
-					if (soundMat.Priority > highestPriority)
-					{
-						mat = soundMat.Material;
-						highestPriority = soundMat.Priority;
-						playVFX = soundMat.PlayVFX;
-					}
-				}
-			}
+          foreach (var collider in colliders)
+          {
+             if (collider.TryGetComponent(out SoundMaterial soundMat))
+             {
+                if (soundMat.Priority > highestPriority)
+                {
+                   mat = soundMat.Material;
+                   highestPriority = soundMat.Priority;
+                   playVFX = soundMat.PlayVFX;
+                }
+             }
+          }
 
-			
-			return mat;
-		}
+          
+          return mat;
+       }
 
-		private void PlayFootstepSound(SoundMaterialType mat)
-		{
-			var instance = RuntimeManager.CreateInstance(FootstepSound);
-			instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-			instance.setParameterByNameWithLabel("sound-mat", mat.ToString());
+       private void PlayFootstepSound(SoundMaterialType mat)
+       {
+          var instance = RuntimeManager.CreateInstance(FootstepSound);
+          instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+          instance.setParameterByNameWithLabel("sound-mat", mat.ToString());
 
-			instance.start();
-			instance.release();
-		}
+          instance.start();
+          instance.release();
+       }
 
-		private void OnInteract()
-		{
-			var colliders = Physics2D.OverlapCircleAll(transform.position, InteractionRadius);
-			var interactables = new HashSet<IInteractable>();
+       private void OnInteract()
+       {
+          var colliders = Physics2D.OverlapCircleAll(transform.position, InteractionRadius);
+          var interactables = new HashSet<IInteractable>();
 
-			foreach (var collider in colliders)
-			{
-				var component = collider.GetComponent(typeof(IInteractable));
+          foreach (var collider in colliders)
+          {
+             var component = collider.GetComponent(typeof(IInteractable));
 
-				if (component is IInteractable interactable)
-				{
-					interactables.Add(interactable);
-				}
-			}
+             if (component is IInteractable interactable)
+             {
+                interactables.Add(interactable);
+             }
+          }
 
-			IInteractable bestInteractable = null;
-			int highestPriority = -99999;
+          IInteractable bestInteractable = null;
+          int highestPriority = -99999;
 
-			foreach (var interactable in interactables)
-			{
-				int priority = interactable.Priority;
+          foreach (var interactable in interactables)
+          {
+             int priority = interactable.Priority;
 
-				if (priority > highestPriority)
-				{
-					bestInteractable = interactable;
-					highestPriority = priority;
-				}
-			}
+             if (priority > highestPriority)
+             {
+                bestInteractable = interactable;
+                highestPriority = priority;
+             }
+          }
 
-			bestInteractable?.Interact(this);
-		}
+          bestInteractable?.Interact(this);
+       }
 
-		private async void OnHurt(DamageInfo info)
-		{
-			if (!info.IsLethal)
-			{
-				var seq = DOTween.Sequence();
-				float brightness = _playerLightIntensity;
+       private async void OnHurt(DamageInfo info)
+       {
+          if (!info.IsLethal)
+          {
+             var seq = DOTween.Sequence();
+             float brightness = _playerLightIntensity;
 
-				seq.Append(PlayerLight.DOFade(brightness * 0.5f, 0.5f));
-				seq.AppendInterval(HurtDuration);
-				seq.Append(PlayerLight.DOFade(brightness / 0.5f, 1.5f));
+             seq.Append(PlayerLight.DOFade(brightness * 0.5f, 0.5f));
+             seq.AppendInterval(HurtDuration);
+             seq.Append(PlayerLight.DOFade(brightness / 0.5f, 1.5f));
 
-				seq.Play();
+             seq.Play();
 
-				_hurtSnapshot.start();
-				await Wait.Seconds(HurtDuration);
-				_hurtSnapshot.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-			}
-			// Is dead.
-			else
-			{
-				GetComponent<Animator>().SetTrigger("Die");
-			}
-		}
-	}
+             _hurtSnapshot.start();
+             await Wait.Seconds(HurtDuration);
+             _hurtSnapshot.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+          }
+          // Is dead.
+          else
+          {
+             GetComponent<Animator>().SetTrigger("Die");
+          }
+       }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using FMODUnity;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Quinn.PlayerSystem
 {
@@ -21,8 +22,18 @@ namespace Quinn.PlayerSystem
 
 				if (Camera.main == null)
 					return Vector2.zero;
-				// Fallback to mouse when InputManager is not available
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				Vector2 screenPos = Vector2.zero;
+        
+				if (Mouse.current != null)
+				{
+					screenPos = Mouse.current.position.ReadValue();
+				}
+				else if (Touchscreen.current != null /*&& Touchscreen.current.touches.count > 0*/)
+				{
+					screenPos = Touchscreen.current.touches[0].position.ReadValue();
+				}
+
+				return Camera.main.ScreenToWorldPoint(screenPos);
 			}
 		}
 

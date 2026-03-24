@@ -77,7 +77,7 @@ namespace Quinn.UI
 			scale += _defaultScale;
 			LowHPVignette.transform.localScale = new Vector3(scale, scale, 1f);
 
-			if (Input.GetKeyDown(KeyCode.Tab))
+			/*if (Input.GetKeyDown(KeyCode.Tab))
 			{
 				foreach (var text in HelpText)
 				{
@@ -90,7 +90,7 @@ namespace Quinn.UI
 				{
 					text.DOFade(0f, 0.2f);
 				}
-			}
+			}*/
 		}
 
 		public void OnDestroy()

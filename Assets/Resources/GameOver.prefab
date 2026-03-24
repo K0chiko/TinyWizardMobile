@@ -732,6 +732,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -893,6 +894,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Quit
       objectReference: {fileID: 0}
+    - target: {fileID: 8144616913929744049, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -959,6 +964,18 @@ PrefabInstance:
       value: 96.2
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -992,7 +1009,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -75.44999
+      value: -88
       objectReference: {fileID: 0}
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1005,6 +1022,10 @@ PrefabInstance:
     - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661765399201919781, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7966214820452028471, guid: 1b5b67a43b29baa4d803bae9e778e2f8, type: 3}
       propertyPath: m_Transition
