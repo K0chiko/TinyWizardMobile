@@ -99,3 +99,5 @@ fmod_editor.log
 
 /[Aa]ssets/Resources/PerformanceTestRunSettings.json
 /[Aa]ssets/Resources/PerformanceTestRunSettings.json.meta
+
+.utmp/
