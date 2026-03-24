@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.VFX;
 
@@ -115,22 +116,28 @@ namespace Quinn.PlayerSystem.SpellSystem
 		public void Update()
 		{
 #if UNITY_EDITOR
-			if (Input.GetKeyDown(KeyCode.Alpha0) && EquippedStaff != null && EquippedStaff.Energy > 0f)
+			var kb = Keyboard.current;
+			if (kb != null)
 			{
-				EquippedStaff.ConsumeAllEnergy();
-			}
-
-			if (Input.GetKeyDown(KeyCode.Alpha9))
-			{
-				if (EquippedStaff)
+				// Чит на обнуление энергии (Клавиша 0)
+				if (kb.digit0Key.wasPressedThisFrame && EquippedStaff != null && EquippedStaff.Energy > 0f)
 				{
-					CastingSpark.transform.SetParent(null);
-					Destroy(EquippedStaff.gameObject);
-					EquippedStaff = null;
+					EquippedStaff.ConsumeAllEnergy();
 				}
 
-				GameObject staff = AllStaffs.Where(x => EquippedStaff == null || x.GUID != EquippedStaff.GUID).GetRandom().gameObject.Clone(StaffPivot);
-				EquipStaff(staff.GetComponent<Staff>(), true);
+				// Чит на случайный посох (Клавиша 9)
+				if (kb.digit9Key.wasPressedThisFrame)
+				{
+					if (EquippedStaff)
+					{
+						CastingSpark.transform.SetParent(null);
+						Destroy(EquippedStaff.gameObject);
+						EquippedStaff = null;
+					}
+
+					GameObject staff = AllStaffs.Where(x => EquippedStaff == null || x.GUID != EquippedStaff.GUID).GetRandom().gameObject.Clone(StaffPivot);
+					EquipStaff(staff.GetComponent<Staff>(), true);
+				}
 			}
 #endif
 

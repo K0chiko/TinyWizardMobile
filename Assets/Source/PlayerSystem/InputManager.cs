@@ -20,17 +20,17 @@ namespace Quinn.PlayerSystem
 		public event Action OnDash;
 		public event Action OnCastStart, OnCastStop;
 		public event Action OnSpecialStart, OnSpecialStop;
-
-		[FormerlySerializedAs("MoveAction")]
+		
 		[Header("Input System (assign InputActionReferences)")]
 		[SerializeField] private InputActionReference moveAction;
-		[FormerlySerializedAs("AimAction")] [SerializeField] private InputActionReference aimAction; // Vector2 aim stick (mobile)
+		[SerializeField] private InputActionReference aimAction; // Vector2 aim stick (mobile)
 		//[FormerlySerializedAs("PointerPositionAction")] [SerializeField] private InputActionReference pointerPositionAction; // Optional: screen position (touch/mouse)
-		[FormerlySerializedAs("BasicAction")] [SerializeField] private InputActionReference basicAction; // Button
-		[FormerlySerializedAs("SpecialAction")] [SerializeField] private InputActionReference specialAction; // Button
-		[FormerlySerializedAs("DashAction")] [SerializeField] private InputActionReference dashAction; // Button
-		[FormerlySerializedAs("InteractAction")] [SerializeField] private InputActionReference interactAction; // Button
-		[FormerlySerializedAs("AimRadius")] [SerializeField] private float aimRadius = 2.5f; // used to synthesize crosshair around player on mobile
+		[SerializeField] private InputActionReference basicAction; // Button
+		[SerializeField] private InputActionReference specialAction; // Button
+		[SerializeField] private InputActionReference dashAction; // Button
+		[SerializeField] private InputActionReference interactAction; // Button
+		[SerializeField] private InputActionReference pauseMenuAction; // Button
+		[SerializeField] private float aimRadius = 2.5f; // used to synthesize crosshair around player on mobile
 
 		public void Awake()
 		{
@@ -56,6 +56,10 @@ namespace Quinn.PlayerSystem
 			{
 				interactAction.action.performed += OnInteractPerformed;
 			}
+			if (pauseMenuAction != null && pauseMenuAction.action != null)
+			{
+				pauseMenuAction.action.performed += OnPauseMenuPerformed;
+			}
 		}
 
 		public void OnEnable()
@@ -68,6 +72,7 @@ namespace Quinn.PlayerSystem
 			EnableAction(specialAction);
 			EnableAction(dashAction);
 			EnableAction(interactAction);
+			EnableAction(pauseMenuAction);
 		}
 
 		public void OnDisable()
@@ -79,6 +84,7 @@ namespace Quinn.PlayerSystem
 			DisableAction(specialAction);
 			DisableAction(dashAction);
 			DisableAction(interactAction);
+			DisableAction(pauseMenuAction);
 		}
 
 		public void Update()
@@ -153,6 +159,10 @@ namespace Quinn.PlayerSystem
 			{
 				interactAction.action.performed -= OnInteractPerformed;
 			}
+			if (pauseMenuAction != null && pauseMenuAction.action != null)
+			{
+				pauseMenuAction.action.performed -= OnPauseMenuPerformed;
+			}
 		}
 
 		public void EnableInput()
@@ -204,6 +214,14 @@ namespace Quinn.PlayerSystem
 		private void OnInteractPerformed(InputAction.CallbackContext _)
 		{
 			OnInteract?.Invoke();
+		}
+		
+		private void OnPauseMenuPerformed(InputAction.CallbackContext _)
+		{
+			if (PauseMenuUI.Instance != null)
+			{
+				PauseMenuUI.Instance.TogglePause();
+			}
 		}
 
 		private static void EnableAction(InputActionReference actionRef)

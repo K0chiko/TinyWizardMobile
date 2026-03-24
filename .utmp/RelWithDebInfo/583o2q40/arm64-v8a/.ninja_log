@@ -1,0 +1,23 @@
+# ninja log v5
+93	1057	7957130025472014	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	6edf937fdf943229
+10	3646	7957130052815356	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	a0bd921d283e4849
+56	2639	7957130042795289	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	7d449d106653a4b4
+1059	1799	7957130033092008	D:/0_Desktop/PetProjects/TinyWizardMobile/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/583o2q40/obj/arm64-v8a/libswappywrapper.so	7810e2bb93021059
+29	2693	7957130043385355	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	e7235b1a8e60597c
+1	4582	7957130061599092	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	13f13aae74b67f95
+82	2801	7957130044305298	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	b990222d9cf6e8d2
+70	5089	7957130067314303	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	30ff9cc732453d3e
+19	4217	7957130057585303	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	aa9a0bdf207eaaf0
+42	5129	7957130067724327	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	ba66cc1c61863a34
+5130	5244	7957130068914334	D:/0_Desktop/PetProjects/TinyWizardMobile/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/583o2q40/obj/arm64-v8a/libgame.so	4425e3c9dfa2d120
+63	262	7957229070499419	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	6edf937fdf943229
+262	435	7957229072089408	D:/0_Desktop/PetProjects/TinyWizardMobile/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/583o2q40/obj/arm64-v8a/libswappywrapper.so	7810e2bb93021059
+40	1743	7957229085218972	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	e7235b1a8e60597c
+8	1815	7957229085438979	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	7d449d106653a4b4
+33	2020	7957229087857698	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	b990222d9cf6e8d2
+27	2066	7957229088137732	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	aa9a0bdf207eaaf0
+21	2088	7957229088367709	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	13f13aae74b67f95
+55	2146	7957229089257714	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	30ff9cc732453d3e
+47	2497	7957229092787699	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	ba66cc1c61863a34
+14	2552	7957229093267697	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	a0bd921d283e4849
+2557	2658	7957229094427702	D:/0_Desktop/PetProjects/TinyWizardMobile/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/583o2q40/obj/arm64-v8a/libgame.so	4425e3c9dfa2d120

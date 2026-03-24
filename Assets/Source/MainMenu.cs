@@ -10,10 +10,9 @@ namespace Quinn
 			Play();
 		}
 
-		public async void Play()
+		public void Play()
 		{
-			await SceneManager.LoadSceneAsync(1);
-			Global.Bootstrap();
+			SceneManager.LoadSceneAsync(1);
 		}
 	}
 }

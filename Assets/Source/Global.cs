@@ -5,21 +5,20 @@ namespace Quinn
 {
 	public class Global : MonoBehaviour
 	{
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-		public static void Bootstrap()
+		public static Global Instance;
+
+		void Awake()
 		{
-			if (SceneManager.GetActiveScene().buildIndex != 0)
+			if (Instance == null)
 			{
-				var asset = Resources.Load<GameObject>("Globals");
-				var instance = Instantiate(asset);
-
-				DontDestroyOnLoad(instance);
+				Instance = this;
+				DontDestroyOnLoad(gameObject);
 			}
-		}
-
-		public void Awake()
-		{
-			// Required to avoid issues when exiting playmode in the editor.
+			else
+			{
+				Destroy(gameObject);
+			}
+			
 			Physics2D.callbacksOnDisable = false;
 		}
 	}
