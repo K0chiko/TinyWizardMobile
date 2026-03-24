@@ -186,7 +186,7 @@ MonoBehaviour:
     Path: event:/FullCharge
   BasicMissile: {fileID: 7309199781299206731, guid: 2c091a4368a8cc14d90ae90fbf07695b, type: 3}
   BasicCooldown: 0.4
-  BasicKnockbackSpeed: 10
+  BasicKnockbackSpeed: 3
   BasicBehavior: 0
   BasicSpread: 0
   BasicCount: 1
@@ -200,7 +200,7 @@ MonoBehaviour:
   BasicFinisherChain: 3
   BasicFinisherBehavior: 2
   BasicFinisherSpread: 15
-  BasicFinisherKnockbackSpeed: 14
+  BasicFinisherKnockbackSpeed: 6
   BasicFinisherMissileOverride: {fileID: 0}
   BasicFinisherEnergyUse: 4
   BasicFinisherManaConsume: 18

@@ -3744,7 +3744,15 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7510763340765859393, guid: 437d39236b49c1045aebeb6aa0e77a8a, type: 3}
+      propertyPath: knockbackSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7510763340765859393, guid: 437d39236b49c1045aebeb6aa0e77a8a, type: 3}
       propertyPath: KnockbackDecayRate
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 7510763340765859393, guid: 437d39236b49c1045aebeb6aa0e77a8a, type: 3}
+      propertyPath: knockbackDecayRate
       value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 7510763340765859393, guid: 437d39236b49c1045aebeb6aa0e77a8a, type: 3}

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Quinn
@@ -12,7 +13,18 @@ namespace Quinn
 
 		public void Play()
 		{
-			SceneManager.LoadSceneAsync(1);
+			StartCoroutine(LoadLevelRoutine());
+		}
+		
+		
+		private IEnumerator LoadLevelRoutine()
+		{
+			yield return SceneManager.LoadSceneAsync(1);
+			Debug.Log("Готово!");
 		}
 	}
+	
+	
+
+
 }

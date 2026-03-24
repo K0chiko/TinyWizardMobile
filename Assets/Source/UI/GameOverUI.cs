@@ -60,12 +60,12 @@ namespace Quinn.UI
 			QuitButton.rectTransform.DOKill();
 		}
 
-		public async void Retry_Button()
+		public /*async*/ void Retry_Button()
 		{
-			await Wait.Seconds(0.1f);
+			//await Wait.Seconds(0.1f);
 
-			Cursor.lockState = CursorLockMode.Confined;
-			Cursor.visible = false;
+			//Cursor.lockState = CursorLockMode.Confined;
+			//Cursor.visible = false;
 
 			Destroy(gameObject);
 			PlayerManager.Instance.RespawnSequence();
