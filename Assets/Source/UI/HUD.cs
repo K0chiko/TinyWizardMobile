@@ -70,8 +70,12 @@ namespace Quinn.UI
 				targetAlpha = 0.3f;
 			}
 
-			color.a = Mathf.SmoothDamp(LowHPVignette.color.a, targetAlpha, ref _alphaVel, SmoothTime);
-			LowHPVignette.color = color;
+			float newAlpha = Mathf.SmoothDamp(color.a, targetAlpha, ref _alphaVel, SmoothTime);
+			if (!Mathf.Approximately(newAlpha, color.a))
+			{
+				color.a = newAlpha;
+				LowHPVignette.color = color;
+			}
 
 			float scale = Mathf.Sin(Time.time * ScaleFrequency) * ScaleAmplitude;
 			scale += _defaultScale;

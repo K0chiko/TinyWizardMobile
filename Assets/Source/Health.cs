@@ -63,6 +63,9 @@ namespace Quinn
 
 		private StatusEffectManager _statsEffectManager;
 
+		private bool _lastHPBarActive;
+		private float _lastHPBarValue = -1f;
+
 		public void Awake()
 		{
 			Current = Max;
@@ -74,6 +77,7 @@ namespace Quinn
 			if (HPBar != null)
 			{
 				HPBar.transform.parent.SetParent(null, true);
+				_lastHPBarActive = HPBar.gameObject.activeSelf;
 			}
 		}
 
@@ -81,10 +85,20 @@ namespace Quinn
 		{
 			if (HPBar != null)
 			{
-				HPBar.gameObject.SetActive(HasHBBar && Current < Max && IsAlive);
-				HPBar.value = Current / Max;
+				bool shouldBeActive = HasHBBar && Current < Max && IsAlive;
+				if (shouldBeActive != _lastHPBarActive)
+				{
+					HPBar.gameObject.SetActive(shouldBeActive);
+					HPArrow.gameObject.SetActive(shouldBeActive);
+					_lastHPBarActive = shouldBeActive;
+				}
 
-				HPArrow.gameObject.SetActive(HPBar.gameObject.activeInHierarchy);
+				float value = Current / Max;
+				if (!Mathf.Approximately(value, _lastHPBarValue))
+				{
+					HPBar.value = value;
+					_lastHPBarValue = value;
+				}
 			}
 		}
 
@@ -219,7 +233,11 @@ namespace Quinn
 		{
 			foreach (var renderer in Renderers)
 			{
-				Debug.Assert(renderer != null, $"Health damaged FX found a null sprite renderered! Make sure '{gameObject.name}' has no missing references on its Health component.");
+				if (renderer == null)
+				{
+					Debug.LogError($"Health damaged FX found a null sprite renderered! Make sure '{gameObject.name}' has no missing references on its Health component.");
+					continue;
+				}
 
 				renderer.enabled = true;
 				renderer.material.SetFloat("_Flash", 0f);

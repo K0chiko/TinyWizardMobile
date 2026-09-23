@@ -14,6 +14,7 @@ namespace Quinn
 		}
 
 		private readonly Dictionary<object, BufferInstance> _buffers = new();
+		private readonly List<object> _toRemove = new();
 
 		public void Buffer(object key, float timeout, Action callback, Func<bool> predicate)
 		{
@@ -38,7 +39,8 @@ namespace Quinn
 
 		public void Update()
 		{
-			var toRemove = new HashSet<object>();
+			var toRemove = _toRemove;
+			toRemove.Clear();
 
 			foreach (var buffer in _buffers)
 			{

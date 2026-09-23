@@ -32,6 +32,7 @@ namespace Quinn
 		private Health _health;
 
 		private readonly Dictionary<StatusEffect, float> _effects = new();
+		private readonly List<StatusEffect> _toRemove = new();
 		private float _nextBurnDamageTime;
 		private float _nextWetDamageTime;
 
@@ -45,19 +46,23 @@ namespace Quinn
 
 		public void FixedUpdate()
 		{
-			var toRemove = new HashSet<StatusEffect>();
-
-			foreach (var effect in _effects)
+			if (_effects.Count > 0)
 			{
-				if (Time.time > effect.Value)
+				var toRemove = _toRemove;
+				toRemove.Clear();
+
+				foreach (var effect in _effects)
 				{
-					toRemove.Add(effect.Key);
+					if (Time.time > effect.Value)
+					{
+						toRemove.Add(effect.Key);
+					}
 				}
-			}
 
-			foreach (var effect in  toRemove)
-			{
-				RemoveEffect(effect);
+				foreach (var effect in toRemove)
+				{
+					RemoveEffect(effect);
+				}
 			}
 
 			if (HasEffect(StatusEffect.Burning) && Time.time > _nextBurnDamageTime)

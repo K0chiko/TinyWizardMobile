@@ -17,9 +17,16 @@ namespace Quinn.UI
 
        private PlayerCaster _caster;
 
+       private bool _wasOverMaxTextActive;
+       private bool _wasOverMaxBarActive;
+       private float _lastNormalBarValue = -1f;
+
        public void Start()
        {
           _caster = PlayerManager.Instance.Player.GetComponent<PlayerCaster>();
+
+          _wasOverMaxTextActive = OverMaxText.gameObject.activeSelf;
+          _wasOverMaxBarActive = OverMaxBar.gameObject.activeSelf;
 
           // TODO: VFX when over max
        }
@@ -36,16 +43,23 @@ namespace Quinn.UI
 
           if (_caster != null)
           {
-             if (_caster.UIStaff.Energy > _caster.UIStaff.MaxEnergy)
+             bool isOverMax = _caster.UIStaff.Energy > _caster.UIStaff.MaxEnergy;
+
+             if (isOverMax)
              {
-                OverMaxText.gameObject.SetActive(true);
+                if (!_wasOverMaxTextActive)
+                {
+                   OverMaxText.gameObject.SetActive(true);
+                   _wasOverMaxTextActive = true;
+                }
 
                 float t = (Mathf.Sin(Time.time) + 1f) / 2f;
                 OverMaxText.transform.localScale = Vector3.one * Mathf.Lerp(0.8f, 1f, t);
              }
-             else
+             else if (_wasOverMaxTextActive)
              {
                 OverMaxText.gameObject.SetActive(false);
+                _wasOverMaxTextActive = false;
              }
 
              var staff = _caster.UIStaff;
@@ -58,13 +72,32 @@ namespace Quinn.UI
                 else
                    value = staff.Energy / staff.MaxEnergy;
 
-                NormalBar.value = value;
-                OverMaxBar.gameObject.SetActive(staff.Energy > staff.MaxEnergy);
+                if (!Mathf.Approximately(value, _lastNormalBarValue))
+                {
+                   NormalBar.value = value;
+                   _lastNormalBarValue = value;
+                }
+
+                bool overMax = staff.Energy > staff.MaxEnergy;
+                if (overMax != _wasOverMaxBarActive)
+                {
+                   OverMaxBar.gameObject.SetActive(overMax);
+                   _wasOverMaxBarActive = overMax;
+                }
              }
              else
              {
-                NormalBar.value = 0f;
-                OverMaxBar.gameObject.SetActive(false);
+                if (!Mathf.Approximately(_lastNormalBarValue, 0f))
+                {
+                   NormalBar.value = 0f;
+                   _lastNormalBarValue = 0f;
+                }
+
+                if (_wasOverMaxBarActive)
+                {
+                   OverMaxBar.gameObject.SetActive(false);
+                   _wasOverMaxBarActive = false;
+                }
              }
           }
        }

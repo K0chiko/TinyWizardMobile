@@ -17,6 +17,7 @@ namespace Quinn.UI
 		private Slider HPBar;
 
 		private BTAgent _boss;
+		private float _lastHPBarValue = -1f;
 
 		public void Awake()
 		{
@@ -30,7 +31,12 @@ namespace Quinn.UI
 		{
 			if (_boss != null)
 			{
-				HPBar.value = _boss.Health.Percent;
+				float percent = _boss.Health.Percent;
+				if (!Mathf.Approximately(percent, _lastHPBarValue))
+				{
+					HPBar.value = percent;
+					_lastHPBarValue = percent;
+				}
 			}
 		}
 
@@ -55,6 +61,7 @@ namespace Quinn.UI
 		private void OnBossDeath()
 		{
 			_boss = null;
+			_lastHPBarValue = -1f;
 			ElementsParent.SetActive(false);
 		}
 	}

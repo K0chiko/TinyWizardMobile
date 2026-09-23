@@ -299,17 +299,20 @@ namespace Quinn.PlayerSystem
           _ => throw new NotImplementedException(),
        };
 
+       private static readonly Collider2D[] s_OverlapBuffer = new Collider2D[8];
+       private static readonly ContactFilter2D s_OverlapFilter = new ContactFilter2D().NoFilter();
+
        private SoundMaterialType GetSoundMaterialType(out bool playVFX)
        {
           SoundMaterialType mat = SoundMaterialType.None;
           int highestPriority = -9999;
 
-          var colliders = Physics2D.OverlapPointAll(transform.position);
+          int count = Physics2D.OverlapPoint(transform.position, s_OverlapFilter, s_OverlapBuffer);
           playVFX = false;
 
-          foreach (var collider in colliders)
+          for (int i = 0; i < count; i++)
           {
-             if (collider.TryGetComponent(out SoundMaterial soundMat))
+             if (s_OverlapBuffer[i].TryGetComponent(out SoundMaterial soundMat))
              {
                 if (soundMat.Priority > highestPriority)
                 {
@@ -320,7 +323,7 @@ namespace Quinn.PlayerSystem
              }
           }
 
-          
+
           return mat;
        }
 
@@ -328,7 +331,7 @@ namespace Quinn.PlayerSystem
        {
           var instance = RuntimeManager.CreateInstance(FootstepSound);
           instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-          instance.setParameterByNameWithLabel("sound-mat", mat.ToString());
+          instance.setParameterByNameWithLabel("sound-mat", SoundMaterialTypeNames.ToLabel(mat));
 
           instance.start();
           instance.release();

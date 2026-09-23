@@ -9,6 +9,7 @@ namespace Quinn
 		private static Cooldown _instance;
 
 		private readonly Dictionary<object, float> _cooldowns = new();
+		private readonly List<object> _toRemove = new();
 
 		private void Awake()
 		{
@@ -17,7 +18,8 @@ namespace Quinn
 
 		private void LateUpdate()
 		{
-			var toRemove = new HashSet<object>();
+			var toRemove = _toRemove;
+			toRemove.Clear();
 
 			foreach (var entry in _cooldowns)
 			{

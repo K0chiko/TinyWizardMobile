@@ -99,10 +99,13 @@ namespace Quinn.MissileSystem
 		private bool _isChildA;
 		private float _nextSwapTime;
 
+		private int _obstacleLayer;
+
 		public void Awake()
 		{
 			_rb = GetComponent<Rigidbody2D>();
 			_oscillateOffset = RandomizeOscillation ? Random.value : 0f;
+			_obstacleLayer = LayerMask.NameToLayer("Obstacle");
 		}
 
 		public void FixedUpdate()
@@ -145,7 +148,7 @@ namespace Quinn.MissileSystem
 					OnImpact();
 				}
 			}
-			else if ((!IgnoreObstacles && collision.gameObject.layer == LayerMask.NameToLayer("Obstacle")) || collision.CompareTag("MissileBlocker"))
+			else if ((!IgnoreObstacles && collision.gameObject.layer == _obstacleLayer) || collision.CompareTag("MissileBlocker"))
 			{
 				OnImpact();
 

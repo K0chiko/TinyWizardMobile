@@ -43,6 +43,9 @@ namespace Quinn.PlayerSystem
 		private float _frameSize;
 		private float _chargeScale;
 
+		private FMOD.Studio.PARAMETER_ID _staffChargeParamId;
+		private float _lastChargePercent = -1f;
+
 		public void Awake()
 		{
 			Debug.Assert(Instance == null);
@@ -59,6 +62,9 @@ namespace Quinn.PlayerSystem
 
 			_frameSize = _initFrameSize;
 			_chargeScale = 1f;
+
+			RuntimeManager.StudioSystem.getParameterDescriptionByName("staff-charge", out var staffChargeDesc);
+			_staffChargeParamId = staffChargeDesc.id;
 		}
 
 		public void Start()
@@ -98,7 +104,12 @@ namespace Quinn.PlayerSystem
 			_chargeScale = percent;
 			_chargeTransform.sizeDelta = _chargeScale * _frameSize * Vector2.one;
 
-			RuntimeManager.StudioSystem.setParameterByName("staff-charge", Mathf.Clamp01(percent));
+			float clamped = Mathf.Clamp01(percent);
+			if (!Mathf.Approximately(clamped, _lastChargePercent))
+			{
+				RuntimeManager.StudioSystem.setParameterByID(_staffChargeParamId, clamped);
+				_lastChargePercent = clamped;
+			}
 		}
 
 		public void Show()

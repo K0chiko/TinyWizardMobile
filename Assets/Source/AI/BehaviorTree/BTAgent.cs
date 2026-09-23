@@ -60,6 +60,12 @@ namespace Quinn.AI.BehaviorTree
        private readonly HashSet<string> _animTriggers = new();
        private bool _inSecondPhase;
 
+       private FMOD.Studio.PARAMETER_ID _secondPhaseParamId;
+       private float _lastSecondPhaseValue = -1f;
+
+       private static readonly Collider2D[] s_OverlapBuffer = new Collider2D[8];
+       private static readonly ContactFilter2D s_OverlapFilter = new ContactFilter2D().NoFilter();
+
        public void Awake()
        {
           Animator = GetComponent<Animator>();
@@ -68,6 +74,12 @@ namespace Quinn.AI.BehaviorTree
 
           Health.OnDamaged += OnDamaged;
           Health.OnDeath += OnDeath;
+
+          if (IsBoss)
+          {
+             RuntimeManager.StudioSystem.getParameterDescriptionByName("second-phase", out var secondPhaseDesc);
+             _secondPhaseParamId = secondPhaseDesc.id;
+          }
        }
 
 #if UNITY_EDITOR
@@ -87,7 +99,11 @@ namespace Quinn.AI.BehaviorTree
           if (IsBoss)
           {
              float phase = Health.Percent <= 0.5f ? 1f : 0f;
-             RuntimeManager.StudioSystem.setParameterByName("second-phase", phase);
+             if (!Mathf.Approximately(phase, _lastSecondPhaseValue))
+             {
+                RuntimeManager.StudioSystem.setParameterByID(_secondPhaseParamId, phase);
+                _lastSecondPhaseValue = phase;
+             }
           }
        }
 
@@ -153,11 +169,11 @@ namespace Quinn.AI.BehaviorTree
           SoundMaterialType mat = SoundMaterialType.None;
           int highestPriority = -9999;
 
-          var colliders = Physics2D.OverlapPointAll(transform.position);
+          int count = Physics2D.OverlapPoint(transform.position, s_OverlapFilter, s_OverlapBuffer);
 
-          foreach (var collider in colliders)
+          for (int i = 0; i < count; i++)
           {
-             if (collider.TryGetComponent(out SoundMaterial soundMat))
+             if (s_OverlapBuffer[i].TryGetComponent(out SoundMaterial soundMat))
              {
                 if (soundMat.Priority > highestPriority)
                 {
@@ -174,7 +190,7 @@ namespace Quinn.AI.BehaviorTree
        {
           var instance = RuntimeManager.CreateInstance(FootstepSound);
           instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-          instance.setParameterByNameWithLabel("sound-mat", mat.ToString());
+          instance.setParameterByNameWithLabel("sound-mat", SoundMaterialTypeNames.ToLabel(mat));
 
           instance.start();
           instance.release();

@@ -21,6 +21,7 @@ namespace Quinn.UI
 		private float _nextGhostMoveTime;
 		private float _ghostPercent;
 		private float _ghostVel;
+		private float _lastBarValue = -1f;
 
 		public void Start()
 		{
@@ -35,7 +36,11 @@ namespace Quinn.UI
 		public void LateUpdate()
 		{
 			float realPercent = _caster.Mana / _caster.MaxMana;
-			Bar.value = realPercent;
+			if (!Mathf.Approximately(realPercent, _lastBarValue))
+			{
+				Bar.value = realPercent;
+				_lastBarValue = realPercent;
+			}
 
 			if (Time.time > _nextGhostMoveTime)
 			{

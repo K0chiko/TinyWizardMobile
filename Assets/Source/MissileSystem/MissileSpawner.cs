@@ -30,12 +30,12 @@ namespace Quinn.MissileSystem
 		public async void Start()
 		{
 			_dir = InitialDirection.normalized;
-			await Awaitable.WaitForSecondsAsync(StartDelay);
+			await Awaitable.WaitForSecondsAsync(StartDelay, destroyCancellationToken);
 
 			while (true)
 			{
 				MissileManager.Instance.SpawnMissile(gameObject, Prefab, transform.position, _dir, Count, PerMissileInterval, Behavior, MaxAngle);
-				await Awaitable.WaitForSecondsAsync(FireInterval);
+				await Awaitable.WaitForSecondsAsync(FireInterval, destroyCancellationToken);
 			}
 		}
 
