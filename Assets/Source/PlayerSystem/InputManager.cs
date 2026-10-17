@@ -167,12 +167,6 @@ namespace Quinn.PlayerSystem
 			MoveDirection = Vector2.zero;
 		}
 
-		public void ShowCursor()
-		{
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
-		}
-
 		public void HideCursor()
 		{
 			Cursor.visible = false;

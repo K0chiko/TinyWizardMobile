@@ -125,16 +125,5 @@ namespace Quinn.AI
 		{
 			_cumulativeVel += direction.normalized * speed;
 		}
-
-		public async Awaitable MoveInDirectionFor(Vector2 direction, float duration)
-		{
-			float endTime = Time.time + duration;
-
-			while (Time.time < endTime && !destroyCancellationToken.IsCancellationRequested)
-			{
-				MoveInDirection(direction);
-				await Awaitable.NextFrameAsync(destroyCancellationToken);
-			}
-		}
 	}
 }

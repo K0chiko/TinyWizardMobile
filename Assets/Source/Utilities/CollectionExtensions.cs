@@ -14,31 +14,6 @@ namespace Quinn
 			return collection.ElementAt(Random.Range(0, collection.Count()));
 		}
 
-		public static T GetWeightedRandom<T>(this IEnumerable<T> collection, System.Func<T, float> getWeightCallback)
-		{
-			if (!collection.Any())
-			{
-				return default;
-			}
-
-			if (collection.Count() == 1)
-			{
-				return collection.First();
-			}
-
-			float sum = collection.Sum(x => getWeightCallback(x));
-
-			foreach (var item in collection)
-			{
-				if (Random.value < getWeightCallback(item) / sum)
-				{
-					return item;
-				}
-			}
-
-			return collection.GetRandom();
-		}
-
 		public static T GetClosestTo<T>(this IEnumerable<T> collection, Vector2 point) where T : Component
 		{
 			T t = default;

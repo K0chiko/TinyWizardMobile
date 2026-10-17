@@ -35,17 +35,5 @@ namespace Quinn
 			}
 			catch (OperationCanceledException) { }
 		}
-
-		public static async Awaitable While(Func<bool> predicate, CancellationToken token = default)
-		{
-			try
-			{
-				while (predicate() && !token.IsCancellationRequested)
-				{
-					await NextFrame(token);
-				}
-			}
-			catch (OperationCanceledException) { }
-		}
 	}
 }

@@ -55,7 +55,6 @@ namespace Quinn
 		public event Action<float, Vector2, GameObject> OnDamaged;
 		public event Action<DamageInfo> OnDamagedExpanded;
 		public event Action OnDeath;
-		public event Action OnMaxChange;
 
 		private bool _isHurtImmune;
 		private readonly HashSet<object> _damageBlockers = new();
@@ -221,12 +220,6 @@ namespace Quinn
 		public void UnblockDamage(object key)
 		{
 			_damageBlockers.Remove(key);
-		}
-
-		public void SetMax(float max)
-		{
-			Max = max;
-			OnMaxChange?.Invoke();
 		}
 
 		private async void AnimateHurtVFX()

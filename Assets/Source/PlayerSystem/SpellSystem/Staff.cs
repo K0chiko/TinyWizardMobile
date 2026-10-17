@@ -71,11 +71,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			_group.enabled = false;
 		}
 
-		public void GenerateGUID()
-		{
-			GUID = System.Guid.NewGuid().ToString();
-		}
-
 		public void Interact(Player player)
 		{
 			var caster = player.GetComponent<PlayerCaster>();

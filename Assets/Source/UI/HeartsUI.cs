@@ -38,7 +38,6 @@ namespace Quinn.UI
 		public void Start()
 		{
 			PlayerManager.Instance.OnPlayerHealthChange += OnHealthChange;
-			PlayerManager.Instance.OnPlayerMaxHealthChange += OnMaxHealthChange;
 
 			transform.DestroyChildren();
 			ReconstructHearts();
@@ -65,7 +64,6 @@ namespace Quinn.UI
 			if (PlayerManager.Instance != null)
 			{
 				PlayerManager.Instance.OnPlayerHealthChange -= OnHealthChange;
-				PlayerManager.Instance.OnPlayerMaxHealthChange -= OnMaxHealthChange;
 			}
 		}
 
@@ -93,12 +91,6 @@ namespace Quinn.UI
 				transform.parent.DOScale(1, PunchDur / 2f)
 					.SetEase(PunchSmallEase);
 			}
-		}
-
-		private void OnMaxHealthChange()
-		{
-			ReconstructHearts();
-			Regenerate();
 		}
 
 		private void ReconstructHearts()

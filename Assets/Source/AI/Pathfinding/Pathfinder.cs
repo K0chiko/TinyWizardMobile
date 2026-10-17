@@ -177,19 +177,9 @@ namespace Quinn.AI.Pathfinding
 
 			return path.ToArray();
 		}
-
-		public bool IsTraversable(Vector2Int gridPos)
-		{
-			return Navmesh.HasTile((Vector3Int)gridPos);
-		}
 		public bool IsObstacle(Vector2Int gridPos)
 		{
 			return !Navmesh.HasTile((Vector3Int)gridPos);
-		}
-
-		public float GetDistance(Vector2Int a, Vector2Int b)
-		{
-			return ((Vector2)a).DistanceTo((Vector2)b);
 		}
 
 		public void SetNavmesh(Tilemap navmesh)

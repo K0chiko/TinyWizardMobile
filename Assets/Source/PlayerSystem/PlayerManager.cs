@@ -35,7 +35,6 @@ namespace Quinn.PlayerSystem
 
 		public event Action<Player> OnPlayerSet;
 		public event Action<float> OnPlayerHealthChange;
-		public event Action OnPlayerMaxHealthChange;
 
 		public event Action OnPlayerDeath;
 		public event Action OnPlayerDeathPreSceneLoad;
@@ -43,7 +42,6 @@ namespace Quinn.PlayerSystem
 		private bool _isDead;
 		private bool _isGameStarted;
 
-		private float _startTime;
 
 		public void Awake()
 		{
@@ -82,7 +80,6 @@ namespace Quinn.PlayerSystem
 			if (!_isGameStarted)
 			{
 				_isGameStarted = true;
-				_startTime = Time.unscaledTime;
 			}
 		}
 
@@ -113,7 +110,6 @@ namespace Quinn.PlayerSystem
 			Health.OnHealed += OnHealed;
 			Health.OnDamaged += OnDamaged;
 			Health.OnDeath += OnDeath;
-			Health.OnMaxChange += OnMaxHealthChange;
 
 			InputManager.Instance.EnableInput();
 		}
@@ -139,11 +135,6 @@ namespace Quinn.PlayerSystem
 			{
 				_isDead = true;
 			}
-		}
-
-		private void OnMaxHealthChange()
-		{
-			OnPlayerMaxHealthChange?.Invoke();
 		}
 
 		private async void OnDeath()
@@ -184,7 +175,6 @@ namespace Quinn.PlayerSystem
 				Health.OnHealed -= OnHealed;
 				Health.OnDamaged -= OnDamaged;
 				Health.OnDeath -= OnDeath;
-				Health.OnMaxChange -= OnMaxHealthChange;
 			}
 		}
 

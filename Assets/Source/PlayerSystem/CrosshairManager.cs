@@ -38,7 +38,7 @@ namespace Quinn.PlayerSystem
 		}
 
 		private RectTransform _frameTransform, _chargeTransform;
-		private float _initFrameSize, _initChargeSize;
+		private float _initFrameSize;
 
 		private float _frameSize;
 		private float _chargeScale;
@@ -58,7 +58,6 @@ namespace Quinn.PlayerSystem
 			_chargeTransform = _crosshair.Charge.GetComponent<RectTransform>();
 
 			_initFrameSize = _frameTransform.sizeDelta.y;
-			_initChargeSize = _chargeTransform.sizeDelta.y;
 
 			_frameSize = _initFrameSize;
 			_chargeScale = 1f;
@@ -89,14 +88,6 @@ namespace Quinn.PlayerSystem
 		public Vector2 DirectionToCrosshair(Vector2 from)
 		{
 			return from.DirectionTo(Position);
-		}
-
-		public void SetScale(float scale)
-		{
-			_frameSize = _initFrameSize * scale;
-			_frameTransform.sizeDelta = Vector2.one * _frameSize;
-
-			_chargeTransform.sizeDelta = _chargeScale * _frameSize * Vector2.one;
 		}
 
 		public void SetCharge(float percent)
