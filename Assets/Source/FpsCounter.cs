@@ -11,6 +11,11 @@ namespace Quinn
 
 		private readonly FrameTiming[] _frameTimings = new FrameTiming[1];
 
+		private void Awake()
+		{
+			enabled = Debug.isDebugBuild;
+		}
+
 		private void Update()
 		{
 			_smoothedDeltaTime += (Time.unscaledDeltaTime - _smoothedDeltaTime) * (1f / SmoothingTime) * Time.unscaledDeltaTime;
