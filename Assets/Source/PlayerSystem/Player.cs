@@ -14,7 +14,7 @@ using UnityEngine.InputSystem;
 namespace Quinn.PlayerSystem
 {
     [RequireComponent(typeof(Animator))]
-    public class Player : MonoBehaviour
+    public partial class Player : MonoBehaviour
     {
        [SerializeField]
        private float InteractionRadius = 1f;
@@ -61,10 +61,6 @@ namespace Quinn.PlayerSystem
 
        private float _puddleHealingVFXSpawnRate;
 
-       private bool _noClip;
-       private int _preNoClipMask;
-       private bool _godMode;
-
        public void Awake()
        {
           _animator = GetComponent<Animator>();
@@ -96,41 +92,7 @@ namespace Quinn.PlayerSystem
 
           _wasMoving = isMoving;
 
-#if UNITY_EDITOR
-          var keyboard = Keyboard.current;
-          if (keyboard != null)
-          {
-             if (keyboard.digit8Key.wasPressedThisFrame)
-             {
-                GetComponent<Health>().TakeDamage(1f, Vector2.zero, Team.Environment, gameObject);
-             }
-
-             if (keyboard.vKey.wasPressedThisFrame)
-             {
-                _noClip = !_noClip;
-
-                if (_noClip)
-                {
-                   var collider = GetComponent<Collider2D>();
-                   _preNoClipMask = collider.forceReceiveLayers;
-                   collider.forceReceiveLayers = 0;
-
-                   GetComponent<PlayerMovement>().SetSpeedOverride(16f);
-                }
-                else
-                {
-                   GetComponent<Collider2D>().forceReceiveLayers = _preNoClipMask;
-                   GetComponent<PlayerMovement>().ClearSpeedOverride();
-                }
-             }
-
-             if (keyboard.gKey.wasPressedThisFrame)
-             {
-                _godMode = !_godMode;
-                GetComponent<Health>().IsGodModeEnabled = _godMode;
-             }
-          }
-#endif
+          ApplyCheats();
        }
 
        public void OnDestroy()

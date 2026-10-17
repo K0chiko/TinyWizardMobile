@@ -12,7 +12,7 @@ using UnityEngine.VFX;
 namespace Quinn.PlayerSystem.SpellSystem
 {
 	[RequireComponent(typeof(PlayerMovement))]
-	public class PlayerCaster : MonoBehaviour
+	public partial class PlayerCaster : MonoBehaviour
 	{
 		[SerializeField]
 		private Transform StaffPivot;
@@ -54,7 +54,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 		public Staff UIStaff { get; private set; }
 		public bool CanCast => Time.time >= _nextInputTime;
 
-		public float Mana { get; private set; }
+		public float Mana => _mana.Current;
 
 		public bool IsBasicHeld { get; private set; }
 		public bool IsSpecialHeld { get; private set; }
@@ -70,12 +70,18 @@ namespace Quinn.PlayerSystem.SpellSystem
 		private readonly BufferManager _inputBuffer = new();
 		private readonly List<Staff> _storedStaffs = new();
 
-		private float _manaRegenStartTime;
-
+		private PlayerMana _mana;
+		private StaffEquipSequence _equipSequence;
 
 		public void Awake()
 		{
 			Movement = GetComponent<PlayerMovement>();
+
+			_mana = new PlayerMana(MaxMana, ManaRegenDelay, ManaRegenRate);
+			_mana.Added += amount => OnManaAdded?.Invoke(amount);
+			_mana.Removed += amount => OnManaRemoved?.Invoke(amount);
+			_equipSequence = new StaffEquipSequence(this, EquipLight, EquipVFX, EquipEnergyVFX, EquipSound, EnergyTransferRate);
+
 			var input = InputManager.Instance;
 
 			input.OnCastStart += OnBasicStart;
@@ -97,7 +103,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 				EquipStaff(staff.GetComponent<Staff>(), true, true);
 			}
 
-			Mana = MaxMana;
+			_mana.SetFull();
 
 			if (EquippedStaff != null)
 			{
@@ -109,29 +115,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 		public void Update()
 		{
-#if UNITY_EDITOR
-			var kb = Keyboard.current;
-			if (kb != null)
-			{
-				if (kb.digit0Key.wasPressedThisFrame && EquippedStaff != null && EquippedStaff.Energy > 0f)
-				{
-					EquippedStaff.ConsumeAllEnergy();
-				}
-
-				if (kb.digit9Key.wasPressedThisFrame)
-				{
-					if (EquippedStaff)
-					{
-						CastingSpark.transform.SetParent(null);
-						Destroy(EquippedStaff.gameObject);
-						EquippedStaff = null;
-					}
-
-					GameObject staff = AllStaffs.Where(x => EquippedStaff == null || x.GUID != EquippedStaff.GUID).GetRandom().gameObject.Clone(StaffPivot);
-					EquipStaff(staff.GetComponent<Staff>(), true);
-				}
-			}
-#endif
+			ApplyCheats();
 
 			if (PauseMenuUI.Instance.IsPaused)
 				return;
@@ -142,10 +126,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 				EquipStaff(FallbackStaff, true);
 			}
 
-			if (Time.time > _manaRegenStartTime && Mana < MaxMana && (EquippedStaff == null || EquippedStaff.CanRegenMana))
-			{
-				Mana = Mathf.Min(Mana + (Time.deltaTime * ManaRegenRate), MaxMana);
-			}
+			_mana.Tick(EquippedStaff == null || EquippedStaff.CanRegenMana);
 		}
 
 		public void LateUpdate()
@@ -159,10 +140,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			_inputBuffer.Update();
 
 			Vector2 faceDir = transform.position.DirectionTo(CrosshairManager.Instance.Position);
-
-			if (Movement.IsDashing)
-			{
-			}
 
 			if (!PauseMenuUI.Instance.IsPaused)
 			{
@@ -184,7 +161,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			}
 		}
 
-
 		public async void EquipStaff(Staff staff, bool skipSequence = false, bool supressNonSequenceSound = false)
 		{
 			if (staff != EquippedStaff)
@@ -193,7 +169,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 				if (!skipSequence && (EquippedStaff != FallbackStaff))
 				{
-					await StaffPickUpSequence(staff);
+					await _equipSequence.Play(EquippedStaff, staff, target => UIStaff = target);
 				}
 				else if (!supressNonSequenceSound)
 				{
@@ -281,31 +257,17 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 		public void ConsumeMana(float amount)
 		{
-			if (Mana == 0f)
-				return;
-
-			Mana = Mathf.Max(0f, Mana - amount);
-
-			if (amount > 0f)
-			{
-				_manaRegenStartTime = Time.time + ManaRegenDelay;
-			}
-
-			OnManaRemoved?.Invoke(amount);
+			_mana.Consume(amount);
 		}
 
 		public void ReplenishMana(float amount)
 		{
-			if (Mana >= MaxMana)
-				return;
-
-			Mana = Mathf.Min(Mana + amount, MaxMana);
-			OnManaAdded?.Invoke(amount);
+			_mana.Replenish(amount);
 		}
 
 		public void FullyReplenishMana()
 		{
-			ReplenishMana(MaxMana);
+			_mana.ReplenishFully();
 		}
 
 		public void SetCharge(float percent)
@@ -323,7 +285,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			Debug.Assert(CastingSpark != null, "Casting spark has been destroyed! Make sure to detach it before destroying the equipped staff.");
 			CastingSpark.Play();
 		}
-
 
 		private void RecreateTransientStaffData(string equippedStaffGUID)
 		{
@@ -455,74 +416,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 				EquippedStaff.transform.localScale = new Vector3(1f, -1f, 1f);
 			else
 				EquippedStaff.transform.localScale = Vector3.one;
-		}
-
-		private async Awaitable StaffPickUpSequence(Staff targetStaff)
-		{
-			float energyToTransfer = EquippedStaff.Energy * EnergyTransferRate;
-
-			InputManager.Instance.DisableInput();
-			var hp = GetComponent<Health>();
-			hp.BlockDamage(this);
-
-			EquipLight.intensity = 0f;
-			EquipLight.enabled = true;
-			EquipLight.DOFade(1f, 0.5f);
-
-			GetComponent<Animator>().SetTrigger("EquipSequence");
-
-			UIStaff = targetStaff;
-			DOTween.To(() => targetStaff.Energy, x => targetStaff.SetEnergy(x), targetStaff.Energy + energyToTransfer, 4f)
-				.SetEase(Ease.OutCubic);
-
-			Transform oldStaffHead = EquippedStaff.Head;
-			Vector3 oldStaffHeadPos = oldStaffHead.position;
-			Transform newStaffHead = targetStaff.Head;
-
-			targetStaff.transform.DORotate(Vector3.zero, 3f);
-			var tween = targetStaff.transform.DOMove(transform.position + (Vector3.up * 3f), 3f)
-				.SetEase(Ease.OutCubic);
-
-			tween.onUpdate += () =>
-			{
-				UpdateEnergyVFX(oldStaffHead, newStaffHead);
-			};
-
-			EquipEnergyVFX.SetGradient("Color", EquippedStaff.SparkGradient);
-			EquipEnergyVFX.Play();
-
-			await Wait.Seconds(4f);
-
-			EquipVFX.Play();
-			Audio.Play(EquipSound, transform.position);
-
-			await EquipLight.DOFade(0f, 0.2f).AsyncWaitForCompletion();
-			EquipLight.enabled = false;
-			EquipEnergyVFX.Stop();
-
-			InputManager.Instance.EnableInput();
-			hp.UnblockDamage(this);
-		}
-
-		private void UpdateEnergyVFX(Transform start, Transform end)
-		{
-			Transform oldStaffHead = start;
-			Transform newStaffHead = end;
-
-			EquipEnergyVFX.SetVector2("Start", oldStaffHead.position);
-			EquipEnergyVFX.SetVector2("End", newStaffHead.position);
-
-			Vector2 startBias = Vector2.Lerp(oldStaffHead.position, newStaffHead.position, 0.15f);
-			Vector2 endBias = Vector2.Lerp(oldStaffHead.position, newStaffHead.position, 0.85f);
-
-			Vector2 diff = newStaffHead.position - oldStaffHead.position;
-			Vector2 perp = new(-diff.x, diff.y);
-
-			startBias += perp;
-			endBias += perp;
-
-			EquipEnergyVFX.SetVector2("StartBias", startBias);
-			EquipEnergyVFX.SetVector2("EndBias", endBias);
 		}
 
 		private void OnStaffEnergyDepleted(Staff staff)
