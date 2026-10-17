@@ -1,13 +1,10 @@
 using FMODUnity;
 using Quinn.DungeonGeneration;
 using Quinn.PlayerSystem;
-using Quinn.PlayerSystem.SpellSystem;
 using Quinn.UI;
 using Sirenix.OdinInspector;
-using System;
 using System.Collections.Generic;
 using Unity.Behavior;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
@@ -45,9 +42,6 @@ namespace Quinn.AI.BehaviorTree
 
        [Space, SerializeField]
        private VisualEffect[] PlayableVFX;
-
-       [FoldoutGroup("Debug"), SerializeField]
-       private bool PrintAnimationTriggers;
 
        public Animator Animator { get; private set; }
        public Health Health { get; private set; }
@@ -118,11 +112,6 @@ namespace Quinn.AI.BehaviorTree
        public void SetAnimationTrigger(string key)
        {
           _animTriggers.Add(key);
-
-          if (PrintAnimationTriggers)
-          {
-             Debug.Log($"<color=#{GetColorOfString(key)}>Trigger set: '{key}'!</color>");
-          }
        }
 
        public bool GetAnimationTrigger(string key)
@@ -133,11 +122,6 @@ namespace Quinn.AI.BehaviorTree
           }
 
           _animTriggers.Remove(key);
-
-          if (PrintAnimationTriggers)
-          {
-             Debug.Log($"<color=#{GetColorOfString(key)}>Trigger consumed: '{key}'!</color>");
-          }
 
           return true;
        }
@@ -241,15 +225,6 @@ namespace Quinn.AI.BehaviorTree
                 sfx.release();
              }
           }
-       }
-
-       private string GetColorOfString(string str)
-       {
-          var rand = new System.Random(str.GetHashCode());
-          float hue = (float)rand.NextDouble();
-
-          var color = Color.HSVToRGB(hue, 1f, 1f);
-          return color.ToHexString();
        }
     }
 }

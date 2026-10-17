@@ -2,7 +2,6 @@ using System;
 using Unity.Behavior;
 using Modifier = Unity.Behavior.Modifier;
 using Unity.Properties;
-using Quinn.AI.BehaviorTree;
 
 namespace Quinn.AI.BehaviorTree
 {

@@ -1,6 +1,5 @@
 using FMODUnity;
 using Quinn.AI;
-using Unity.AppUI.Core;
 using UnityEngine;
 using UnityEngine.VFX;
 

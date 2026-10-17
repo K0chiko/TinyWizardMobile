@@ -4,7 +4,6 @@ using UnityEngine;
 using Action = Unity.Behavior.Action;
 using Unity.Properties;
 using DG.Tweening;
-using TMPro;
 
 namespace Quinn.AI.BehaviorTree
 {
