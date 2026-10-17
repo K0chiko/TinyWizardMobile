@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using FMODUnity;
 using Quinn.DungeonGeneration;
-using Quinn.UnityServices;
 using Sirenix.OdinInspector;
 using System;
 using Unity.Cinemachine;
@@ -34,9 +33,6 @@ namespace Quinn.PlayerSystem
 		public bool IsDead => Health == null || Health.IsDead;
 		public Vector2 Position => Player.transform.position;
 
-		public int CurrentFloorAttempts { get; private set; }
-		public int NewRoomsExploredThisFloor { get; set; }
-
 		public event Action<Player> OnPlayerSet;
 		public event Action<float> OnPlayerHealthChange;
 		public event Action OnPlayerMaxHealthChange;
@@ -58,12 +54,6 @@ namespace Quinn.PlayerSystem
 
 		public void Start()
 		{
-			DungeonGenerator.Instance.OnFloorStart += _ =>
-			{
-				CurrentFloorAttempts = 0;
-				NewRoomsExploredThisFloor = 0;
-			};
-
 			SpawnPlayer(InitialSpawnOffset);
 		}
 
@@ -149,11 +139,6 @@ namespace Quinn.PlayerSystem
 			if (Health.Current == 0f && !_isDead)
 			{
 				_isDead = true;
-
-				Analytics.Instance.Push(new UnityServices.Events.PlayerDeathEvent()
-				{
-					Name = source.name
-				});
 			}
 		}
 
@@ -164,8 +149,6 @@ namespace Quinn.PlayerSystem
 
 		private async void OnDeath()
 		{
-			CurrentFloorAttempts++;
-
 			EquippedStaffGUID = null;
 			UnsubscribeAll();
 

@@ -1,7 +1,6 @@
 using DG.Tweening;
 using FMODUnity;
 using Quinn.UI;
-using Quinn.UnityServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,7 +99,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 			{
 				Debug.Assert(StartingStaffs.Length > 0);
 				GameObject staff = StartingStaffs.GetRandom().gameObject.Clone();
-				EquipStaff(staff.GetComponent<Staff>(), true, true, supressAnalytics: true);
+				EquipStaff(staff.GetComponent<Staff>(), true, true);
 			}
 
 			Mana = MaxMana;
@@ -205,18 +204,10 @@ namespace Quinn.PlayerSystem.SpellSystem
 		/// <param name="staff">The staff being equipped. This must be an instance not a prefab.</param>
 		/// <param name="skipSequence">Skip the rising up animation with FX and such when a player takes a staff from a chest for instance.</param>
 		/// <param name="supressNonSequenceSound">If skip sequence is false and this is true and then an equip sound will play on staff equip.</param>
-		public async void EquipStaff(Staff staff, bool skipSequence = false, bool supressNonSequenceSound = false, bool supressAnalytics = false)
+		public async void EquipStaff(Staff staff, bool skipSequence = false, bool supressNonSequenceSound = false)
 		{
 			if (staff != EquippedStaff)
 			{
-				if (!supressAnalytics && staff.GUID != FallbackStaff.GUID)
-				{
-					Analytics.Instance.Push(new UnityServices.Events.StaffEquipEvent()
-					{
-						Name = staff.gameObject.name
-					});
-				}
-
 				staff.OnEnergyDepleted += OnStaffEnergyDepleted;
 
 				// Skip sequence if requested or if current staff is fallback staff.
@@ -383,7 +374,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 			}
 
 			// Equipped transient staff.
-			EquipStaff(equippedStaff, true, true, supressAnalytics: true);
+			EquipStaff(equippedStaff, true, true);
 
 			equippedStaff.SetCaster(this);
 			equippedStaff.SetEnergy(PlayerManager.Instance.EquippedStaffEnergy);

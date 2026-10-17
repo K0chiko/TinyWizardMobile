@@ -3,8 +3,6 @@ using Quinn.DungeonGeneration;
 using Quinn.PlayerSystem;
 using Quinn.PlayerSystem.SpellSystem;
 using Quinn.UI;
-using Quinn.UnityServices;
-using Quinn.UnityServices.Events;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
@@ -224,13 +222,6 @@ namespace Quinn.AI.BehaviorTree
              Room.KillAllLiveAgents();
 
              OnDeathEvent?.Invoke();
-
-             Analytics.Instance.Push(new BossDeathEvent()
-             {
-                Name = BossTitle,
-                Attempts = PlayerManager.Instance.CurrentFloorAttempts,
-                Staff = PlayerManager.Instance.Player.GetComponent<PlayerCaster>().EquippedStaff.gameObject.name
-             });
           }
 
           foreach (var prefab in SpawnOnDeath)

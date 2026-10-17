@@ -56,12 +56,8 @@ namespace Quinn.DungeonGeneration
 		[SerializeField]
 		private Door[] OnlyUnlock;
 
-		[Space, SerializeField, BoxGroup("Analytics")]
-		private bool IsLootRoom;
-		[SerializeField, BoxGroup("Analytics")]
+		[Space, SerializeField]
 		public bool IsBossRoom;
-		[SerializeField, BoxGroup("Analytics")]
-		private bool IsHealingRoom;
 
 		public bool IsLocked { get; private set; }
 		public bool IsConquered { get; private set; }
@@ -85,8 +81,6 @@ namespace Quinn.DungeonGeneration
 
 		private bool _hasLoaded;
 		private bool _isExitQueued;
-
-		private bool _explored;
 
 		public void Awake()
 		{
@@ -224,20 +218,6 @@ namespace Quinn.DungeonGeneration
 
 			if (collider.IsPlayer())
 			{
-				if (!_explored)
-				{
-					_explored = true;
-					PlayerManager.Instance.NewRoomsExploredThisFloor++;
-
-					UnityServices.Analytics.Instance.Push(new UnityServices.Events.EnterRoomEvent()
-					{
-						RoomsExploredThisFloor = PlayerManager.Instance.NewRoomsExploredThisFloor,
-						IsLootRoom = IsLootRoom,
-						IsBossRoom = IsBossRoom,
-						IsHealingRoom = IsHealingRoom
-					});
-				}
-
 				RoomCamera.enabled = true;
 				RoomCamera.Target.TrackingTarget = CameraManager.Instance.CameraTarget;
 

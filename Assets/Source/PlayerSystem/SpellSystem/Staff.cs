@@ -69,14 +69,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 			_group = GetComponentInChildren<SortingGroup>();
 			_group.enabled = false;
-
-			OnEnergyDepleted += _ =>
-			{
-				UnityServices.Analytics.Instance.Push(new UnityServices.Events.StaffBrokeEvent()
-				{
-					Name = gameObject.name
-				});
-			};
 		}
 
 		public void GenerateGUID()
