@@ -84,6 +84,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 1
     importHiddenLayers: 1
@@ -97,6 +99,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 638682356284907726
   textureAssetName: 
@@ -250,6 +254,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 42}
   spriteSheetImportData: []
+  tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -273,6 +278,8 @@ ScriptedImporter:
         height: 10
       spriteId: e455b15dcea8d51469ab444c8e63913c
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 1
     uuid:
@@ -296,6 +303,8 @@ ScriptedImporter:
         height: 3
       spriteId: 134694c7e0fe88745a212fd3029eac85
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 2
     uuid:
@@ -319,6 +328,8 @@ ScriptedImporter:
         height: 5
       spriteId: 6c860b2e25e322645a98c713597bb3d7
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 3
     uuid:
@@ -342,6 +353,8 @@ ScriptedImporter:
         height: 4
       spriteId: a6220ff757397a34d801b95a5d055de9
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 4
     uuid:
@@ -365,6 +378,8 @@ ScriptedImporter:
         height: 5
       spriteId: 2964f563d86c8af4c8bf56ad07990cf8
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 5
     uuid:
@@ -388,7 +403,10 @@ ScriptedImporter:
         height: 4
       spriteId: ac7cb398e0ba507428d11f1fc8afbae3
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
+  tileSets: []
   platformSettings:
   - name: Default
     overridden: 0

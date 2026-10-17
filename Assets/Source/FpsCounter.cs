@@ -38,6 +38,7 @@ namespace Quinn
 			var style = new GUIStyle(GUI.skin.label)
 			{
 				fontSize = 24,
+				alignment = TextAnchor.UpperRight,
 				normal = { textColor = Color.yellow }
 			};
 
@@ -46,7 +47,8 @@ namespace Quinn
 				$"CPU main: {cpuMain} | RT: {renderThread} | GPU: {gpu}\n" +
 				$"{SystemInfo.graphicsDeviceType} | Quality: {QualitySettings.names[QualitySettings.GetQualityLevel()]} | {Screen.width}x{Screen.height}";
 
-			GUI.Label(new Rect(10, 10, 800, 100), text, style);
+			float width = 800f;
+			GUI.Label(new Rect(Screen.width - width - 10, 10, width, 100), text, style);
 		}
 	}
 }

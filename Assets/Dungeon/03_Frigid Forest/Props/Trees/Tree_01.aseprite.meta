@@ -84,6 +84,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 1
     importHiddenLayers: 1
@@ -97,6 +99,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 638683231472195999
   textureAssetName: 
@@ -250,6 +254,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 101}
   spriteSheetImportData: []
+  tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -273,6 +278,8 @@ ScriptedImporter:
         height: 3
       spriteId: 7605785a5e33cc843a5e3d294c6dfa1b
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 1
     uuid:
@@ -296,6 +303,8 @@ ScriptedImporter:
         height: 15
       spriteId: e2fb64a33b4b16d4caba5cb445715405
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 2
     uuid:
@@ -319,6 +328,8 @@ ScriptedImporter:
         height: 25
       spriteId: e968d2dd1fb6c1f47af16d7c0b89d1da
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 3
     uuid:
@@ -342,6 +353,8 @@ ScriptedImporter:
         height: 25
       spriteId: f01e645956a5e054ba03fbfecc303b77
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 4
     uuid:
@@ -365,6 +378,8 @@ ScriptedImporter:
         height: 23
       spriteId: a7dbfc004c62db845b0d04213d7c5306
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 5
     uuid:
@@ -388,7 +403,10 @@ ScriptedImporter:
         height: 19
       spriteId: 7edf26636e671ce41a19479e558cd07f
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
+  tileSets: []
   platformSettings:
   - name: Default
     overridden: 0

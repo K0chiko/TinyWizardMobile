@@ -84,6 +84,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 1
     importHiddenLayers: 1
@@ -97,6 +99,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 638683231472195999
   textureAssetName: 
@@ -250,6 +254,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 39, y: 4}
   spriteSheetImportData: []
+  tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -273,6 +278,8 @@ ScriptedImporter:
         height: 3
       spriteId: 7605785a5e33cc843a5e3d294c6dfa1b
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 1
     uuid:
@@ -296,6 +303,8 @@ ScriptedImporter:
         height: 15
       spriteId: c479b7fac2baa924691b81f63fe244df
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 2
     uuid:
@@ -319,6 +328,8 @@ ScriptedImporter:
         height: 27
       spriteId: d43bcde670b349c48a4a8cfd6b62a846
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 3
     uuid:
@@ -342,6 +353,8 @@ ScriptedImporter:
         height: 35
       spriteId: db6e89b3b5df9034f977cc4fdc88b84a
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 4
     uuid:
@@ -365,6 +378,8 @@ ScriptedImporter:
         height: 35
       spriteId: 67c9dbdf5b2d1fc4392761666c837182
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 5
     uuid:
@@ -388,7 +403,10 @@ ScriptedImporter:
         height: 29
       spriteId: 10d6155d419cc1e4982ca0f4a30b75f0
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
+  tileSets: []
   platformSettings:
   - name: Default
     overridden: 0

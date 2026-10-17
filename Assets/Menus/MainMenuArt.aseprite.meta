@@ -84,6 +84,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 1
     importHiddenLayers: 0
@@ -97,6 +99,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 638676568965815314
   textureAssetName: 
@@ -250,6 +254,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 822, y: 102}
   spriteSheetImportData: []
+  tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -273,6 +278,8 @@ ScriptedImporter:
         height: 301
       spriteId: 6e950cbcdf4ccd3459a5a16f04aa5d7f
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 1
     uuid:
@@ -296,6 +303,8 @@ ScriptedImporter:
         height: 103
       spriteId: f0b3d8a445239b049bb7209300d61438
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 2
     uuid:
@@ -319,6 +328,8 @@ ScriptedImporter:
         height: 76
       spriteId: e7fe1283d0e0e244292ccd2af8a37b84
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 3
     uuid:
@@ -342,6 +353,8 @@ ScriptedImporter:
         height: 217
       spriteId: a85ce9d423aed75408af5309263e1178
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 4
     uuid:
@@ -365,6 +378,8 @@ ScriptedImporter:
         height: 90
       spriteId: e36807efc98f13b4fa2d02ab29707787
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 5
     uuid:
@@ -388,7 +403,10 @@ ScriptedImporter:
         height: 81
       spriteId: 6f9d55e399f303d4f8b687c45fcb0343
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
+  tileSets: []
   platformSettings:
   - name: Default
     overridden: 0

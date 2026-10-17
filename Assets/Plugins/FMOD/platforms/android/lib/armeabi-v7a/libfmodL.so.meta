@@ -19,7 +19,7 @@ PluginImporter:
   validateReferences: 1
   platformData:
     Android:
-      enabled: 0
+      enabled: 1
       settings:
         CPU: ARMv7
         Is16KbAligned: false

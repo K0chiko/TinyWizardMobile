@@ -84,6 +84,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 1
     importHiddenLayers: 1
@@ -97,6 +99,8 @@ ScriptedImporter:
     generateAnimationClips: 0
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 638680658067829944
   textureAssetName: 
@@ -271,6 +275,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 49}
   spriteSheetImportData: []
+  tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -294,6 +299,8 @@ ScriptedImporter:
         height: 37
       spriteId: 83c7cedb2bd409b429a8bbd00e574366
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 1
     uuid:
@@ -317,6 +324,8 @@ ScriptedImporter:
         height: 2
       spriteId: 46b0f08ad6e64a346ba1b714ceaedec9
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 2
     uuid:
@@ -340,6 +349,8 @@ ScriptedImporter:
         height: 2
       spriteId: 95285b07aac2e2a4bb4ee63f86ebf9d6
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 3
     uuid:
@@ -363,6 +374,8 @@ ScriptedImporter:
         height: 11
       spriteId: 2c8e1a4799505554387e8db355880542
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 4
     uuid:
@@ -386,6 +399,8 @@ ScriptedImporter:
         height: 2
       spriteId: f0b1bed754bf8f54fbbffa396bd42fa9
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 5
     uuid:
@@ -409,6 +424,8 @@ ScriptedImporter:
         height: 2
       spriteId: 49bbfcfd1b3ad8b43a103532c6d452b8
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
   - layerIndex: 6
     uuid:
@@ -432,7 +449,10 @@ ScriptedImporter:
         height: 5
       spriteId: d61699ccaa8e53c4387165ec3e3e8023
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
+  tileSets: []
   platformSettings:
   - name: Default
     overridden: 0
