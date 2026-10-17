@@ -1,0 +1,218 @@
+# План рефакторинга TinyWizardMobile
+
+Результат исследования кода (только чтение, ничего не менялось). 174 `.cs`-файла, ~11 400 строк в `Assets/Source` и `Assets/EvloutionLearning`.
+
+**Как проверялось.** Поиск «мёртвого» кода сделан по именам и по GUID: классы и методы искались в `.cs`, `.prefab`, `.unity`, `.asset`, `.anim`, `.controller`. Unity-проект я не компилировал. Поэтому после каждого шага нужна компиляция в редакторе и проверка по чек-листу из фазы 0.
+
+---
+
+## Фаза 0. Подготовка (то, что обычно забывают)
+
+Не пропускайте: без неё рефакторинг рискует сломать игру незаметно.
+
+1. **Разберитесь с текущими 114 незакоммиченными файлами.** Это не ваши правки, а следы апгрейда Unity с `6000.0.68f1` на `6000.3.24f1` (пакеты, `ProjectSettings`, `.aseprite.meta`, префабы). Решите одно из двух:
+   - апгрейд нужен: закоммитьте его **отдельным коммитом** до рефакторинга;
+   - апгрейд случайный: откатите и откройте проект в старой версии.
+   Смешивать апгрейд и рефакторинг в одном диффе нельзя: потом не отделить, что что сломало.
+2. **Ветка и тег.** `git switch -c refactor` и `git tag before-refactor`, чтобы всегда можно было вернуться.
+3. **Тестов нет, поэтому страховка ручная.** Проект не содержит тестов, кроме пакета `test-framework`. Составьте чек-лист и прогоняйте его после каждой фазы (на Android-сборке или в редакторе):
+   - меню → старт → смерть → рестарт → победа;
+   - подбор посоха из сундука, смена посоха, обычная атака и спецатака, перезарядка маны;
+   - шаги (звук и VFX на камне, ковре, снегу, луже);
+   - переход между этажами, заголовок этажа;
+   - бой с каждым боссом: Oak Lord, Candlestick, Snowman, Yeti, Candle Spirit;
+   - пауза, прицел и джойстики на телефоне.
+4. **Замерьте базу.** Размер APK, время компиляции и FPS из `FpsCounter` на устройстве. Иначе «стало лучше» нечем подтвердить.
+5. **Один тип изменений на коммит.** Мёртвый код, комментарии, разбиение классов и зависимости идут разными коммитами. Если что-то сломается, `git bisect` найдёт виновника за минуты.
+6. **Репозиторий весит лишнее.** В git закоммичено **1 948 файлов и ~503 МБ в `FMOD/`**, из них 980 файлов — кэш `FMOD/TinyWizard/.cache` (`*.fobj`, `.br`). Это артефакты сборки, их не должно быть в git. Добавьте `FMOD/TinyWizard/.cache/` в `.gitignore` и выполните `git rm -r --cached FMOD/TinyWizard/.cache`. Исходники FMOD Studio (`Metadata`, `Assets`, `.fspro`) оставьте. История от этого не уменьшится, только перестанет расти.
+
+---
+
+## Фаза 1. Мёртвый код
+
+### 1.1. Высокая уверенность: нет ссылок ни в коде, ни в ассетах
+
+| Что | Файл |
+|---|---|
+| Действия Behavior Tree, не встречающиеся ни в одном из 6 графов | `BreakAction`, `DashAction`, `FacePositionAction`, `GetRandomPositionInFrontOfTargetAction`, `MoveToWithSpeedAction` (папка `AI/BehaviorTree/Actions`) |
+| Старый AI | `AI/Brains/GruntAI.cs`, `AI/StaticBrains/BasicStaticAI.cs` (с `FaceDir`) |
+| Заглушка отладки | `AI/Pathfinding/PathfindingAgent.cs` (вызывает `FindPath` с жёсткими координатами `(5, 5)`) |
+| Компоненты без единого использования | `DisableAllChildren.cs`, `DungeonGeneration/EnableChildOnTrigger.cs`, `LoadScene.cs`, `MusicVolume.cs` (+`MusicMode`), `TriggerOnHit.cs` |
+| UI | `UI/LeaderboardUI.cs` (весь код аналитики и `UnityServices/` удаляется отдельно, см. фазу 5) |
+| Целая папка | `Assets/EvloutionLearning/` (4 скрипта, сцена, 3 префаба). Сцены нет в Build Settings, ссылок на неё нет. Это эксперимент с нейросетью, не часть игры |
+| Неиспользуемые ассеты | `Assets/Dungeon/Testing Floor/`, `Assets/Cinematics/TestTimeline.playable` (ссылок по GUID нет) |
+
+**Не удалять, хотя поиск пометил как «без ссылок»:** `MobilePerfBoot` и `Global` (запускаются через `RuntimeInitializeOnLoadMethod`), `FpsCounter` (если оставляете счётчик в сборке), все BT-действия, которые есть в графах (их 20+, они находятся поиском по имени типа в `*BT.asset`).
+
+### 1.2. Мёртвые методы (проверить и удалить)
+
+Нет ссылок ни в коде, ни в анимациях/префабах:
+
+- `AIMovement.MoveInDirectionFor`
+- `CameraManager.EnableFollowCamera` / `DisableFollowCamera`
+- `CrosshairManager.SetScale`
+- `Health.SetMax`
+- `InputManager.ShowCursor` (на мобильном не нужен; `HideCursor` и `Cursor.lockState` проверьте отдельно)
+- `ButtonUI.OnPointerEnter/Exit/Click` (проверьте, не вызываются ли через `IPointerHandler`)
+
+Кандидаты, но **сначала проверьте**: они могут вызываться по строке из анимаций, `UnityEvent` или сериализованных данных. Часть методов уже нашлась в ассетах, их удалять нельзя: `OnLand_Anim`, `Clone_Anim`, `Unpause_Button`, `MainMenu_Button`, `DisableCharacterCollision`, `EnableCharacterCollision`, `CeaseAutoFire`, `SetAnimationTrigger`.
+Для остальных (`Pathfinder.IsTraversable`, `GetDistance`, `DungeonGenerator.GenerateRoomAt`, `Staff.GenerateGUID`, `Spikes.OnCollisionStay2D/Exit2D`, `NumberExtensions.ToRadians/ToDirection`) делайте так: удалили, скомпилировали, прогнали чек-лист.
+
+### 1.3. Мёртвые `using` и код под `#if`
+
+- `Unity.VisualScripting` в 4 файлах (`PlayerCaster`, `BasicStaff`, `Chest`, `BTAgent`): похоже, лишний.
+- `Unity.AppUI.Core` в `Missile.cs`, `UnityEngine.UIElements` в `MoveToTargetAction.cs`: тоже подозрительны.
+- Удаляйте `using` пачкой в IDE (Rider: *Optimize usings*) и компилируйте.
+- Комментарий `using ... // Добавляем для работы Keyboard.current` — тоже на удаление (фаза 2).
+- `#pragma warning disable CS0414` в `Global.cs`: уберите и посмотрите, какое предупреждение вылезет. Скорее всего, лишнее неиспользуемое поле.
+- Блоки `#if UNITY_EDITOR` с читами (`PlayerCaster.Update` строки 118–142, `Player.Update` строки 100–137) в билд не попадают. Если читы нужны, вынесите их в один файл `PlayerCheats` под `#if UNITY_EDITOR` (см. фазу 3).
+- Debug-логи (13 штук, часть на русском) и `Debug.Assert`: оставьте только `LogError` и `LogWarning` на реальные сбои.
+
+---
+
+## Фаза 2. Удаление комментариев
+
+Объём: **127 строк `//`**, 11 хвостовых комментариев, 8 блочных `/* */`, 28 строк `///` (документация). Из них ~16 строк — закомментированный код. Больше всего в `PlayerCaster.cs` (31), `PathTile.cs` (15), `InputManager.cs` (13), `Pathfinder.cs` (13).
+
+Как делать безопасно:
+
+1. Скрипт (Python) убирает комментарии по токенам: `//` внутри строк и URL не трогает. Простой `sed` не годится.
+2. Не трогать: `Assets/Plugins/**`, `Packages/**`, а также атрибуты `[Tooltip(...)]`, `[Header(...)]`, `[InfoBox(...)]`. Это не комментарии, они видны в инспекторе.
+3. После скрипта: компиляция, затем `git diff --stat`. Должны измениться только `.cs`-файлы.
+4. Удалить также маркеры разделов (`/* UNITY MESSAGES */`, `/* PUBLIC METHODS */`) и два мусорных комментария-заглушки в `Player.cs` (`// ... (все поля остаются без изменений ...)`): похоже, остались после копирования из чата.
+5. Делайте отдельным коммитом **после** удаления мёртвого кода, иначе правите комментарии у кода, который потом всё равно удалите.
+
+**Что вы теряете.** Единственная настоящая документация проекта — XML-доки у `PlayerCaster.EquipStaff` (параметры `skipSequence` и т.п.) и пара комментариев «почему так» (например, про `UIStaff` в `PlayerCaster`). После удаления смысл придётся восстанавливать из кода. Снижает риск только понятное именование, а не отсутствие комментариев: у `EquipStaff(Staff, bool, bool)` после фазы 5 останутся два булевых параметра, которые без документации непонятны. В фазе 3 замените их на один `EquipOptions` или enum-флаги.
+
+---
+
+## Фаза 3. Разбиение раздутых классов
+
+Размер строк — не цель, цель — отдельные причины для изменения. Ранжирую по пользе:
+
+| Класс (строк) | Что в нём намешано | Как разбить |
+|---|---|---|
+| **`PlayerCaster` (583)** | инвентарь посохов (equip/store/layout), мана (`Mana`, регенерация, события), последовательность подбора (`StaffPickUpSequence`, `UpdateEnergyVFX`), сохранение между этажами (`RecreateTransientStaffData`, `UpdateStaffTransientData`), поворот игрока, читы | `PlayerMana` (обычный C#-класс), `StaffInventory`, `StaffPickupSequence`, `PlayerCheats` (editor-only). `PlayerCaster` оставить координатором ~150 строк |
+| **`Player` (395)** | шаги и звук материалов, переходы между этажами и заголовок этажа, лужа лечения (маска, VFX), снимок «hurt», взаимодействие, читы | `FootstepPlayer`, `FloorTransition`, `HealingPuddleFx`; читы — в `PlayerCheats` |
+| **`Room` (374)** | замки дверей, реестр агентов, логика боя, навмеш | `RoomEncounter` (бой, агенты) + `Room` (двери, навмеш) |
+| **`Health` (324)** | здоровье и урон, плюс три разные анимации реакции (`AnimateHurtVFX`, `AnimateFlash`, `AnimateBlink`) и HP-бар | `HealthFeedback` (вся визуальная реакция); `Health` остаётся чистой моделью |
+| **`InputManager` (238)** | 7 одинаковых блоков «проверить на null → подписаться/отписаться/включить/выключить» | не разбивать, а сократить: список привязок и один цикл. Заодно уберёт ~80 строк |
+| **`BasicStaff` (267, 37 полей), `Missile` (262, 34 поля)** | много настроек в одном классе | не дробить поведение: сгруппировать поля во вложенные `[Serializable]`-структуры (`ProjectileSettings`, `SplashSettings`) |
+| **`DungeonGenerator` (286)** | вложенный класс `DoorCriteria` + генерация + уничтожение | вынести `DoorCriteria` в свой файл; остальное оставить |
+
+### Дубликаты, которые нужно слить, а не делить
+
+- `Player.GetSoundMaterialType()` + `PlayFootstepSound()` и `BTAgent.GetSoundMaterialType()` + `PlayFootstepSound()` — один и тот же код. Общий `FootstepPlayer` решит обе задачи.
+- `AIAgent` (265) и `BTAgent` (263) повторяют цель, поворот и получение урона. Если `AIAgent` остался только для `SlimeAI` и `FlameMinionAI`, подумайте, нужен ли он.
+
+### Главные ловушки Unity (прочтите до начала фазы 3)
+
+1. **Нельзя просто перенести `[SerializeField]` поле в новый компонент.** Значения в префабах и сценах (десятки комнат, враги, босс) пропадут без предупреждения. Безопасный путь: выносить **обычные C#-классы**, которыми владеет прежний MonoBehaviour, а сериализованные поля оставлять на месте. Новый MonoBehaviour — только когда для него есть план миграции префабов.
+2. **Не переименовывайте и не перемещайте в другой namespace то, что стоит в графах Behavior.** `*BT.asset` хранит типы действий **по имени**. Переименование `MoveToAction` ломает граф без ошибки компиляции.
+3. **Методы, вызываемые по строке, трогать нельзя:** события анимаций (`OnFootstep_Anim`, `OnLand_Anim`, `Clone_Anim`), `UnityEvent` в префабах (`Unpause_Button`, `MainMenu_Button`), `Animator.SetBool("IsMoving")`, `Resources.Load("Globals")`, строки FMOD-событий.
+4. **`.cs` и `.cs.meta` перемещайте вместе** (лучше внутри редактора Unity). Тогда GUID сохранится и ссылки на скрипт не потеряются.
+5. **Порядок событий.** Многие классы подписываются в `Awake` на синглтоны (`InputManager.Instance`, `PlayerManager.Instance`). Новый компонент не должен менять порядок инициализации.
+
+**Порядок работы:** `Health` → `Player` и `BTAgent` (общий `FootstepPlayer`) → `PlayerCaster` → `Room` → остальное. Чем дальше, тем выше риск, поэтому начинайте с самого изолированного.
+
+---
+
+## Фаза 4. Зависимости
+
+Что реально можно убрать или заменить парой строк:
+
+| Зависимость | Использование в коде | Вердикт |
+|---|---|---|
+| **Odin Inspector** (11 МБ в `Assets/Plugins/Sirenix`) | `using` в 37 файлах и **~90 атрибутов**: `[Required]` (~60, на ссылках в инспекторе), `ShowIf`/`HideIf` (~12), `BoxGroup`/`FoldoutGroup` (~15), `ValidateInput` (2), `InfoBox`, `HorizontalGroup`, `HideLabel`, `AssetsOnly`, `Unit`. `SerializedMonoBehaviour` не используется, в ассетах данных Odin нет (0 ссылок) | **Можно убрать, но это не «пара строк».** Все атрибуты работают только в редакторе, поведение игры не меняется. Цена: теряете подсказки об незаполненных ссылках (`Required`), условное скрытие полей и группировку в инспекторе. Нужен скрипт, который удалит атрибуты и `using` в 37 файлах. **Решение отложено на ваше усмотрение**, делать после фазы 5, отдельным коммитом. (Первая версия плана ошибочно называла 5 атрибутов: мой поиск не видел атрибутов внутри составных скобок `[SerializeField, Required]`) |
+| **Visual Scripting** (`com.unity.visualscripting`) | только лишний `using` в 4 файлах | **Убрать** (после чистки `using` из фазы 1.3) |
+| **Multiplayer Center, Collab Proxy** | не используются; Collab — устаревший Unity VCS | **Убрать** |
+| **Timeline** (+ модуль Director) | один неиспользуемый `TestTimeline.playable`; `PlayableDirector` нигде не встречается | **Убрать** вместе с ассетом |
+| **Лишние встроенные модули** | cloth, terrain, terrainphysics, vehicles, wind, vr, xr, video, screencapture, umbra | Можно отключить через Package Manager. Выигрыш небольшой (в билде уже стрипится), зато проект компилируется чуть быстрее. **Низкий приоритет**; после каждого отключения собирайте проект. `adaptiveperformance` и `vectorgraphics` добавил апгрейд редактора, не вы |
+| **DOTween** (19 файлов, ~100 вызовов) | `DOFade`, `DOScale`, `SetEase`, `DOKill`, `Sequence`, `DOPunchScale`, `DOJump`, `DOShakeScale` | **Оставить.** Заменить «парой строк» нельзя: easing, последовательности, kill по цели. Потери окупят выигрыш в 744 КБ |
+| **Cinemachine** (5 файлов) | `CameraManager`, `CameraHandle`, `LocalCamera`, `PlayerManager`, `Camera.prefab` | **Оставить.** Слежение, трясение камеры, переходы между комнатами |
+| **Unity Behavior** (33 файла, 6 графов) | все боссы | **Оставить.** Переписывать боссов на код — отдельный проект |
+| **FMOD** (295 МБ плагина, 43 `EventReference`) | весь звук | **Оставить.** Но можно удалить ненужные платформы из `Assets/Plugins/FMOD/platforms/` (html5 94 МБ, visionos 44, tvos 38, uwp 15, mac 12). Это уменьшит проект, а не APK. **iOS (43 МБ) оставьте, если собираетесь на iPhone** |
+| **Unity Analytics + Authentication + Core** | см. фазу 5 | **Убрать полностью** (решение принято: аналитика чужая, оставлена от оригинала) |
+| **TextMesh Pro, UGUI, Input System, URP, VFX Graph, 2D feature** | основа проекта | оставить |
+
+---
+
+## Фаза 5. Полное удаление аналитики
+
+Решение принято: аналитика не ваша (в проекте остался `cloudProjectId`/`organizationId: mrtwixlikesyou` оригинального автора, события с префиксом `go24_` от Game Off 2024), удаляем целиком. Делать **до** комментариев и разбиения классов: часть кода (`Room`, `PlayerCaster`, `Staff`) станет проще и разбивать придётся меньше.
+
+Порядок важен: сначала убираем ссылки из ассетов, потом код, потом пакеты. Иначе в префабах останутся `Missing Script`.
+
+### Шаг 1. Ассеты в редакторе Unity (до удаления скриптов)
+
+1. `Assets/Resources/Globals.prefab`: удалить компоненты `Services` и `Analytics` (оба скрипта висят на нём).
+2. `Assets/AnalyticsVolume.prefab` вставлен как вложенный префаб в **три** префаба: `01_The Palace/Variants/ThePalace_A.prefab`, `ThePalace_B.prefab` и `Generic Props/Healing Puddle/HealingPuddle.prefab`. Откройте каждый, удалите все экземпляры `AnalyticsVolume` (в каждом файле по 15–16 упоминаний, значит, возможно, несколько экземпляров). Только после этого удаляйте сам `AnalyticsVolume.prefab`.
+3. Откройте сцены `GameScene`, `MenuScene`, `VictoryScene` и проверьте, нет ли там объектов с `Analytics`, `Services`, `AnalyticsVolume`. Поиск по GUID скриптов нашёл их только в `Globals.prefab`, но сцены лучше просмотреть глазами.
+
+### Шаг 2. Код
+
+Удалить целиком:
+
+- папку `Assets/Source/UnityServices/` (`Analytics.cs`, `Services.cs`, `CustomEvent.cs`, `Events/` с 8 классами: `AnalyticsVolumeEvent`, `BossDeathEvent`, `DiscoveredFloorEvent`, `DummyEvent`, `EnterRoomEvent`, `PlayerDeathEvent`, `StaffBrokeEvent`, `StaffEquipEvent`);
+- `Assets/Source/Volumes/AnalyticsVolume.cs` (`TriggerVolume` оставить, им пользуются другие тома).
+
+Убрать вызовы и всё, что существует только ради них:
+
+| Файл | Что убрать |
+|---|---|
+| `PlayerManager.cs` (стр. ~153) | `Analytics.Instance.Push(new PlayerDeathEvent…)` и `using Quinn.UnityServices`. Флаг `_isDead` оставить. Свойство `NewRoomsExploredThisFloor` (стр. 38, 64) нужно только событию входа в комнату — удалить |
+| `Staff.cs` (стр. ~75) | подписку `OnEnergyDepleted += _ => { …StaffBrokeEvent… }`. Проверить, нет ли других подписчиков на это событие |
+| `PlayerCaster.cs` (стр. 208–217) | вызов `StaffEquipEvent` и параметр `supressAnalytics` вместе с обоими вызывающими местами (стр. 103 и 386). Сигнатура `EquipStaff` упростится до трёх параметров. Проверка `staff.GUID != FallbackStaff.GUID` нужна была только аналитике |
+| `Room.cs` (стр. 59–64, 232–238) | вызов `EnterRoomEvent`, поля `IsLootRoom` и `IsHealingRoom` (нужны только событию; сериализованные значения в префабах комнат просто пропадут, это безопасно). **`IsBossRoom` оставить:** его читает `DungeonGenerator` (стр. 90) |
+| `BTAgent.cs` (стр. ~228) | вызов `BossDeathEvent`, `using Quinn.UnityServices` и `using Quinn.UnityServices.Events`. Проверить, остаётся ли нужным `PlayerManager.CurrentFloorAttempts` (если больше нигде не читается, удалить) |
+| `DungeonGenerator.cs` (стр. 181) | закомментированный вызов `DiscoveredFloorEvent`; уйдёт и так на фазе 2 |
+
+После этого компиляция должна пройти без единой ссылки на `Quinn.UnityServices` и `Unity.Services.*`: проверьте поиском по проекту.
+
+### Шаг 3. Пакеты и настройки
+
+1. В `Packages/manifest.json` удалить `com.unity.services.analytics` и `com.unity.services.authentication`. `com.unity.services.core` подтягивался только ими и уйдёт из `packages-lock.json` сам. `com.unity.nuget.newtonsoft-json` останется (его требует ещё один пакет).
+2. *Project Settings → Services*: отвязать проект от чужого Unity-проекта (*Unlink*). Должны исчезнуть `cloudProjectId` и `organizationId` из `ProjectSettings.asset`. Если кнопки нет, поля можно обнулить вручную в файле при закрытом редакторе.
+3. `ProjectSettings/UnityConnectSettings.asset`: проверить, что флаги аналитики остались выключенными (`UnityAnalyticsSettings.m_Enabled: 0`, `m_PackageRequiringCoreStatsPresent` станет `0`). Файл может изменить сам редактор, это нормально.
+4. В *Player Settings → Other Settings → Internet Access* оставьте **Auto**: после удаления сервисов Unity не должен добавлять разрешение `INTERNET`. Проверьте в собранном APK (`aapt dump permissions` или Android Studio → APK Analyzer). Игра полностью офлайн, это плюс для приватности и для формы Data Safety в Google Play.
+5. Через Package Manager убедитесь, что не осталось неразрешённых зависимостей.
+
+### Шаг 4. Проверка
+
+- Чистая сборка Android, запуск без интернета: игра должна стартовать так же быстро и не писать ошибок про Unity Services в `logcat`.
+- Чек-лист из фазы 0: комнаты, смерть игрока, смена посоха, бой с боссом (все пять точек, где раньше отправлялись события).
+- `git grep -i "analytics\|Unity.Services"` по `Assets/Source`, `Packages`, `ProjectSettings` не должен находить ничего, кроме, возможно, `UnityConnectSettings.asset`.
+
+**Что получите:** −1 пакет Core, −2 пакета сервисов, −15 файлов в `Source` (с `.meta`), −3 вложенных префаба, −2 лишних булевых параметра/поля, −1 синглтон (`Analytics.Instance`), меньше сетевого кода в сборке.
+
+---
+
+## Что вы, скорее всего, забыли
+
+Для не-мастера в рефакторинге — список по важности:
+
+1. **Откат.** Ветка + тег (фаза 0), мелкие коммиты. Если сломали и не знаете что, нужен `git bisect`, для него коммиты должны быть атомарными.
+2. **Unity ломается молча.** Ошибки в сериализации (потерянные поля, переименованные типы в графах, строковые вызовы) не видны при компиляции. Единственная защита — чек-лист из фазы 0 после каждого шага.
+3. **`.meta`-файлы.** Они хранят GUID. Удаляя или перемещая `.cs`, удаляйте и перемещайте и `.meta`, лучше всё через редактор. Иначе в префабах появятся `Missing Script`.
+4. **Поиск «Missing Script» после удаления.** После фазы 1 откройте каждую сцену и ключевые префабы (комнаты, враги, UI) и проверьте консоль на предупреждения «The referenced script on this Behaviour is missing». Для проверки всех ассетов разом нужен небольшой редакторский скрипт (`GameObjectUtility.GetMonoBehavioursWithMissingScriptCount`) или бесплатный «Missing Scripts Finder» из Asset Store.
+5. **Сборка на устройстве.** Редактор и Android отличаются: стриппинг кода убирает рефлексию-зависимый код. После каждой фазы собирайте APK, а не только запускайте в редакторе. `link.xml` / `[Preserve]` понадобятся, если что-то используется только по имени.
+6. **`FpsCounter` в релизе.** Он рисует через `OnGUI` на экране игрока и жрёт CPU. Перед релизом уберите или закройте `#if DEVELOPMENT_BUILD`.
+7. **Синглтоны.** В проекте 16 статических `Instance` (`PlayerManager`, `InputManager`, `PauseMenuUI`...), и они связывают всё со всем. Это главная причина сложности, но рефакторить их сейчас не стоит: слишком много мест. Просто **не добавляйте новые** при разбиении классов, передавайте зависимости через `[SerializeField]`.
+8. **Тесты.** Добавьте хотя бы 3–5 EditMode-тестов на чистую логику, которую вы выносите (`PlayerMana`, правила `DoorCriteria`). Пакет уже установлен, ничего ставить не нужно. Тесты на вынесенных классах — единственная автоматическая защита.
+9. **Чужой код.** Проект — порт игры QuinnCG. Проверьте лицензию в `LICENSE` и сохраните указание авторства в README, прежде чем публиковать.
+10. **Не смешивать.** Рефакторинг не должен менять поведение. Если по ходу видите баг (например, `OnDestroy` в `PlayerCaster` отписывается от `OnCastStart` и `OnSpecialStart`, но не от `OnCastStop` и `OnSpecialStop`), запишите его отдельно и исправьте отдельным коммитом после.
+
+---
+
+## Рекомендуемый порядок
+
+1. Фаза 0 (подготовка, `.gitignore` для FMOD cache, база метрик).
+2. Фаза 1.1 + 1.3: мёртвые классы и `using`; проверка Missing Script.
+3. **Фаза 5: полное удаление аналитики** (ассеты → код → пакеты → настройки). Самый крупный выигрыш, при этом `Room`, `PlayerCaster` и `Staff` станут проще до разбиения.
+4. Фаза 4, безопасная часть: Visual Scripting, Multiplayer Center, Collab, Timeline.
+5. Фаза 2: комментарии (механически, одним коммитом).
+6. Фаза 1.2: мёртвые методы по одному.
+7. Фаза 3: разбиение классов, начиная с `Health`.
+8. Остальное по желанию: Odin (отдельным коммитом), лишние встроенные модули, платформы FMOD.
+
+Оценка: фазы 0–2, 5 и безопасная часть 4 — 2–3 вечера; фаза 3 — основная работа, по классу за подход.
