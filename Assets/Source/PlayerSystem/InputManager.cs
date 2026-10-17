@@ -62,6 +62,25 @@ namespace Quinn.PlayerSystem
 
 		private void Aim()
 		{
+			if (PlatformInfo.IsTouch)
+				AimWithStick();
+			else
+				AimWithPointer();
+		}
+
+		private void AimWithPointer()
+		{
+			var mouse = Mouse.current;
+			var cam = Camera.main;
+
+			if (mouse == null || cam == null)
+				return;
+
+			CursorWorldPos = cam.ScreenToWorldPoint(mouse.position.ReadValue());
+		}
+
+		private void AimWithStick()
+		{
 			Vector2 playerPos = PlayerManager.Instance != null 
 				? (Vector2)PlayerManager.Instance.Player.transform.position 
 				: Vector2.zero;
@@ -110,6 +129,12 @@ namespace Quinn.PlayerSystem
 		{
 			enabled = false;
 			MoveDirection = Vector2.zero;
+		}
+
+		public void ShowCursor()
+		{
+			Cursor.visible = true;
+			Cursor.lockState = CursorLockMode.None;
 		}
 
 		public void HideCursor()

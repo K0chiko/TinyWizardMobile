@@ -463,6 +463,28 @@
                 },
                 {
                     "name": "",
+                    "id": "17c3b103-9b88-4970-bf7f-0d1a9ef3c1b8",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PauseMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59b2341f-e519-4537-8afc-b396296671e2",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PauseMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1ed19080-339a-4d86-b2ea-ea2147235900",
                     "path": "<Gamepad>/start",
                     "interactions": "",

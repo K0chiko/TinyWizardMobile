@@ -17,6 +17,8 @@ namespace Quinn.UI
 		private CanvasGroup CanvasGroup;
 		[SerializeField, Required]
 		private Canvas uiMobile;
+		[SerializeField]
+		private GameObject DesktopControlsHint;
 
 		[SerializeField, Required]
 		private Slider SFXSlider, MusicSlider;
@@ -30,6 +32,10 @@ namespace Quinn.UI
 		{
 			Instance = this;
 			CanvasGroup.alpha = 0f;
+
+			uiMobile.gameObject.SetActive(PlatformInfo.IsTouch);
+			if (DesktopControlsHint != null)
+				DesktopControlsHint.SetActive(!PlatformInfo.IsTouch);
 
 			RuntimeManager.StudioSystem.getBus("bus:/SFX", out _sfx);
 			RuntimeManager.StudioSystem.getBus("bus:/Music", out _music);
@@ -101,9 +107,6 @@ namespace Quinn.UI
 				.onComplete += () => Canvas.enabled = false;
 
 			uiMobile.enabled = true;
-			
-			Cursor.visible = false;
-			Cursor.lockState = CursorLockMode.Confined;
 
 			CrosshairManager.Instance.Show();
 

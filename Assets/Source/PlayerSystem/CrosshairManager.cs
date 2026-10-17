@@ -1,4 +1,5 @@
 ﻿using FMODUnity;
+using Quinn.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -45,6 +46,7 @@ namespace Quinn.PlayerSystem
 
 		private FMOD.Studio.PARAMETER_ID _staffChargeParamId;
 		private float _lastChargePercent = -1f;
+		private bool _systemCursorVisible;
 
 		public void Awake()
 		{
@@ -52,7 +54,8 @@ namespace Quinn.PlayerSystem
 			Instance = this;
 
 			_crosshair = CrosshairPrefab.Clone(transform).GetComponent<CrosshairHandle>();
-			InputManager.Instance?.HideCursor();
+			if (!PlatformInfo.IsTouch)
+				InputManager.Instance?.HideCursor();
 
 			_frameTransform = _crosshair.Frame.GetComponent<RectTransform>();
 			_chargeTransform = _crosshair.Charge.GetComponent<RectTransform>();
@@ -77,12 +80,18 @@ namespace Quinn.PlayerSystem
 		public void LateUpdate()
 		{
 			_crosshair.transform.position = Position;
+
+			if (!PlatformInfo.IsTouch)
+				UpdateSystemCursor();
 		}
 
 		public void OnDestroy()
 		{
 			if (Instance == this)
 				Instance = null;
+
+			if (!PlatformInfo.IsTouch)
+				InputManager.Instance?.ShowCursor();
 		}
 
 		public Vector2 DirectionToCrosshair(Vector2 from)
@@ -101,6 +110,21 @@ namespace Quinn.PlayerSystem
 				RuntimeManager.StudioSystem.setParameterByID(_staffChargeParamId, clamped);
 				_lastChargePercent = clamped;
 			}
+		}
+
+		private void UpdateSystemCursor()
+		{
+			bool menuOpen = PauseMenuUI.Instance.IsPaused || PlayerManager.Instance.IsDead;
+
+			if (menuOpen == _systemCursorVisible)
+				return;
+
+			_systemCursorVisible = menuOpen;
+
+			if (menuOpen)
+				InputManager.Instance.ShowCursor();
+			else
+				InputManager.Instance.HideCursor();
 		}
 
 		public void Show()
