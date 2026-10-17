@@ -54,9 +54,6 @@ namespace Quinn.AI.BehaviorTree
        private FMOD.Studio.PARAMETER_ID _secondPhaseParamId;
        private float _lastSecondPhaseValue = -1f;
 
-       private static readonly Collider2D[] s_OverlapBuffer = new Collider2D[8];
-       private static readonly ContactFilter2D s_OverlapFilter = new ContactFilter2D().NoFilter();
-
        public void Awake()
        {
           Animator = GetComponent<Animator>();
@@ -126,7 +123,7 @@ namespace Quinn.AI.BehaviorTree
 
        public void OnFootstep_Anim()
        {
-          PlayFootstepSound(GetSoundMaterialType());
+          Footsteps.Play(FootstepSound, transform.position, Footsteps.Sample(transform.position, out _));
        }
 
        public void DisableCharacterCollision()
@@ -142,38 +139,6 @@ namespace Quinn.AI.BehaviorTree
        public void PlayVFX(int index)
        {
           PlayableVFX[index].Play();
-       }
-
-       private SoundMaterialType GetSoundMaterialType()
-       {
-          SoundMaterialType mat = SoundMaterialType.None;
-          int highestPriority = -9999;
-
-          int count = Physics2D.OverlapPoint(transform.position, s_OverlapFilter, s_OverlapBuffer);
-
-          for (int i = 0; i < count; i++)
-          {
-             if (s_OverlapBuffer[i].TryGetComponent(out SoundMaterial soundMat))
-             {
-                if (soundMat.Priority > highestPriority)
-                {
-                   mat = soundMat.Material;
-                   highestPriority = soundMat.Priority;
-                }
-             }
-          }
-
-          return mat;
-       }
-
-       private void PlayFootstepSound(SoundMaterialType mat)
-       {
-          var instance = RuntimeManager.CreateInstance(FootstepSound);
-          instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-          instance.setParameterByNameWithLabel("sound-mat", SoundMaterialTypeNames.ToLabel(mat));
-
-          instance.start();
-          instance.release();
        }
 
        private void OnDamaged(float damage, Vector2 direction, GameObject source)
