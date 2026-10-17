@@ -48,7 +48,6 @@ namespace Quinn.AI.BehaviorTree
 		{
 			bool reached = _agent.Movement.MoveTo(Position.Value, StoppingDistance.Value);
 
-			// If the percent progress made passes a threshold, continue flow of the graph.
 			if (GameObject.transform.position.DistanceTo(_origin) / _origin.DistanceTo(Position.Value) >= ContinueFlowAfterPercent.Value)
 			{
 				reached = true;

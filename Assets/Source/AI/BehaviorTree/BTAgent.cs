@@ -8,7 +8,7 @@ using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
-using UnityEngine.InputSystem; // Добавлено для поддержки новой системы ввода
+using UnityEngine.InputSystem;
 
 namespace Quinn.AI.BehaviorTree
 {
@@ -48,7 +48,6 @@ namespace Quinn.AI.BehaviorTree
        public AIMovement Movement { get; private set; }
        public Room Room { get; private set; }
 
-       // A trigger is "set" by virtue of being present in this set.
        private readonly HashSet<string> _animTriggers = new();
        private bool _inSecondPhase;
 
@@ -77,7 +76,6 @@ namespace Quinn.AI.BehaviorTree
 #if UNITY_EDITOR
        public void Update()
        {
-          // Проверяем наличие клавиатуры и нажатие клавиши "7" (Alpha7) через новую систему
           var keyboard = Keyboard.current;
           if (keyboard != null && IsBoss && keyboard.digit7Key.wasPressedThisFrame && Health.Percent > 0.51f)
           {

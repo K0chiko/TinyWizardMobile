@@ -249,17 +249,11 @@ namespace Quinn.DungeonGeneration
 			}
 		}
 
-		private /*async*/ void OnPlayerTriggerExit(Collider2D collider)
+		private void OnPlayerTriggerExit(Collider2D collider)
 		{
 			if (collider.IsPlayer() && (!_isExitQueued || IsConquered))
 			{
 				OnPlayerExitRoom();
-
-				//if (!IsConquered && IsStarted)
-				//{
-				//	_isExitQueued = true;
-				//	await Wait.Until(() => IsConquered);
-				//}
 			}
 		}
 
@@ -341,7 +335,6 @@ namespace Quinn.DungeonGeneration
 		private void OnPlayerExitRoom()
 		{
 			RoomCamera.enabled = false;
-			// Always enable music upon leaivng sot that starting room (which don't start with music) will have music in their hallways.
 			RuntimeManager.StudioSystem.setParameterByName("enable-music", 1f);
 
 			if (HasCustomMusic)

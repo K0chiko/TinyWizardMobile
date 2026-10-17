@@ -22,21 +22,19 @@ namespace Quinn.PlayerSystem
 		
 		[Header("Input System (assign InputActionReferences)")]
 		[SerializeField] private InputActionReference moveAction;
-		[SerializeField] private InputActionReference aimAction; // Vector2 aim stick (mobile)
-		//[FormerlySerializedAs("PointerPositionAction")] [SerializeField] private InputActionReference pointerPositionAction; // Optional: screen position (touch/mouse)
-		[SerializeField] private InputActionReference basicAction; // Button
-		[SerializeField] private InputActionReference specialAction; // Button
-		[SerializeField] private InputActionReference dashAction; // Button
-		[SerializeField] private InputActionReference interactAction; // Button
-		[SerializeField] private InputActionReference pauseMenuAction; // Button
-		[SerializeField] private float aimRadius = 2.5f; // used to synthesize crosshair around player on mobile
+		[SerializeField] private InputActionReference aimAction;
+		[SerializeField] private InputActionReference basicAction;
+		[SerializeField] private InputActionReference specialAction;
+		[SerializeField] private InputActionReference dashAction;
+		[SerializeField] private InputActionReference interactAction;
+		[SerializeField] private InputActionReference pauseMenuAction;
+		[SerializeField] private float aimRadius = 2.5f;
 
 		public void Awake()
 		{
 			Debug.Assert(Instance == null, "There are more than one instances of InputManager!");
 			Instance = this;
 
-			// Subscribe to button events (performed/started/canceled)
 			if (basicAction != null && basicAction.action != null)
 			{
 				basicAction.action.started += OnBasicStarted;
@@ -63,10 +61,8 @@ namespace Quinn.PlayerSystem
 
 		public void OnEnable()
 		{
-			// Enable actions so they can read values
 			EnableAction(moveAction);
 			EnableAction(aimAction);
-			//EnableAction(pointerPositionAction);
 			EnableAction(basicAction);
 			EnableAction(specialAction);
 			EnableAction(dashAction);
@@ -78,7 +74,6 @@ namespace Quinn.PlayerSystem
 		{
 			DisableAction(moveAction);
 			DisableAction(aimAction);
-			//DisableAction(pointerPositionAction);
 			DisableAction(basicAction);
 			DisableAction(specialAction);
 			DisableAction(dashAction);
@@ -117,7 +112,6 @@ namespace Quinn.PlayerSystem
 			}
 			else
 			{
-				// 2. Стик отпущен
 				if (IsCastHeld)
 				{
 					IsCastHeld = false;
@@ -130,7 +124,6 @@ namespace Quinn.PlayerSystem
 				}
 				else 
 				{
-
 				}
 			}
 		}

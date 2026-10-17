@@ -28,7 +28,7 @@ namespace Quinn.PlayerSystem
 				{
 					screenPos = Mouse.current.position.ReadValue();
 				}
-				else if (Touchscreen.current != null /*&& Touchscreen.current.touches.count > 0*/)
+				else if (Touchscreen.current != null)
 				{
 					screenPos = Touchscreen.current.touches[0].position.ReadValue();
 				}

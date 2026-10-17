@@ -59,7 +59,6 @@ namespace Quinn.MissileSystem
 		{
 			for (int i = 0; i < count; i++)
 			{
-				// Occurs when scene is ended in editor while this loop is active.
 				if (prefab == null)
 					return;
 

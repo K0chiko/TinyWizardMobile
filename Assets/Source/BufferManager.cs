@@ -57,7 +57,6 @@ namespace Quinn
 				}
 			}
 
-			// Remove timed-out or completed buffers.
 			foreach (var key in toRemove)
 			{
 				_buffers.Remove(key);

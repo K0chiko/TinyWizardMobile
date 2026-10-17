@@ -43,7 +43,6 @@ namespace Quinn.PlayerSystem
 		private bool _isDead;
 		private bool _isGameStarted;
 
-		// For the, now scrapped, time-based leaderboard.
 		private float _startTime;
 
 		public void Awake()

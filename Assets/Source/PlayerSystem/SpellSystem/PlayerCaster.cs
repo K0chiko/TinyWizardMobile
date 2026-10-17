@@ -51,7 +51,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 		private EventReference EquipSound;
 
 		public Staff EquippedStaff {  get; private set; }
-		// Used by EnergyUI.cs to update energy value during equipping sequence before ActiveStaff is changed.
 		public Staff UIStaff { get; private set; }
 		public bool CanCast => Time.time >= _nextInputTime;
 
@@ -73,7 +72,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 		private float _manaRegenStartTime;
 
-		/* UNITY MESSAGES */
 
 		public void Awake()
 		{
@@ -88,12 +86,10 @@ namespace Quinn.PlayerSystem.SpellSystem
 			FallbackStaff.SetStoredState();
 			string equippedStaffGUID = PlayerManager.Instance.EquippedStaffGUID;
 
-			// Transient staff data exists. Recreate it.
 			if (!string.IsNullOrEmpty(equippedStaffGUID))
 			{
 				RecreateTransientStaffData(equippedStaffGUID);
 			}
-			// There exists no transient staff data. Start with a new staff.
 			else
 			{
 				Debug.Assert(StartingStaffs.Length > 0);
@@ -117,13 +113,11 @@ namespace Quinn.PlayerSystem.SpellSystem
 			var kb = Keyboard.current;
 			if (kb != null)
 			{
-				// Чит на обнуление энергии (Клавиша 0)
 				if (kb.digit0Key.wasPressedThisFrame && EquippedStaff != null && EquippedStaff.Energy > 0f)
 				{
 					EquippedStaff.ConsumeAllEnergy();
 				}
 
-				// Чит на случайный посох (Клавиша 9)
 				if (kb.digit9Key.wasPressedThisFrame)
 				{
 					if (EquippedStaff)
@@ -152,8 +146,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			{
 				Mana = Mathf.Min(Mana + (Time.deltaTime * ManaRegenRate), MaxMana);
 			}
-
-			//Debug.Log(EquippedStaff.Name);
 		}
 
 		public void LateUpdate()
@@ -166,19 +158,14 @@ namespace Quinn.PlayerSystem.SpellSystem
 
 			_inputBuffer.Update();
 
-			// Make player face crosshair.
 			Vector2 faceDir = transform.position.DirectionTo(CrosshairManager.Instance.Position);
 
-			// Instead make player face dash direction.
 			if (Movement.IsDashing)
 			{
-				// Disabling this feature.
-				//faceDir = Movement.DashDirection.normalized;
 			}
 
 			if (!PauseMenuUI.Instance.IsPaused)
 			{
-				// Do not change facing direction if input is disabled as it's a form of input.
 				if (InputManager.Instance.enabled)
 					transform.localScale = new Vector3(Mathf.Sign(faceDir.x), 1f, 1f);
 			}
@@ -197,33 +184,24 @@ namespace Quinn.PlayerSystem.SpellSystem
 			}
 		}
 
-		/* PUBLIC METHODS */
 
-		/// <summary>Equip and enable the specified staff.</summary>
-		/// <param name="staff">The staff being equipped. This must be an instance not a prefab.</param>
-		/// <param name="skipSequence">Skip the rising up animation with FX and such when a player takes a staff from a chest for instance.</param>
-		/// <param name="supressNonSequenceSound">If skip sequence is false and this is true and then an equip sound will play on staff equip.</param>
 		public async void EquipStaff(Staff staff, bool skipSequence = false, bool supressNonSequenceSound = false)
 		{
 			if (staff != EquippedStaff)
 			{
 				staff.OnEnergyDepleted += OnStaffEnergyDepleted;
 
-				// Skip sequence if requested or if current staff is fallback staff.
 				if (!skipSequence && (EquippedStaff != FallbackStaff))
 				{
 					await StaffPickUpSequence(staff);
 				}
-				// Avoid equip sound. The equip sound is otherwise played in the StaffPickUpSequence(Staff) method.
 				else if (!supressNonSequenceSound)
 				{
 					Audio.Play(EquipSound, transform.position);
 				}
 
-				// Dequip active staff but do not store it. It simply is deleted.
 				DequipActiveStaff();
 
-				// If the staff being equipped was on the player's back; e.g. the fallback staff.
 				_storedStaffs.Remove(staff);
 
 				EquippedStaff = staff;
@@ -282,9 +260,6 @@ namespace Quinn.PlayerSystem.SpellSystem
 			}
 		}
 
-		/// <summary>
-		/// Remove and disable active staff. Then store that staff.
-		/// </summary>
 		public void DequipActiveStaff()
 		{
 			if (EquippedStaff != null)
@@ -349,48 +324,38 @@ namespace Quinn.PlayerSystem.SpellSystem
 			CastingSpark.Play();
 		}
 
-		/* PRIVATE METHODS */
 
 		private void RecreateTransientStaffData(string equippedStaffGUID)
 		{
-			// Equipped staff.
 			Staff equippedStaff;
 
-			// Transient staff data was fallback staff.
 			if (equippedStaffGUID == FallbackStaff.GUID)
 			{
-				// Fallback staff is part of player prefab. No need to clone it.
 				equippedStaff = FallbackStaff;
 			}
-			// Transient staff data was NOT fallback staff.
 			else
 			{
-				// Non-fallback staffs need to be cloned.
 				GameObject equippedStaffInstance = StaffGUIDToPrefab(equippedStaffGUID).gameObject.Clone();
 				equippedStaff = equippedStaffInstance.GetComponent<Staff>();
 
 				StoreStaff(FallbackStaff);
 			}
 
-			// Equipped transient staff.
 			EquipStaff(equippedStaff, true, true);
 
 			equippedStaff.SetCaster(this);
 			equippedStaff.SetEnergy(PlayerManager.Instance.EquippedStaffEnergy);
 
-			// Stored staff.
 			foreach (string guid in PlayerManager.Instance.StoredStaffGUIDs)
 			{
 				GameObject storedStaffInstance = StaffGUIDToPrefab(guid).gameObject.Clone();
 				var storedStaff = storedStaffInstance.GetComponent<Staff>();
 
 				StoreStaff(storedStaff);
-				// Call this to disable light and such.
 				storedStaff.SetStoredState();
 			}
 		}
 
-		// Save equipped staff and stored staff data to PlayerManager for travel between scene loads.
 		private void UpdateStaffTransientData()
 		{
 			var manager = PlayerManager.Instance;

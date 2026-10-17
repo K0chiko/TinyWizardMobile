@@ -9,14 +9,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.VFX;
-using UnityEngine.InputSystem; // Добавлено для новой системы ввода
+using UnityEngine.InputSystem;
 
 namespace Quinn.PlayerSystem
 {
     [RequireComponent(typeof(Animator))]
     public class Player : MonoBehaviour
     {
-       // ... (все поля остаются без изменений до метода Update) ...
        [SerializeField]
        private float InteractionRadius = 1f;
 
@@ -101,13 +100,11 @@ namespace Quinn.PlayerSystem
           var keyboard = Keyboard.current;
           if (keyboard != null)
           {
-             // Чит на урон (Клавиша 8)
              if (keyboard.digit8Key.wasPressedThisFrame)
              {
                 GetComponent<Health>().TakeDamage(1f, Vector2.zero, Team.Environment, gameObject);
              }
 
-             // Чит NoClip (Клавиша V)
              if (keyboard.vKey.wasPressedThisFrame)
              {
                 _noClip = !_noClip;
@@ -127,7 +124,6 @@ namespace Quinn.PlayerSystem
                 }
              }
 
-             // Чит GodMode (Клавиша G)
              if (keyboard.gKey.wasPressedThisFrame)
              {
                 _godMode = !_godMode;
@@ -137,7 +133,6 @@ namespace Quinn.PlayerSystem
 #endif
        }
 
-       // ... (остальные методы класса остаются без изменений) ...
        public void OnDestroy()
        {
           if (PlayerManager.Instance != null)
@@ -386,7 +381,6 @@ namespace Quinn.PlayerSystem
              await Wait.Seconds(HurtDuration);
              _hurtSnapshot.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
           }
-          // Is dead.
           else
           {
              GetComponent<Animator>().SetTrigger("Die");

@@ -113,21 +113,18 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 			if (Caster == null)
 				return;
 
-			// Were charging, not anymore.
 			if (_isCharging && !IsSpecialHeld)
 			{
 				_isCharging = false;
 				Caster.Movement.RemoveSpeedModifier(this);
 			}
 
-			// Reset casting chain.
 			if (_castChainCount < BasicFinisherCount && _castChainCount > 0 && Time.time > _chainTimeoutTime)
 			{
 				_castChainCount = 0;
 				Caster.SetCooldown(BasicCooldown);
 			}
 
-			// Finished charging to max charge.
 			if (_isMovePenaltyApplied && Time.time > _largeMissileTime && HasSpecial && IsSpecialHeld && _isCharging)
 			{
 				_isMovePenaltyApplied = false;
@@ -136,13 +133,11 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 				Audio.Play(FullChargeSound);
 			}
 
-			// Charging staff spark.
 			if (_isCharging)
 			{
 				Cooldown.Call(this, ChargingSparkInterval, Caster.Spark);
 			}
 
-			// Handle crosshair charge percent.
 			if (_isCharging)
 			{
 				float delta = _largeMissileTime - Time.time;
@@ -162,7 +157,6 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 			_castChainCount++;
 			Caster.Spark();
 
-			// Finisher cast.
 			if (_castChainCount >= BasicFinisherChain && HasBasicFinisher)
 			{
 				Caster.SetCooldown(BasicFinisherCooldown);
@@ -179,7 +173,6 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 
 				ConsumeMana(BasicFinisherManaConsume);
 			}
-			// Normal cast.
 			else
 			{
 				Caster.SetCooldown(BasicCooldown);
@@ -228,7 +221,6 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 				return;
 			}
 
-			// Mustn't set to false because the if statement above must check it first.
 			_isCharging = false;
 
 			Caster.Spark();

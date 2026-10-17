@@ -184,10 +184,8 @@ namespace Quinn.DungeonGeneration
 			_isOpening = true;
 
 			ItemGlow.color = new Color(1f, 1f, 1f, 0f);
-			//ItemGlow.enabled = true;
 			ItemGlow.DOFade(1f, 0.1f);
 
-			// TODO: Implement fully or remove the item glow idea.
 
 			ItemGlow.GetComponent<FollowPosition>().Target = ContentHandle.transform.GetChild(0);
 

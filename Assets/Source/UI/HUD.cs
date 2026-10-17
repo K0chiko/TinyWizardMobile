@@ -80,21 +80,6 @@ namespace Quinn.UI
 			float scale = Mathf.Sin(Time.time * ScaleFrequency) * ScaleAmplitude;
 			scale += _defaultScale;
 			LowHPVignette.transform.localScale = new Vector3(scale, scale, 1f);
-
-			/*if (Input.GetKeyDown(KeyCode.Tab))
-			{
-				foreach (var text in HelpText)
-				{
-					text.DOFade(1f, 0.1f);
-				}
-			}
-			else if (Input.GetKeyUp(KeyCode.Tab))
-			{
-				foreach (var text in HelpText)
-				{
-					text.DOFade(0f, 0.2f);
-				}
-			}*/
 		}
 
 		public void OnDestroy()

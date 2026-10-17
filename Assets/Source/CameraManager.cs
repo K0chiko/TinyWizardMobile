@@ -89,9 +89,6 @@ namespace Quinn
 			_blackout.enabled = false;
 		}
 
-		/// <summary>
-		/// Change the UI element used for fading to be fully black and opaque instantly.
-		/// </summary>
 		public void Blackout()
 		{
 			_blackout.enabled = true;

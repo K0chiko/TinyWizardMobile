@@ -84,8 +84,6 @@ namespace Quinn.UI
 			uiMobile.enabled = false;
 			CanvasGroup.DOFade(1f, 0.1f).SetUpdate(true);
 
-			//Cursor.visible = true;
-			//Cursor.lockState = CursorLockMode.None;
 
 			CrosshairManager.Instance.Hide();
 
