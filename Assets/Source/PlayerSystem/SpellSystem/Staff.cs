@@ -61,6 +61,7 @@ namespace Quinn.PlayerSystem.SpellSystem
 		protected bool IsEquipped { get; private set; }
 
 		private SortingGroup _group;
+		private bool _isPickedUp;
 
 		protected virtual void Awake()
 		{
@@ -71,8 +72,15 @@ namespace Quinn.PlayerSystem.SpellSystem
 			_group.enabled = false;
 		}
 
+		public bool ShouldAutoInteract(Player player) => !_isPickedUp;
+
 		public void Interact(Player player)
 		{
+			if (_isPickedUp)
+				return;
+
+			_isPickedUp = true;
+
 			var caster = player.GetComponent<PlayerCaster>();
 			caster.EquipStaff(this);
 

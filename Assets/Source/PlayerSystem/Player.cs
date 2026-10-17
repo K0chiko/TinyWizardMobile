@@ -51,6 +51,8 @@ namespace Quinn.PlayerSystem
        [SerializeField]
        private VisualEffect AmbientVFX;
 
+       private static readonly Collider2D[] s_InteractBuffer = new Collider2D[16];
+
        private Animator _animator;
        private bool _wasMoving;
        private float _nextStartFootstepSoundAllowedTime;
@@ -76,6 +78,11 @@ namespace Quinn.PlayerSystem
           PuddleHealingVFX.SetFloat("SpawnRate", 0f);
 
           FloorTitleGroup.alpha = 0f;
+       }
+
+       public void FixedUpdate()
+       {
+          TryAutoInteract();
        }
 
        public void Update()
@@ -254,6 +261,23 @@ namespace Quinn.PlayerSystem
           SoundMaterialType.Snow => SnowColor,
           _ => throw new NotImplementedException(),
        };
+
+       private void TryAutoInteract()
+       {
+          if (!InputManager.Instance.enabled || PauseMenuUI.Instance.IsPaused || PlayerManager.Instance.IsDead)
+             return;
+
+          int count = Physics2D.OverlapCircle(transform.position, InteractionRadius, ContactFilter2D.noFilter, s_InteractBuffer);
+
+          for (int i = 0; i < count; i++)
+          {
+             if (s_InteractBuffer[i].GetComponent(typeof(IInteractable)) is IInteractable interactable && interactable.ShouldAutoInteract(this))
+             {
+                interactable.Interact(this);
+                return;
+             }
+          }
+       }
 
        private void OnInteract()
        {

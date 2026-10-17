@@ -47,11 +47,6 @@ namespace Quinn.DungeonGeneration
 		[SerializeField]
 		private bool DisableAmbienceOnOpen = true;
 
-		[Space, SerializeField, Required]
-		private ProximityShow ProximityHelpHandle;
-		[SerializeField, Required]
-		private Canvas ProximityHelpTextCanvas;
-
 		public bool IsOpen { get; private set; }
 		public int Priority => -100;
 
@@ -88,23 +83,6 @@ namespace Quinn.DungeonGeneration
 				{
 					ItemGlow.DOFade(0f, 0.2f);
 				}
-			}
-
-			if (IsItemGone() && (ProximityHelpHandle.enabled || ProximityHelpTextCanvas.enabled))
-			{
-				ProximityHelpHandle.enabled = false;
-				ProximityHelpTextCanvas.enabled = false;
-			}
-		}
-
-		public void LateUpdate()
-		{
-            if (ProximityHelpHandle.enabled && !IsItemGone())
-            {
-				Vector3 pos = ContentHandle.transform.GetChild(0).transform.position;
-
-				ProximityHelpTextCanvas.transform.position = pos;
-				ProximityHelpHandle.transform.position = pos;
 			}
 		}
 
@@ -195,8 +173,6 @@ namespace Quinn.DungeonGeneration
 			float yPos = child.position.y + AnimationOffset;
 			var tween = child.DOMoveY(yPos, AnimationDuration)
 				.SetEase(AnimationEasing);
-
-			ProximityHelpHandle.enabled = true;
 
 			tween.onUpdate += () =>
 			{
