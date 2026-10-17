@@ -2,9 +2,7 @@ using DG.Tweening;
 using FMODUnity;
 using Quinn.PlayerSystem;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.VFX;
 
 namespace Quinn.DungeonGeneration
@@ -49,11 +47,6 @@ namespace Quinn.DungeonGeneration
 		[SerializeField]
 		private bool DisableAmbienceOnOpen = true;
 
-		[Space, SerializeField, Required]
-		private ProximityShow ProximityHelpHandle;
-		[SerializeField, Required]
-		private Canvas ProximityHelpTextCanvas;
-
 		public bool IsOpen { get; private set; }
 		public int Priority => -100;
 
@@ -90,23 +83,6 @@ namespace Quinn.DungeonGeneration
 				{
 					ItemGlow.DOFade(0f, 0.2f);
 				}
-			}
-
-			if (IsItemGone() && (ProximityHelpHandle.enabled || ProximityHelpTextCanvas.enabled))
-			{
-				ProximityHelpHandle.enabled = false;
-				ProximityHelpTextCanvas.enabled = false;
-			}
-		}
-
-		public void LateUpdate()
-		{
-            if (ProximityHelpHandle.enabled && !IsItemGone())
-            {
-				Vector3 pos = ContentHandle.transform.GetChild(0).transform.position;
-
-				ProximityHelpTextCanvas.transform.position = pos;
-				ProximityHelpHandle.transform.position = pos;
 			}
 		}
 
@@ -186,10 +162,8 @@ namespace Quinn.DungeonGeneration
 			_isOpening = true;
 
 			ItemGlow.color = new Color(1f, 1f, 1f, 0f);
-			//ItemGlow.enabled = true;
 			ItemGlow.DOFade(1f, 0.1f);
 
-			// TODO: Implement fully or remove the item glow idea.
 
 			ItemGlow.GetComponent<FollowPosition>().Target = ContentHandle.transform.GetChild(0);
 
@@ -199,8 +173,6 @@ namespace Quinn.DungeonGeneration
 			float yPos = child.position.y + AnimationOffset;
 			var tween = child.DOMoveY(yPos, AnimationDuration)
 				.SetEase(AnimationEasing);
-
-			ProximityHelpHandle.enabled = true;
 
 			tween.onUpdate += () =>
 			{

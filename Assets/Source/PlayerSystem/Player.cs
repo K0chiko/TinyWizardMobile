@@ -9,14 +9,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.VFX;
-using UnityEngine.InputSystem; // Добавлено для новой системы ввода
 
 namespace Quinn.PlayerSystem
 {
     [RequireComponent(typeof(Animator))]
-    public class Player : MonoBehaviour
+    public partial class Player : MonoBehaviour
     {
-       // ... (все поля остаются без изменений до метода Update) ...
        [SerializeField]
        private float InteractionRadius = 1f;
 
@@ -53,6 +51,8 @@ namespace Quinn.PlayerSystem
        [SerializeField]
        private VisualEffect AmbientVFX;
 
+       private static readonly Collider2D[] s_InteractBuffer = new Collider2D[16];
+
        private Animator _animator;
        private bool _wasMoving;
        private float _nextStartFootstepSoundAllowedTime;
@@ -61,10 +61,6 @@ namespace Quinn.PlayerSystem
        private float _playerLightIntensity;
 
        private float _puddleHealingVFXSpawnRate;
-
-       private bool _noClip;
-       private int _preNoClipMask;
-       private bool _godMode;
 
        public void Awake()
        {
@@ -84,6 +80,11 @@ namespace Quinn.PlayerSystem
           FloorTitleGroup.alpha = 0f;
        }
 
+       public void FixedUpdate()
+       {
+          TryAutoInteract();
+       }
+
        public void Update()
        {
           bool isMoving = InputManager.Instance.MoveDirection.sqrMagnitude > 0f;
@@ -92,52 +93,14 @@ namespace Quinn.PlayerSystem
           if (isMoving && !_wasMoving && Time.time > _nextStartFootstepSoundAllowedTime)
           {
              _nextStartFootstepSoundAllowedTime = Time.time + StartFootstepCooldown;
-             PlayFootstepSound(GetSoundMaterialType(out _));
+             Footsteps.Play(FootstepSound, transform.position, Footsteps.Sample(transform.position, out _));
           }
 
           _wasMoving = isMoving;
 
-#if UNITY_EDITOR
-          var keyboard = Keyboard.current;
-          if (keyboard != null)
-          {
-             // Чит на урон (Клавиша 8)
-             if (keyboard.digit8Key.wasPressedThisFrame)
-             {
-                GetComponent<Health>().TakeDamage(1f, Vector2.zero, Team.Environment, gameObject);
-             }
-
-             // Чит NoClip (Клавиша V)
-             if (keyboard.vKey.wasPressedThisFrame)
-             {
-                _noClip = !_noClip;
-
-                if (_noClip)
-                {
-                   var collider = GetComponent<Collider2D>();
-                   _preNoClipMask = collider.forceReceiveLayers;
-                   collider.forceReceiveLayers = 0;
-
-                   GetComponent<PlayerMovement>().SetSpeedOverride(16f);
-                }
-                else
-                {
-                   GetComponent<Collider2D>().forceReceiveLayers = _preNoClipMask;
-                   GetComponent<PlayerMovement>().ClearSpeedOverride();
-                }
-             }
-
-             // Чит GodMode (Клавиша G)
-             if (keyboard.gKey.wasPressedThisFrame)
-             {
-                _godMode = !_godMode;
-                GetComponent<Health>().IsGodModeEnabled = _godMode;
-             }
-          }
-#endif
+          ApplyCheats();
        }
 
-       // ... (остальные методы класса остаются без изменений) ...
        public void OnDestroy()
        {
           if (PlayerManager.Instance != null)
@@ -168,8 +131,8 @@ namespace Quinn.PlayerSystem
 
        public void OnFootstep_Anim()
        {
-          var mat = GetSoundMaterialType(out bool vfx);
-          PlayFootstepSound(mat);
+          var mat = Footsteps.Sample(transform.position, out bool vfx);
+          Footsteps.Play(FootstepSound, transform.position, mat);
 
           var floorColor = SoundMaterialToColor(mat);
 
@@ -189,7 +152,7 @@ namespace Quinn.PlayerSystem
 
        public void OnLand_Anim()
        {
-          var mat = GetSoundMaterialType(out bool vfx);
+          var mat = Footsteps.Sample(transform.position, out bool vfx);
           var floorColor = SoundMaterialToColor(mat);
 
           if (vfx)
@@ -299,42 +262,21 @@ namespace Quinn.PlayerSystem
           _ => throw new NotImplementedException(),
        };
 
-       private static readonly Collider2D[] s_OverlapBuffer = new Collider2D[8];
-       private static readonly ContactFilter2D s_OverlapFilter = new ContactFilter2D().NoFilter();
-
-       private SoundMaterialType GetSoundMaterialType(out bool playVFX)
+       private void TryAutoInteract()
        {
-          SoundMaterialType mat = SoundMaterialType.None;
-          int highestPriority = -9999;
+          if (!InputManager.Instance.enabled || PauseMenuUI.Instance.IsPaused || PlayerManager.Instance.IsDead)
+             return;
 
-          int count = Physics2D.OverlapPoint(transform.position, s_OverlapFilter, s_OverlapBuffer);
-          playVFX = false;
+          int count = Physics2D.OverlapCircle(transform.position, InteractionRadius, ContactFilter2D.noFilter, s_InteractBuffer);
 
           for (int i = 0; i < count; i++)
           {
-             if (s_OverlapBuffer[i].TryGetComponent(out SoundMaterial soundMat))
+             if (s_InteractBuffer[i].GetComponent(typeof(IInteractable)) is IInteractable interactable && interactable.ShouldAutoInteract(this))
              {
-                if (soundMat.Priority > highestPriority)
-                {
-                   mat = soundMat.Material;
-                   highestPriority = soundMat.Priority;
-                   playVFX = soundMat.PlayVFX;
-                }
+                interactable.Interact(this);
+                return;
              }
           }
-
-
-          return mat;
-       }
-
-       private void PlayFootstepSound(SoundMaterialType mat)
-       {
-          var instance = RuntimeManager.CreateInstance(FootstepSound);
-          instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-          instance.setParameterByNameWithLabel("sound-mat", SoundMaterialTypeNames.ToLabel(mat));
-
-          instance.start();
-          instance.release();
        }
 
        private void OnInteract()
@@ -386,7 +328,6 @@ namespace Quinn.PlayerSystem
              await Wait.Seconds(HurtDuration);
              _hurtSnapshot.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
           }
-          // Is dead.
           else
           {
              GetComponent<Animator>().SetTrigger("Die");

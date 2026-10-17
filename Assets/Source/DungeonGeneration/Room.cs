@@ -1,5 +1,4 @@
-﻿using FMOD.Studio;
-using FMODUnity;
+﻿using FMODUnity;
 using Quinn.AI;
 using Quinn.AI.BehaviorTree;
 using Quinn.AI.Pathfinding;
@@ -56,14 +55,10 @@ namespace Quinn.DungeonGeneration
 		[SerializeField]
 		private Door[] OnlyUnlock;
 
-		[Space, SerializeField, BoxGroup("Analytics")]
-		private bool IsLootRoom;
-		[SerializeField, BoxGroup("Analytics")]
+		[Space, SerializeField]
 		public bool IsBossRoom;
-		[SerializeField, BoxGroup("Analytics")]
-		private bool IsHealingRoom;
 
-		public bool IsLocked { get; private set; }
+		public bool IsLocked => _roomDoors.IsLocked;
 		public bool IsConquered { get; private set; }
 		public bool IsStarted { get; private set; }
 
@@ -77,16 +72,15 @@ namespace Quinn.DungeonGeneration
 		public Vector2Int RoomGridIndex { get; set; }
 
 		private readonly HashSet<Door> _doors = new();
+		private RoomDoors _roomDoors;
+		private RoomMusic _music;
 		private readonly List<IAgent> _liveAgents = new();
 		private readonly HashSet<StaticAgent> _staticAgents = new();
 
-		private EventInstance _customMusic;
 		private bool _isBossDead;
 
 		private bool _hasLoaded;
 		private bool _isExitQueued;
-
-		private bool _explored;
 
 		public void Awake()
 		{
@@ -111,6 +105,9 @@ namespace Quinn.DungeonGeneration
 				_doors.Add(WestDoor);
 			if (HasEastDoor)
 				_doors.Add(EastDoor);
+
+			_roomDoors = new RoomDoors(transform, LockSound, UnlockSound, _doors, OnlyUnlock);
+			_music = new RoomMusic(DisableMusic, HasCustomMusic, CustomMusic);
 
 			RoomTrigger.OnTriggerEnter += OnPlayerTriggerEnter;
 			RoomTrigger.OnTriggerExit += OnPlayerTriggerExit;
@@ -141,40 +138,12 @@ namespace Quinn.DungeonGeneration
 
 		public void Unlock()
 		{
-			if (!IsLocked)
-				return;
-
-			IsLocked = false;
-			Audio.Play(UnlockSound, transform.position);
-
-			if (OnlyUnlock.Length > 0)
-			{
-				foreach (var door in OnlyUnlock)
-				{
-					door.Open();
-				}
-			}
-			else
-			{
-				foreach (var door in _doors)
-				{
-					door.Open();
-				}
-			}
+			_roomDoors.Unlock();
 		}
 
 		public void Lock()
 		{
-			if (IsLocked)
-				return;
-
-			IsLocked = true;
-			Audio.Play(LockSound, transform.position);
-
-			foreach (var door in _doors)
-			{
-				door.Close();
-			}
+			_roomDoors.Lock();
 		}
 
 		public void RegisterAgent(IAgent agent)
@@ -195,8 +164,7 @@ namespace Quinn.DungeonGeneration
 			{
 				bt.Health.OnDeath += () =>
 				{
-					_customMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-					_customMusic.release();
+					_music.StopCustom();
 				};
 			}
 		}
@@ -224,20 +192,6 @@ namespace Quinn.DungeonGeneration
 
 			if (collider.IsPlayer())
 			{
-				if (!_explored)
-				{
-					_explored = true;
-					PlayerManager.Instance.NewRoomsExploredThisFloor++;
-
-					UnityServices.Analytics.Instance.Push(new UnityServices.Events.EnterRoomEvent()
-					{
-						RoomsExploredThisFloor = PlayerManager.Instance.NewRoomsExploredThisFloor,
-						IsLootRoom = IsLootRoom,
-						IsBossRoom = IsBossRoom,
-						IsHealingRoom = IsHealingRoom
-					});
-				}
-
 				RoomCamera.enabled = true;
 				RoomCamera.Target.TrackingTarget = CameraManager.Instance.CameraTarget;
 
@@ -251,35 +205,16 @@ namespace Quinn.DungeonGeneration
 
 				if (!_isBossDead)
 				{
-					if (DisableMusic || HasCustomMusic)
-					{
-						RuntimeManager.StudioSystem.setParameterByName("enable-music", 0f);
-					}
-					else if (!DisableMusic && !HasCustomMusic)
-					{
-						RuntimeManager.StudioSystem.setParameterByName("enable-music", 1f);
-					}
-
-					if (HasCustomMusic)
-					{
-						_customMusic = RuntimeManager.CreateInstance(CustomMusic);
-						_customMusic.start();
-					}
+					_music.OnPlayerEnter();
 				}
 			}
 		}
 
-		private /*async*/ void OnPlayerTriggerExit(Collider2D collider)
+		private void OnPlayerTriggerExit(Collider2D collider)
 		{
 			if (collider.IsPlayer() && (!_isExitQueued || IsConquered))
 			{
 				OnPlayerExitRoom();
-
-				//if (!IsConquered && IsStarted)
-				//{
-				//	_isExitQueued = true;
-				//	await Wait.Until(() => IsConquered);
-				//}
 			}
 		}
 
@@ -297,8 +232,7 @@ namespace Quinn.DungeonGeneration
 
 		private void OnPlayerDeath()
 		{
-			_customMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-			_customMusic.release();
+			_music.StopCustom();
 		}
 
 		private async void OnAgentDeath(IAgent agent)
@@ -361,14 +295,7 @@ namespace Quinn.DungeonGeneration
 		private void OnPlayerExitRoom()
 		{
 			RoomCamera.enabled = false;
-			// Always enable music upon leaivng sot that starting room (which don't start with music) will have music in their hallways.
-			RuntimeManager.StudioSystem.setParameterByName("enable-music", 1f);
-
-			if (HasCustomMusic)
-			{
-				_customMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-				_customMusic.release();
-			}
+			_music.OnPlayerExit();
 		}
 	}
 }

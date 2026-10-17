@@ -45,7 +45,6 @@ namespace Quinn.AI.Pathfinding
 
 			int processCount = 0;
 
-			// While there are open tiles to explore and we haven't yet found the destination.
 			while (open.Count > 0)
 			{
 				processCount++;
@@ -58,12 +57,10 @@ namespace Quinn.AI.Pathfinding
 				if (token.IsCancellationRequested)
 					return System.Array.Empty<Vector2Int>();
 
-				//await Awaitable.WaitForSecondsAsync(0.02f);
 
 				Vector2Int bestTile = current;
 				float bestFCost = float.PositiveInfinity;
 
-				// Get lowest f-cost from open.
 				foreach (var tile in open)
 				{
 					float fCost = tile.Value.g + tile.Value.h;
@@ -76,7 +73,6 @@ namespace Quinn.AI.Pathfinding
 
 				current = bestTile;
 
-				// Close and explore around current.
 				closed.Add(current, open[current]);
 				float currentG = open[current].g;
 				open.Remove(current);
@@ -84,7 +80,6 @@ namespace Quinn.AI.Pathfinding
 				if (LogLevel is DebugLogLevel.Verbose)
 					Draw.Rect(WorldGrid.Instance.GridToWorld(current), Vector2.one, new Color(1f, 0.25f, 0f), float.PositiveInfinity);
 
-				// Explore neighbors.
 				for (int x = -1; x < 2; x++)
 				{
 					for (int y = -1; y < 2; y++)
@@ -95,9 +90,6 @@ namespace Quinn.AI.Pathfinding
 						if (tile == current || closed.ContainsKey(tile) || IsObstacle(tile))
 							continue;
 
-						// No diagonal pathing.
-						//if (x != 0 && y != 0)
-							//continue;
 
 						float g = currentG + current.DistanceTo(tile);
 						float h = tile.DistanceTo(destination);
@@ -107,7 +99,6 @@ namespace Quinn.AI.Pathfinding
 						{
 							if (existing.g + existing.h < f)
 							{
-								// Do not update tiles that have cheaper f-costs.
 								continue;
 							}
 							else
@@ -126,7 +117,6 @@ namespace Quinn.AI.Pathfinding
 					}
 				}
 
-				// If at destination, return path.
 				if (current == destination || open.Count == 0)
 				{
 					var path = new List<Vector2Int>();
@@ -142,7 +132,6 @@ namespace Quinn.AI.Pathfinding
 						tile = closed.GetClosestTo(x => x.Value.h).Key;
 					}
 
-					// Backtrace path.
 					while (tile != origin)
 					{
 						path.Insert(0, tile);
@@ -151,7 +140,6 @@ namespace Quinn.AI.Pathfinding
 
 					path = Simplify(path);
 
-					// Draw path lines.
 					if (LogLevel >= DebugLogLevel.Minimal)
 					{
 						Draw.Rect(destination, Vector2.one, Color.yellow, float.PositiveInfinity);
@@ -162,8 +150,6 @@ namespace Quinn.AI.Pathfinding
 
 							Draw.Rect(a, Vector2.one, Color.black, float.PositiveInfinity);
 							Draw.Line(Vector2.Lerp(a, b, 0.1f), Vector2.Lerp(a, b, 0.9f), Color.white, float.PositiveInfinity);
-
-							//await Awaitable.WaitForSecondsAsync(0.003f);
 						}
 
 						Draw.Rect(destination, Vector2.one, Color.yellow, float.PositiveInfinity);
@@ -191,19 +177,9 @@ namespace Quinn.AI.Pathfinding
 
 			return path.ToArray();
 		}
-
-		public bool IsTraversable(Vector2Int gridPos)
-		{
-			return Navmesh.HasTile((Vector3Int)gridPos);
-		}
 		public bool IsObstacle(Vector2Int gridPos)
 		{
 			return !Navmesh.HasTile((Vector3Int)gridPos);
-		}
-
-		public float GetDistance(Vector2Int a, Vector2Int b)
-		{
-			return ((Vector2)a).DistanceTo((Vector2)b);
 		}
 
 		public void SetNavmesh(Tilemap navmesh)

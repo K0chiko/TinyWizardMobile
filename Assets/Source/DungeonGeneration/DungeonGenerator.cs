@@ -11,40 +11,6 @@ namespace Quinn.DungeonGeneration
 {
 	public class DungeonGenerator : MonoBehaviour
 	{
-		enum DoorCriteria
-		{
-			None,
-			Required,
-			Banned
-		}
-
-		record RoomCriteria
-		{
-			public DoorCriteria North, South, East, West;
-
-			public bool IsMatch(Room room)
-			{
-				// Require.
-				if (North is DoorCriteria.Required && !room.HasNorthDoor) return false;
-				if (South is DoorCriteria.Required && !room.HasSouthDoor) return false;
-				if (East is DoorCriteria.Required && !room.HasEastDoor) return false;
-				if (West is DoorCriteria.Required && !room.HasWestDoor) return false;
-
-				// Ban.
-				if (North is DoorCriteria.Banned && room.HasNorthDoor) return false;
-				if (South is DoorCriteria.Banned && room.HasSouthDoor) return false;
-				if (East is DoorCriteria.Banned && room.HasEastDoor) return false;
-				if (West is DoorCriteria.Banned && room.HasWestDoor) return false;
-
-				return true;
-			}
-
-			public override string ToString()
-			{
-				return $"N {North}, S {South}, E {East}, W {West}";
-			}
-		}
-
 		[SerializeField]
 		private int MaxRoomSize = 48;
 
@@ -54,8 +20,6 @@ namespace Quinn.DungeonGeneration
 		public static DungeonGenerator Instance { get; private set; }
 
 		public FloorSO ActiveFloor { get; private set; }
-
-		public event System.Action<FloorSO> OnFloorStart;
 
 		private readonly Dictionary<Vector2Int, GameObject> _generatedRooms = new();
 		private EventInstance _ambience, _music;
@@ -110,45 +74,6 @@ namespace Quinn.DungeonGeneration
 			await StartFloorAsync(Floors[_floorIndex]);
 		}
 
-		public async void GenerateRoomAt(int x, int y)
-		{
-			if (_generatedRooms.ContainsKey(new Vector2Int(x, y)))
-				return;
-
-			Debug.Assert(ActiveFloor != null, "Failed to generate room. There is no active floor!");
-
-			// Rules to be used for filtering rooms while deciding which room to generate.
-			var criteria = new RoomCriteria();
-
-			if (GetRoomAt(x, y + 1, out Room n))
-				criteria.North = n.HasSouthDoor ? DoorCriteria.Required : DoorCriteria.Banned;
-			if (GetRoomAt(x, y - 1, out Room s))
-				criteria.South = s.HasNorthDoor ? DoorCriteria.Required : DoorCriteria.Banned;
-			if (GetRoomAt(x - 1, y, out Room e))
-				criteria.East = e.HasWestDoor ? DoorCriteria.Required : DoorCriteria.Banned;
-			if (GetRoomAt(x + 1, y, out Room w))
-				criteria.West = w.HasEastDoor ? DoorCriteria.Required : DoorCriteria.Banned;
-
-			// Filter for rooms that support required doors.
-			var validRooms = ActiveFloor.Generatable.Where(roomToGenerate => criteria.IsMatch(roomToGenerate.Prefab));
-
-			// Avoid using duplicate rooms if we have more than 1 room from the generation pool
-			if (validRooms.Count() > 1)
-			{
-				validRooms = validRooms.Where(room => room.Prefab.gameObject != _lastGeneratedRoomPrefab);
-			}
-
-			// Get random (by weight) room from filtered collection.
-			var selected = validRooms.GetWeightedRandom(x => x.Weight);
-
-			Debug.Assert(selected != null, $"Failed to generate room. No valid option found! Criteria: {criteria}.");
-			Room prefab = selected.Prefab;
-			_lastGeneratedRoomPrefab = prefab.gameObject;
-
-			// Generate actual room.
-			await GenerateRoomAsync(prefab, x, y);
-		}
-
 		public void IncrementFloorIndex()
 		{
 			_floorIndex++;
@@ -164,32 +89,14 @@ namespace Quinn.DungeonGeneration
 			_floorIndex = Mathf.Min(i, Floors.Length - 1);
 		}
 
-		private bool GetRoomAt(int x, int y, out Room room)
-		{
-			if (_generatedRooms.TryGetValue(new(x, y), out GameObject value))
-			{
-				room = value.GetComponent<Room>();
-				return true;
-			}
-
-			room = null;
-			return false;
-		}
-
 		private async Awaitable StartFloorAsync(FloorSO floor)
 		{
-			/*UnityServices.Analytics.Instance.Push(new UnityServices.Events.DiscoveredFloorEvent()
-			{
-				Name = floor.name
-			});*/
-
 			CameraManager.Instance.Blackout();
 			RuntimeManager.StudioSystem.setParameterByName("reverb", floor.Reverb);
 
 			DestroyAllRooms();
 			ActiveFloor = floor;
 
-			// Ambience.
 			if (_ambience.isValid())
 			{
 				_ambience.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -201,7 +108,6 @@ namespace Quinn.DungeonGeneration
 				_ambience.start();
 			}
 
-			// Music.
 			if (_music.isValid())
 			{
 				_music.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -216,7 +122,6 @@ namespace Quinn.DungeonGeneration
 			}
 
 			await floor.GetVariant().CloneAsync();
-			OnFloorStart?.Invoke(floor);
 
 			var fade = CameraManager.Instance.FadeIn();
 

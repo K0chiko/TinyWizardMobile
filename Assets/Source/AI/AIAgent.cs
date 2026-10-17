@@ -103,11 +103,9 @@ namespace Quinn.AI
 
 		public void SetTarget(Transform transform)
 		{
-			// Can't target environmental trap.
 			if (transform.TryGetComponent(out IDamageable dmg) && dmg.Team == Team.Environment)
 				return;
 
-			// Can't target self.
 			if (transform == this.transform)
 				return;
 

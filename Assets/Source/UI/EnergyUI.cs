@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem; // Добавляем для работы Keyboard.current
+using UnityEngine.InputSystem;
 
 namespace Quinn.UI
 {
@@ -27,14 +27,11 @@ namespace Quinn.UI
 
           _wasOverMaxTextActive = OverMaxText.gameObject.activeSelf;
           _wasOverMaxBarActive = OverMaxBar.gameObject.activeSelf;
-
-          // TODO: VFX when over max
        }
 
        public void Update()
        {
 #if UNITY_EDITOR
-          // Проверяем нажатие клавиши H через новую систему
           if (Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame)
           {
              _caster.EquippedStaff.SetEnergy(_caster.EquippedStaff.Energy * 1.5f);

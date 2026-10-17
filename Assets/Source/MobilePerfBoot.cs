@@ -7,8 +7,10 @@ namespace Quinn
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void Init()
 		{
+#if !UNITY_WEBGL
 			QualitySettings.vSyncCount = 0;
 			Application.targetFrameRate = 60;
+#endif
 		}
 	}
 }

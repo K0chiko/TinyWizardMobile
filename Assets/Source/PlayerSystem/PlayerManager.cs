@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using FMODUnity;
 using Quinn.DungeonGeneration;
-using Quinn.UnityServices;
 using Sirenix.OdinInspector;
 using System;
 using Unity.Cinemachine;
@@ -34,12 +33,8 @@ namespace Quinn.PlayerSystem
 		public bool IsDead => Health == null || Health.IsDead;
 		public Vector2 Position => Player.transform.position;
 
-		public int CurrentFloorAttempts { get; private set; }
-		public int NewRoomsExploredThisFloor { get; set; }
-
 		public event Action<Player> OnPlayerSet;
 		public event Action<float> OnPlayerHealthChange;
-		public event Action OnPlayerMaxHealthChange;
 
 		public event Action OnPlayerDeath;
 		public event Action OnPlayerDeathPreSceneLoad;
@@ -47,8 +42,6 @@ namespace Quinn.PlayerSystem
 		private bool _isDead;
 		private bool _isGameStarted;
 
-		// For the, now scrapped, time-based leaderboard.
-		private float _startTime;
 
 		public void Awake()
 		{
@@ -58,12 +51,6 @@ namespace Quinn.PlayerSystem
 
 		public void Start()
 		{
-			DungeonGenerator.Instance.OnFloorStart += _ =>
-			{
-				CurrentFloorAttempts = 0;
-				NewRoomsExploredThisFloor = 0;
-			};
-
 			SpawnPlayer(InitialSpawnOffset);
 		}
 
@@ -93,7 +80,6 @@ namespace Quinn.PlayerSystem
 			if (!_isGameStarted)
 			{
 				_isGameStarted = true;
-				_startTime = Time.unscaledTime;
 			}
 		}
 
@@ -124,7 +110,6 @@ namespace Quinn.PlayerSystem
 			Health.OnHealed += OnHealed;
 			Health.OnDamaged += OnDamaged;
 			Health.OnDeath += OnDeath;
-			Health.OnMaxChange += OnMaxHealthChange;
 
 			InputManager.Instance.EnableInput();
 		}
@@ -149,23 +134,11 @@ namespace Quinn.PlayerSystem
 			if (Health.Current == 0f && !_isDead)
 			{
 				_isDead = true;
-
-				Analytics.Instance.Push(new UnityServices.Events.PlayerDeathEvent()
-				{
-					Name = source.name
-				});
 			}
-		}
-
-		private void OnMaxHealthChange()
-		{
-			OnPlayerMaxHealthChange?.Invoke();
 		}
 
 		private async void OnDeath()
 		{
-			CurrentFloorAttempts++;
-
 			EquippedStaffGUID = null;
 			UnsubscribeAll();
 
@@ -202,7 +175,6 @@ namespace Quinn.PlayerSystem
 				Health.OnHealed -= OnHealed;
 				Health.OnDamaged -= OnDamaged;
 				Health.OnDeath -= OnDeath;
-				Health.OnMaxChange -= OnMaxHealthChange;
 			}
 		}
 

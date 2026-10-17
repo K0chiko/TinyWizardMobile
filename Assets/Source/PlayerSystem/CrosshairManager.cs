@@ -1,4 +1,5 @@
 ﻿using FMODUnity;
+using Quinn.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,7 +29,7 @@ namespace Quinn.PlayerSystem
 				{
 					screenPos = Mouse.current.position.ReadValue();
 				}
-				else if (Touchscreen.current != null /*&& Touchscreen.current.touches.count > 0*/)
+				else if (Touchscreen.current != null)
 				{
 					screenPos = Touchscreen.current.touches[0].position.ReadValue();
 				}
@@ -38,13 +39,14 @@ namespace Quinn.PlayerSystem
 		}
 
 		private RectTransform _frameTransform, _chargeTransform;
-		private float _initFrameSize, _initChargeSize;
+		private float _initFrameSize;
 
 		private float _frameSize;
 		private float _chargeScale;
 
 		private FMOD.Studio.PARAMETER_ID _staffChargeParamId;
 		private float _lastChargePercent = -1f;
+		private bool _systemCursorVisible;
 
 		public void Awake()
 		{
@@ -52,13 +54,13 @@ namespace Quinn.PlayerSystem
 			Instance = this;
 
 			_crosshair = CrosshairPrefab.Clone(transform).GetComponent<CrosshairHandle>();
-			InputManager.Instance?.HideCursor();
+			if (!PlatformInfo.IsTouch)
+				InputManager.Instance?.HideCursor();
 
 			_frameTransform = _crosshair.Frame.GetComponent<RectTransform>();
 			_chargeTransform = _crosshair.Charge.GetComponent<RectTransform>();
 
 			_initFrameSize = _frameTransform.sizeDelta.y;
-			_initChargeSize = _chargeTransform.sizeDelta.y;
 
 			_frameSize = _initFrameSize;
 			_chargeScale = 1f;
@@ -78,25 +80,23 @@ namespace Quinn.PlayerSystem
 		public void LateUpdate()
 		{
 			_crosshair.transform.position = Position;
+
+			if (!PlatformInfo.IsTouch)
+				UpdateSystemCursor();
 		}
 
 		public void OnDestroy()
 		{
 			if (Instance == this)
 				Instance = null;
+
+			if (!PlatformInfo.IsTouch)
+				InputManager.Instance?.ShowCursor();
 		}
 
 		public Vector2 DirectionToCrosshair(Vector2 from)
 		{
 			return from.DirectionTo(Position);
-		}
-
-		public void SetScale(float scale)
-		{
-			_frameSize = _initFrameSize * scale;
-			_frameTransform.sizeDelta = Vector2.one * _frameSize;
-
-			_chargeTransform.sizeDelta = _chargeScale * _frameSize * Vector2.one;
 		}
 
 		public void SetCharge(float percent)
@@ -110,6 +110,21 @@ namespace Quinn.PlayerSystem
 				RuntimeManager.StudioSystem.setParameterByID(_staffChargeParamId, clamped);
 				_lastChargePercent = clamped;
 			}
+		}
+
+		private void UpdateSystemCursor()
+		{
+			bool menuOpen = PauseMenuUI.Instance.IsPaused || PlayerManager.Instance.IsDead;
+
+			if (menuOpen == _systemCursorVisible)
+				return;
+
+			_systemCursorVisible = menuOpen;
+
+			if (menuOpen)
+				InputManager.Instance.ShowCursor();
+			else
+				InputManager.Instance.HideCursor();
 		}
 
 		public void Show()

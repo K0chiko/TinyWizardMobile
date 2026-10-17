@@ -66,18 +66,6 @@ namespace Quinn
 			_blackout = _handle.Blackout;
 		}
 
-		public void EnableFollowCamera()
-		{
-			Debug.Assert(_followCam != null, "Cannot enable follow camera because it is null");
-			_followCam.enabled = true;
-		}
-
-		public void DisableFollowCamera()
-		{
-			Debug.Assert(_followCam != null, "Cannot disable follow camera because it is null");
-			_followCam.enabled = false;
-		}
-
 		public async Awaitable FadeIn()
 		{
 			Blackout();
@@ -89,9 +77,6 @@ namespace Quinn
 			_blackout.enabled = false;
 		}
 
-		/// <summary>
-		/// Change the UI element used for fading to be fully black and opaque instantly.
-		/// </summary>
 		public void Blackout()
 		{
 			_blackout.enabled = true;

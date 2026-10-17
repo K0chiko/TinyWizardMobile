@@ -55,13 +55,13 @@ namespace Quinn
 		public event Action<float, Vector2, GameObject> OnDamaged;
 		public event Action<DamageInfo> OnDamagedExpanded;
 		public event Action OnDeath;
-		public event Action OnMaxChange;
 
 		private bool _isHurtImmune;
 		private readonly HashSet<object> _damageBlockers = new();
 		private float _nextHurtImmunityEndTime;
 
 		private StatusEffectManager _statsEffectManager;
+		private HurtFeedback _hurtFeedback;
 
 		private bool _lastHPBarActive;
 		private float _lastHPBarValue = -1f;
@@ -70,6 +70,13 @@ namespace Quinn
 		{
 			Current = Max;
 			TryGetComponent(out _statsEffectManager);
+
+			_hurtFeedback = new HurtFeedback(
+				this, Renderers,
+				FlashInDuration, FlashHoldDuration, FlashOutDuration,
+				FlashInEase, FlashOutEase,
+				BlinkCount, BlinkInterval,
+				() => IsImmuneOnHurt && !IsDead);
 		}
 
 		public void Start()
@@ -205,7 +212,7 @@ namespace Quinn
 				_nextHurtImmunityEndTime = Time.time + HurtImmunityDuration;
 			}
 
-			AnimateHurtVFX();
+			_hurtFeedback.Play();
 			return true;
 		}
 
@@ -221,96 +228,6 @@ namespace Quinn
 		public void UnblockDamage(object key)
 		{
 			_damageBlockers.Remove(key);
-		}
-
-		public void SetMax(float max)
-		{
-			Max = max;
-			OnMaxChange?.Invoke();
-		}
-
-		private async void AnimateHurtVFX()
-		{
-			foreach (var renderer in Renderers)
-			{
-				if (renderer == null)
-				{
-					Debug.LogError($"Health damaged FX found a null sprite renderered! Make sure '{gameObject.name}' has no missing references on its Health component.");
-					continue;
-				}
-
-				renderer.enabled = true;
-				renderer.material.SetFloat("_Flash", 0f);
-			}
-
-			await AnimateFlash();
-
-			if (IsImmuneOnHurt && !IsDead)
-			{
-				AnimateBlink();
-			}
-		}
-
-		private async Awaitable AnimateFlash()
-		{
-			float Get()
-			{
-				if (Renderers.Length == 0) 
-					return 0f;
-
-				var renderer = Renderers[0];
-
-				if (renderer == null)
-					return 0f;
-
-				return renderer.material.GetFloat("_Flash");
-			}
-			void Set(float value)
-			{
-				if (this == null)
-					return;
-
-				foreach (var renderer in Renderers)
-				{
-					if (renderer == null)
-						return;
-
-					renderer.material.SetFloat("_Flash", value);
-				}
-			}
-
-			if (Renderers.Length > 0 && this != null)
-			{
-				await DOTween.To(Get, Set, 1f, FlashInDuration)
-					.SetEase(FlashInEase)
-					.AsyncWaitForCompletion();
-
-				await Awaitable.WaitForSecondsAsync(FlashHoldDuration);
-
-				await DOTween.To(Get, Set, 0f, FlashOutDuration)
-					.SetEase(FlashOutEase)
-					.AsyncWaitForCompletion();
-			}
-		}
-
-		private async void AnimateBlink()
-		{
-			for (int i = 0; i < BlinkCount; i++)
-			{
-				await Awaitable.WaitForSecondsAsync(BlinkInterval);
-
-				foreach (var renderer in Renderers)
-				{
-					renderer.enabled = false;
-				}
-
-				await Awaitable.WaitForSecondsAsync(BlinkInterval);
-
-				foreach (var renderer in Renderers)
-				{
-					renderer.enabled = true;
-				}
-			}
 		}
 
 		private void DestroyHPBar()

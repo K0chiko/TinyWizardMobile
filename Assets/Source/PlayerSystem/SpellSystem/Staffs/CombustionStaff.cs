@@ -147,10 +147,8 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 
 				_charge = 0f;
 
-				// Overlap colliders.
 				var colliders = Physics2D.OverlapCircleAll(pos, DamageRadius);
 
-				// No damage is dealt if we hit a missile blocker.
 				foreach (var collider in colliders)
 				{
 					if (collider.CompareTag("MissileBlocker"))
@@ -159,7 +157,6 @@ namespace Quinn.PlayerSystem.SpellSystem.Staffs
 					}
 				}
 
-				// Actual damage application.
 				foreach (var collider in colliders)
 				{
 					if (collider.TryGetComponent(out IDamageable damageable))

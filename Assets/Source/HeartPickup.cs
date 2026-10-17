@@ -32,6 +32,15 @@ namespace Quinn
 			transform.DOKill();
 		}
 
+		public bool ShouldAutoInteract(Player player)
+		{
+			if (_isUsed)
+				return false;
+
+			var hp = player.GetComponent<Health>();
+			return hp.Current < hp.Max;
+		}
+
 		public async void Interact(Player player)
 		{
 			if (_isUsed)

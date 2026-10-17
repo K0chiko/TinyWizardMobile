@@ -2,7 +2,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 namespace Quinn.PlayerSystem
 {
@@ -23,68 +22,32 @@ namespace Quinn.PlayerSystem
 		
 		[Header("Input System (assign InputActionReferences)")]
 		[SerializeField] private InputActionReference moveAction;
-		[SerializeField] private InputActionReference aimAction; // Vector2 aim stick (mobile)
-		//[FormerlySerializedAs("PointerPositionAction")] [SerializeField] private InputActionReference pointerPositionAction; // Optional: screen position (touch/mouse)
-		[SerializeField] private InputActionReference basicAction; // Button
-		[SerializeField] private InputActionReference specialAction; // Button
-		[SerializeField] private InputActionReference dashAction; // Button
-		[SerializeField] private InputActionReference interactAction; // Button
-		[SerializeField] private InputActionReference pauseMenuAction; // Button
-		[SerializeField] private float aimRadius = 2.5f; // used to synthesize crosshair around player on mobile
+		[SerializeField] private InputActionReference aimAction;
+		[SerializeField] private InputActionReference basicAction;
+		[SerializeField] private InputActionReference specialAction;
+		[SerializeField] private InputActionReference dashAction;
+		[SerializeField] private InputActionReference interactAction;
+		[SerializeField] private InputActionReference pauseMenuAction;
+		[SerializeField] private float aimRadius = 2.5f;
 
 		public void Awake()
 		{
 			Debug.Assert(Instance == null, "There are more than one instances of InputManager!");
 			Instance = this;
 
-			// Subscribe to button events (performed/started/canceled)
-			if (basicAction != null && basicAction.action != null)
-			{
-				basicAction.action.started += OnBasicStarted;
-				basicAction.action.canceled += OnBasicCanceled;
-			}
-			if (specialAction != null && specialAction.action != null)
-			{
-				specialAction.action.started += OnSpecialStarted;
-				specialAction.action.canceled += OnSpecialCanceled;
-			}
-			if (dashAction != null && dashAction.action != null)
-			{
-				dashAction.action.performed += OnDashPerformed;
-			}
-			if (interactAction != null && interactAction.action != null)
-			{
-				interactAction.action.performed += OnInteractPerformed;
-			}
-			if (pauseMenuAction != null && pauseMenuAction.action != null)
-			{
-				pauseMenuAction.action.performed += OnPauseMenuPerformed;
-			}
+			BindButtons(true);
 		}
 
 		public void OnEnable()
 		{
-			// Enable actions so they can read values
-			EnableAction(moveAction);
-			EnableAction(aimAction);
-			//EnableAction(pointerPositionAction);
-			EnableAction(basicAction);
-			EnableAction(specialAction);
-			EnableAction(dashAction);
-			EnableAction(interactAction);
-			EnableAction(pauseMenuAction);
+			foreach (var actionRef in AllActions())
+				EnableAction(actionRef);
 		}
 
 		public void OnDisable()
 		{
-			DisableAction(moveAction);
-			DisableAction(aimAction);
-			//DisableAction(pointerPositionAction);
-			DisableAction(basicAction);
-			DisableAction(specialAction);
-			DisableAction(dashAction);
-			DisableAction(interactAction);
-			DisableAction(pauseMenuAction);
+			foreach (var actionRef in AllActions())
+				DisableAction(actionRef);
 		}
 
 		public void Update()
@@ -98,6 +61,25 @@ namespace Quinn.PlayerSystem
 		}
 
 		private void Aim()
+		{
+			if (PlatformInfo.IsTouch)
+				AimWithStick();
+			else
+				AimWithPointer();
+		}
+
+		private void AimWithPointer()
+		{
+			var mouse = Mouse.current;
+			var cam = Camera.main;
+
+			if (mouse == null || cam == null)
+				return;
+
+			CursorWorldPos = cam.ScreenToWorldPoint(mouse.position.ReadValue());
+		}
+
+		private void AimWithStick()
 		{
 			Vector2 playerPos = PlayerManager.Instance != null 
 				? (Vector2)PlayerManager.Instance.Player.transform.position 
@@ -118,7 +100,6 @@ namespace Quinn.PlayerSystem
 			}
 			else
 			{
-				// 2. Стик отпущен
 				if (IsCastHeld)
 				{
 					IsCastHeld = false;
@@ -129,10 +110,6 @@ namespace Quinn.PlayerSystem
 				{
 					CursorWorldPos = playerPos + MoveDirection.normalized * aimRadius;
 				}
-				else 
-				{
-
-				}
 			}
 		}
 
@@ -141,28 +118,7 @@ namespace Quinn.PlayerSystem
 			if (Instance == this)
 				Instance = null;
 
-			if (basicAction != null && basicAction.action != null)
-			{
-				basicAction.action.started -= OnBasicStarted;
-				basicAction.action.canceled -= OnBasicCanceled;
-			}
-			if (specialAction != null && specialAction.action != null)
-			{
-				specialAction.action.started -= OnSpecialStarted;
-				specialAction.action.canceled -= OnSpecialCanceled;
-			}
-			if (dashAction != null && dashAction.action != null)
-			{
-				dashAction.action.performed -= OnDashPerformed;
-			}
-			if (interactAction != null && interactAction.action != null)
-			{
-				interactAction.action.performed -= OnInteractPerformed;
-			}
-			if (pauseMenuAction != null && pauseMenuAction.action != null)
-			{
-				pauseMenuAction.action.performed -= OnPauseMenuPerformed;
-			}
+			BindButtons(false);
 		}
 
 		public void EnableInput()
@@ -221,6 +177,45 @@ namespace Quinn.PlayerSystem
 			if (PauseMenuUI.Instance != null)
 			{
 				PauseMenuUI.Instance.TogglePause();
+			}
+		}
+
+		private InputActionReference[] AllActions()
+		{
+			return new[] { moveAction, aimAction, basicAction, specialAction, dashAction, interactAction, pauseMenuAction };
+		}
+
+		private void BindButtons(bool subscribe)
+		{
+			Bind(basicAction, subscribe, started: OnBasicStarted, canceled: OnBasicCanceled);
+			Bind(specialAction, subscribe, started: OnSpecialStarted, canceled: OnSpecialCanceled);
+			Bind(dashAction, subscribe, performed: OnDashPerformed);
+			Bind(interactAction, subscribe, performed: OnInteractPerformed);
+			Bind(pauseMenuAction, subscribe, performed: OnPauseMenuPerformed);
+		}
+
+		private static void Bind(
+			InputActionReference actionRef, bool subscribe,
+			Action<InputAction.CallbackContext> started = null,
+			Action<InputAction.CallbackContext> performed = null,
+			Action<InputAction.CallbackContext> canceled = null)
+		{
+			if (actionRef == null || actionRef.action == null)
+				return;
+
+			var action = actionRef.action;
+
+			if (subscribe)
+			{
+				if (started != null) action.started += started;
+				if (performed != null) action.performed += performed;
+				if (canceled != null) action.canceled += canceled;
+			}
+			else
+			{
+				if (started != null) action.started -= started;
+				if (performed != null) action.performed -= performed;
+				if (canceled != null) action.canceled -= canceled;
 			}
 		}
 

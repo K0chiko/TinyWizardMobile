@@ -1,19 +1,14 @@
 using FMODUnity;
 using Quinn.DungeonGeneration;
 using Quinn.PlayerSystem;
-using Quinn.PlayerSystem.SpellSystem;
 using Quinn.UI;
-using Quinn.UnityServices;
-using Quinn.UnityServices.Events;
 using Sirenix.OdinInspector;
-using System;
 using System.Collections.Generic;
 using Unity.Behavior;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
-using UnityEngine.InputSystem; // Добавлено для поддержки новой системы ввода
+using UnityEngine.InputSystem;
 
 namespace Quinn.AI.BehaviorTree
 {
@@ -48,23 +43,16 @@ namespace Quinn.AI.BehaviorTree
        [Space, SerializeField]
        private VisualEffect[] PlayableVFX;
 
-       [FoldoutGroup("Debug"), SerializeField]
-       private bool PrintAnimationTriggers;
-
        public Animator Animator { get; private set; }
        public Health Health { get; private set; }
        public AIMovement Movement { get; private set; }
        public Room Room { get; private set; }
 
-       // A trigger is "set" by virtue of being present in this set.
        private readonly HashSet<string> _animTriggers = new();
        private bool _inSecondPhase;
 
        private FMOD.Studio.PARAMETER_ID _secondPhaseParamId;
        private float _lastSecondPhaseValue = -1f;
-
-       private static readonly Collider2D[] s_OverlapBuffer = new Collider2D[8];
-       private static readonly ContactFilter2D s_OverlapFilter = new ContactFilter2D().NoFilter();
 
        public void Awake()
        {
@@ -85,7 +73,6 @@ namespace Quinn.AI.BehaviorTree
 #if UNITY_EDITOR
        public void Update()
        {
-          // Проверяем наличие клавиатуры и нажатие клавиши "7" (Alpha7) через новую систему
           var keyboard = Keyboard.current;
           if (keyboard != null && IsBoss && keyboard.digit7Key.wasPressedThisFrame && Health.Percent > 0.51f)
           {
@@ -120,11 +107,6 @@ namespace Quinn.AI.BehaviorTree
        public void SetAnimationTrigger(string key)
        {
           _animTriggers.Add(key);
-
-          if (PrintAnimationTriggers)
-          {
-             Debug.Log($"<color=#{GetColorOfString(key)}>Trigger set: '{key}'!</color>");
-          }
        }
 
        public bool GetAnimationTrigger(string key)
@@ -136,17 +118,12 @@ namespace Quinn.AI.BehaviorTree
 
           _animTriggers.Remove(key);
 
-          if (PrintAnimationTriggers)
-          {
-             Debug.Log($"<color=#{GetColorOfString(key)}>Trigger consumed: '{key}'!</color>");
-          }
-
           return true;
        }
 
        public void OnFootstep_Anim()
        {
-          PlayFootstepSound(GetSoundMaterialType());
+          Footsteps.Play(FootstepSound, transform.position, Footsteps.Sample(transform.position, out _));
        }
 
        public void DisableCharacterCollision()
@@ -162,38 +139,6 @@ namespace Quinn.AI.BehaviorTree
        public void PlayVFX(int index)
        {
           PlayableVFX[index].Play();
-       }
-
-       private SoundMaterialType GetSoundMaterialType()
-       {
-          SoundMaterialType mat = SoundMaterialType.None;
-          int highestPriority = -9999;
-
-          int count = Physics2D.OverlapPoint(transform.position, s_OverlapFilter, s_OverlapBuffer);
-
-          for (int i = 0; i < count; i++)
-          {
-             if (s_OverlapBuffer[i].TryGetComponent(out SoundMaterial soundMat))
-             {
-                if (soundMat.Priority > highestPriority)
-                {
-                   mat = soundMat.Material;
-                   highestPriority = soundMat.Priority;
-                }
-             }
-          }
-
-          return mat;
-       }
-
-       private void PlayFootstepSound(SoundMaterialType mat)
-       {
-          var instance = RuntimeManager.CreateInstance(FootstepSound);
-          instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-          instance.setParameterByNameWithLabel("sound-mat", SoundMaterialTypeNames.ToLabel(mat));
-
-          instance.start();
-          instance.release();
        }
 
        private void OnDamaged(float damage, Vector2 direction, GameObject source)
@@ -224,13 +169,6 @@ namespace Quinn.AI.BehaviorTree
              Room.KillAllLiveAgents();
 
              OnDeathEvent?.Invoke();
-
-             Analytics.Instance.Push(new BossDeathEvent()
-             {
-                Name = BossTitle,
-                Attempts = PlayerManager.Instance.CurrentFloorAttempts,
-                Staff = PlayerManager.Instance.Player.GetComponent<PlayerCaster>().EquippedStaff.gameObject.name
-             });
           }
 
           foreach (var prefab in SpawnOnDeath)
@@ -250,15 +188,6 @@ namespace Quinn.AI.BehaviorTree
                 sfx.release();
              }
           }
-       }
-
-       private string GetColorOfString(string str)
-       {
-          var rand = new System.Random(str.GetHashCode());
-          float hue = (float)rand.NextDouble();
-
-          var color = Color.HSVToRGB(hue, 1f, 1f);
-          return color.ToHexString();
        }
     }
 }
