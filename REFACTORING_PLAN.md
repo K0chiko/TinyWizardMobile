@@ -1,5 +1,22 @@
 # План рефакторинга TinyWizardMobile
 
+## Статус выполнения (ветка `refactor`, тег отката `before-refactor`)
+
+| Фаза | Статус |
+|---|---|
+| 0. Ветка, тег, `FMOD/.cache` убран из git | сделано |
+| 1.1. Мёртвые классы, `EvloutionLearning`, `Testing Floor` (кроме тайлсета и `Writing.aseprite`, на них ссылается `TutorialRoom`) | сделано |
+| 1.2. Мёртвые методы, события, write-only поля | сделано |
+| 1.3. Неиспользуемые `using` (через `dotnet format`) | сделано |
+| 2. Все комментарии в `Assets/Source` | сделано |
+| 5. Аналитика целиком (код, префабы, пакеты, привязка к облачному проекту) | сделано |
+| 4. Пакеты Visual Scripting, Timeline, Collab, Multiplayer Center | сделано |
+| 3. `Health` → `HurtFeedback`; `Player`/`BTAgent` → `Footsteps`; `PlayerCaster` → `PlayerMana`, `StaffEquipSequence`; читы в `*.Cheats.cs`; `InputManager` без дублей | сделано |
+| 3. `Room`, `BasicStaff`, `Missile`, `DungeonGenerator` | не делалось |
+| 4. Odin Inspector (~90 атрибутов), лишние модули Unity, платформы FMOD | не делалось |
+
+Проверка после каждого шага: компиляция в Unity batchmode (0 ошибок), скан всех 140 префабов и сцен на Missing Script (0).
+
 Результат исследования кода (только чтение, ничего не менялось). 174 `.cs`-файла, ~11 400 строк в `Assets/Source` и `Assets/EvloutionLearning`.
 
 **Как проверялось.** Поиск «мёртвого» кода сделан по именам и по GUID: классы и методы искались в `.cs`, `.prefab`, `.unity`, `.asset`, `.anim`, `.controller`. Unity-проект я не компилировал. Поэтому после каждого шага нужна компиляция в редакторе и проверка по чек-листу из фазы 0.
