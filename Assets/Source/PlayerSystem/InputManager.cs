@@ -35,50 +35,19 @@ namespace Quinn.PlayerSystem
 			Debug.Assert(Instance == null, "There are more than one instances of InputManager!");
 			Instance = this;
 
-			if (basicAction != null && basicAction.action != null)
-			{
-				basicAction.action.started += OnBasicStarted;
-				basicAction.action.canceled += OnBasicCanceled;
-			}
-			if (specialAction != null && specialAction.action != null)
-			{
-				specialAction.action.started += OnSpecialStarted;
-				specialAction.action.canceled += OnSpecialCanceled;
-			}
-			if (dashAction != null && dashAction.action != null)
-			{
-				dashAction.action.performed += OnDashPerformed;
-			}
-			if (interactAction != null && interactAction.action != null)
-			{
-				interactAction.action.performed += OnInteractPerformed;
-			}
-			if (pauseMenuAction != null && pauseMenuAction.action != null)
-			{
-				pauseMenuAction.action.performed += OnPauseMenuPerformed;
-			}
+			BindButtons(true);
 		}
 
 		public void OnEnable()
 		{
-			EnableAction(moveAction);
-			EnableAction(aimAction);
-			EnableAction(basicAction);
-			EnableAction(specialAction);
-			EnableAction(dashAction);
-			EnableAction(interactAction);
-			EnableAction(pauseMenuAction);
+			foreach (var actionRef in AllActions())
+				EnableAction(actionRef);
 		}
 
 		public void OnDisable()
 		{
-			DisableAction(moveAction);
-			DisableAction(aimAction);
-			DisableAction(basicAction);
-			DisableAction(specialAction);
-			DisableAction(dashAction);
-			DisableAction(interactAction);
-			DisableAction(pauseMenuAction);
+			foreach (var actionRef in AllActions())
+				DisableAction(actionRef);
 		}
 
 		public void Update()
@@ -122,9 +91,6 @@ namespace Quinn.PlayerSystem
 				{
 					CursorWorldPos = playerPos + MoveDirection.normalized * aimRadius;
 				}
-				else 
-				{
-				}
 			}
 		}
 
@@ -133,28 +99,7 @@ namespace Quinn.PlayerSystem
 			if (Instance == this)
 				Instance = null;
 
-			if (basicAction != null && basicAction.action != null)
-			{
-				basicAction.action.started -= OnBasicStarted;
-				basicAction.action.canceled -= OnBasicCanceled;
-			}
-			if (specialAction != null && specialAction.action != null)
-			{
-				specialAction.action.started -= OnSpecialStarted;
-				specialAction.action.canceled -= OnSpecialCanceled;
-			}
-			if (dashAction != null && dashAction.action != null)
-			{
-				dashAction.action.performed -= OnDashPerformed;
-			}
-			if (interactAction != null && interactAction.action != null)
-			{
-				interactAction.action.performed -= OnInteractPerformed;
-			}
-			if (pauseMenuAction != null && pauseMenuAction.action != null)
-			{
-				pauseMenuAction.action.performed -= OnPauseMenuPerformed;
-			}
+			BindButtons(false);
 		}
 
 		public void EnableInput()
@@ -207,6 +152,45 @@ namespace Quinn.PlayerSystem
 			if (PauseMenuUI.Instance != null)
 			{
 				PauseMenuUI.Instance.TogglePause();
+			}
+		}
+
+		private InputActionReference[] AllActions()
+		{
+			return new[] { moveAction, aimAction, basicAction, specialAction, dashAction, interactAction, pauseMenuAction };
+		}
+
+		private void BindButtons(bool subscribe)
+		{
+			Bind(basicAction, subscribe, started: OnBasicStarted, canceled: OnBasicCanceled);
+			Bind(specialAction, subscribe, started: OnSpecialStarted, canceled: OnSpecialCanceled);
+			Bind(dashAction, subscribe, performed: OnDashPerformed);
+			Bind(interactAction, subscribe, performed: OnInteractPerformed);
+			Bind(pauseMenuAction, subscribe, performed: OnPauseMenuPerformed);
+		}
+
+		private static void Bind(
+			InputActionReference actionRef, bool subscribe,
+			Action<InputAction.CallbackContext> started = null,
+			Action<InputAction.CallbackContext> performed = null,
+			Action<InputAction.CallbackContext> canceled = null)
+		{
+			if (actionRef == null || actionRef.action == null)
+				return;
+
+			var action = actionRef.action;
+
+			if (subscribe)
+			{
+				if (started != null) action.started += started;
+				if (performed != null) action.performed += performed;
+				if (canceled != null) action.canceled += canceled;
+			}
+			else
+			{
+				if (started != null) action.started -= started;
+				if (performed != null) action.performed -= performed;
+				if (canceled != null) action.canceled -= canceled;
 			}
 		}
 
