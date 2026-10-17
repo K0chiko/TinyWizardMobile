@@ -500,7 +500,7 @@ MonoBehaviour:
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   aimAction: {fileID: -5630151704836100654, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   basicAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  specialAction: {fileID: 0}
+  specialAction: {fileID: 7040659881675835329, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   dashAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   interactAction: {fileID: 1781555164194001046, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   pauseMenuAction: {fileID: -7770387910669766415, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
